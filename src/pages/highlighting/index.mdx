@@ -1,0 +1,271 @@
+# Hello, world!
+
+ I am paragraphs！
+
+```jsx onlyPreview
+function Count() {
+  const [count, setCount] = useState(0)
+
+  return (
+    <>
+      <p>{count}</p>
+      <button onClick={() => setCount(count + 1)}>+1</button>
+    </>
+  )
+}
+```
+
+```html onlyPreview height={720}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        * {margin: 0; padding: 0;}
+        .container {padding: 30px;}
+        .account {padding-left: 30px; padding-top: 30px;}
+        .account>button {font-size: 20px; font-weight: 500;}
+        .account-item>label {display: inline-block; width: 100px;}
+        .account-item>input {width: 70%;}
+        .title {font-size: 30px;}
+        .wrapper {margin-top: 20px;}
+        .device {display: flex;}
+        .header {font-weight: bold;}
+        .device div:nth-of-type(1) {width: 350px;}
+        .device div:nth-of-type(2) {width: 120px;}
+        .device div:nth-of-type(3) {width: 520px;}
+        button {padding: 0 8px; line-height: 25px; cursor: pointer;}
+    </style>
+</head>
+<body>
+    <div class="account">
+        <div class="account-item">
+            <label>mrtcUrl:</label>
+            <input id="mrtcUrl" placeholder="请填入mrtcUrl" value="" type="text">
+        </div>
+        <button onclick="loadUrl()">加载</button>
+    </div>
+    <div class="container">
+        <div class="deviceWrapper">
+            <div class="title">设备选择</div>
+            <button onclick="getMediaDevices()">设备列表</button>
+            <div class="device-wrap"></div>
+        </div>
+        <div class="wrapper">
+            <div class="title">流获取</div>
+            <div>预览</div>
+            <video id="previewVideo" muted controls autoplay width="250" height="150"></video>
+            <video width="250" height="150" controls id="videoFile" crossorigin="anonymous"
+                src="https://file-examples-com.github.io/uploads/2020/03/file_example_WEBM_1920_3_7MB.webm"></video>
+            <audio controls id="audioFile" crossorigin="anonymous"
+                src="https://file-examples-com.github.io/uploads/2017/11/file_example_MP3_1MG.mp3"></audio>
+            <div>
+                <label>摄像头id：</label><input id="cameraDeviceId" placeholder="摄像头id" type="text">
+            </div>
+            <div>
+                <label>麦克风id：</label><input id="micDeviceId" placeholder="麦克风id" type="text">
+            </div>
+            <div>
+                <button onclick="cameraAndMic()">摄像头和麦克风</button>
+                <button onclick="cameraStream()">摄像头</button>
+                <button onclick="micStream()">麦克风</button>
+                <button onclick="screenShare()">屏幕分享</button>
+                <button onclick="playVideoStream()">本地视频</button>
+                <button onclick="playAudioStream()">本地音频</button>
+            </div>
+        </div>
+        <div class="wrapper">
+            <div class="title">推流</div>
+            <div>本地</div>
+            <video id="localVideo" muted controls autoplay width="250" height="150"></video>
+            <div>
+                <button onclick="startPublish()">推流</button>
+                <button onclick="switchTo()">切换流</button>
+                <button onclick="unpublish()">取消推流</button>
+                <button onclick="getLocalVideoStats()">getLocalVideoStats</button>
+                <button onclick="getLocalAudioStats()">getLocalAudioStats</button>
+                <button onclick="getTransportStats()">getTransportStats</button>
+                <button onclick="sendCustomMessage()">发送消息</button>
+            </div>
+        </div>
+        <div class="wrapper">
+            <div class="title">拉流</div>
+            <div>远端</div>
+            <video id="remoteVideo" muted controls autoplay width="250" height="150"></video>
+            <div>
+                <button onclick="subscribe()">拉流</button>
+                <button onclick="unsubscribe()">取消拉流</button>
+                <button onclick="getRemoteVideoStats()">getRemoteVideoStats</button>
+                <button onclick="getRemoteAudioStats()">getRemoteAudioStats</button>
+                <button onclick="getTransportStats()">getTransportStats</button>
+                <button onclick="switchStreamType(1)">切换大流</button>
+                <button onclick="switchStreamType(0)">切换小流</button>
+            </div>
+        </div>
+    </div>
+</body>
+<script src="https://dev-tx-mdc-frontend-1305533294.cos.ap-shanghai.myqcloud.com/mrtc-web-sdk/v0.0.1/mrtc-web-sdk.min.js"></script>
+<script>
+    const container = document.querySelector('.container')
+    const cameraDeviceId = document.querySelector('#cameraDeviceId')
+    const micDeviceId = document.querySelector('#micDeviceId')
+    const previewVideo = document.querySelector('#previewVideo')
+    const localVideo = document.querySelector('#localVideo')
+    const remoteVideo = document.querySelector('#remoteVideo')
+    const MuduRTC = window.MuduRTC
+
+    let tracks = []
+    let client
+
+    function loadUrl() {
+        const url = document.querySelector('#mrtcUrl').value
+        client = MuduRTC.createClient(url)
+        console.log('create client success', client)
+    }
+
+    async function cameraAndMic() {
+        tracks = await MuduRTC.createCameraAndMicTracks()
+        console.log('cameraAndMic', tracks);
+        previewVideo.srcObject = new MediaStream(tracks);
+    }
+
+    async function cameraStream() {
+        tracks = [await MuduRTC.createCameraTrack({ deviceId: cameraDeviceId.value || undefined }), MuduRTC.createEmptyAudioTrack()]
+        console.log('cameraStream', tracks);
+        previewVideo.srcObject = new MediaStream(tracks);
+    }
+
+    async function micStream() {
+        tracks = [await MuduRTC.createMicTrack({ deviceId: micDeviceId.value || undefined })]
+        console.log('micStream', tracks);
+        previewVideo.srcObject = new MediaStream(tracks);
+    }
+
+    async function screenShare() {
+        tracks = await MuduRTC.createScreenTracks()
+        if (!tracks[1]) {
+            tracks[1] = MuduRTC.createEmptyAudioTrack()
+        }
+        console.log('screenShare', tracks);
+        previewVideo.srcObject = new MediaStream(tracks);
+    }
+
+    async function playVideoStream(e) {
+        // 需要谷歌89版本以下
+        const video = document.querySelector('#videoFile')
+        tracks = await MuduRTC.createVideoElementTracks(video)
+        console.log('playVideoStream', tracks);
+        previewVideo.srcObject = new MediaStream(tracks);
+    }
+
+    async function playAudioStream() {
+        const audio = document.querySelector('#audioFile')
+        tracks = [await MuduRTC.createAudioElementTrack(audio)]
+        console.log('playAudioStream', tracks);
+        previewVideo.srcObject = new MediaStream(tracks);
+    }
+
+    function startPublish() {
+        client.publish(tracks, { dualStream: true }); // 默认使用双流模式
+        localVideo.srcObject = new MediaStream(tracks);
+        console.log('startPublish');
+
+        setTimeout(() => {
+            client.getLocalVideoStats().then(console.log)
+            client.getLocalAudioStats().then(console.log)
+        }, 3000);
+    }
+
+    function unpublish() {
+        client.unpublish().then(() => {
+            remoteVideo.srcObject = null
+        })
+    }
+
+    function subscribe() {
+        client.subscribe().then((tracks) => {
+            console.log('subscribe', tracks);
+            remoteVideo.srcObject = new MediaStream(tracks)
+        })
+    }
+
+    function unsubscribe() {
+        client.unsubscribe()
+    }
+
+    async function switchTo() {
+        console.log('switchTo', tracks);
+        localVideo.srcObject = new MediaStream(tracks);
+        tracks.forEach(track => {
+            if (track.kind === 'video') { client.replaceTrack(track) }
+            if (track.kind === 'audio') { client.replaceTrack(track) }
+        })
+    }
+
+    function switchStreamType(streamType) {
+        client.setVideoStreamType(streamType)
+    }
+
+    function getMediaDevices() {
+        window.MuduRTC.getMediaDevices().then(devices => {
+            document.querySelector('.device-wrap').innerHTML = devicesDom(devices)
+        })
+    }
+
+    function getLocalVideoStats() {
+        client.getLocalVideoStats().then(stats => {
+            console.log('getLocalVideoStats', stats);
+        })
+    }
+
+    function getLocalAudioStats() {
+        client.getLocalAudioStats().then(stats => {
+            console.log('getLocalAudioStats', stats);
+        })
+    }
+
+    function getRemoteVideoStats() {
+        client.getRemoteVideoStats().then(stats => {
+            console.log('getRemoteVideoStats', stats);
+        })
+    }
+
+    function getRemoteAudioStats() {
+        client.getRemoteAudioStats().then(stats => {
+            console.log('getAudioReceiverStats', stats);
+        })
+    }
+
+    function getTransportStats() {
+        client.getStats().then(res => {
+            console.log(res);
+        })
+    }
+
+    function sendCustomMessage() {
+        // const msg = [
+        //     { "type": "mdc-white-board", "action": "undo", "timestamp": 1631071157937 },
+        //     { "type": "mdc-white-board", "action": "redo", "timestamp": 1631071157984 }
+        // ]
+        // const msg = { "type": "mdc-white-board", "action": "undo" , "timestamp": 1631071157937 }
+        const msg = '{ "type": "mdc-white-board", "action": "undo", "timestamp": 1631071157937 }'
+
+        client.sendCustomMessage(msg)
+    }
+
+    function devicesDom(devices) {
+        const header = '<div class="device header"><div>label</div><div>kind</div><div>deviceId</div></div>'
+        const string = devices.map(device => {
+            return `<div class="device">
+                       <div>${device.label}</div>
+                       <div>${device.kind}</div>
+                       <div>${device.deviceId}</div>
+                    </div>`
+        }).join('')
+        return header + string
+    }
+</script>
+
+</html>
+```

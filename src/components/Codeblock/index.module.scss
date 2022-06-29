@@ -1,6 +1,8 @@
 .codeBlock {
   position: relative;
   display: flex;
+  max-height: 720px;
+  overflow: scroll;
 
   .editorWrap,
   .previewWrap {

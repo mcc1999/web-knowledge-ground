@@ -14,7 +14,7 @@ const Home: NextPage = () => {
 
       <main className={styles.main}>
         <h1 className={styles.title}>
-          Welcome to <a href="https://nextjs.org">Next.js!</a>
+          Welcome to <a>Next.js</a> with <a>MDX!</a>
         </h1>
 
         <p className={styles.description}>
@@ -23,48 +23,35 @@ const Home: NextPage = () => {
         </p>
 
         <div className={styles.grid}>
-          <a href="https://nextjs.org/docs" className={styles.card}>
-            <h2>Documentation &rarr;</h2>
-            <p>Find in-depth information about Next.js features and API.</p>
+          <a href="/router" className={styles.card}>
+            <h2>Route Learning &rarr;</h2>
+            <p>file-folder route、Dynamic Route ( index routes, catch all routes ).</p>
           </a>
 
-          <a href="https://nextjs.org/learn" className={styles.card}>
-            <h2>Learn &rarr;</h2>
-            <p>Learn about Next.js in an interactive course with quizzes!</p>
-          </a>
-
-          <a
-            href="https://github.com/vercel/next.js/tree/canary/examples"
-            className={styles.card}
-          >
-            <h2>Examples &rarr;</h2>
-            <p>Discover and deploy boilerplate example Next.js projects.</p>
+          <a href="/highlighting" className={styles.card}>
+            <h2>Code Highlight  &rarr;</h2>
+            <p>Highlight code in the mdx Docs with nightOwlLight themes</p>
           </a>
 
           <a
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
+            href="/code-preview"
             className={styles.card}
           >
-            <h2>Deploy &rarr;</h2>
+            <h2>MDX Code Preview &rarr;</h2>
+            <p>Preview code in the MDX docs</p>
+          </a>
+
+          <a
+            href="/404"
+            className={styles.card}
+          >
+            <h2>404 Page &rarr;</h2>
             <p>
-              Instantly deploy your Next.js site to a public URL with Vercel.
+              Page Not Found......
             </p>
           </a>
         </div>
       </main>
-
-      <footer className={styles.footer}>
-        <a
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{' '}
-          <span className={styles.logo}>
-            <Image src="/vercel.svg" alt="Vercel Logo" width={72} height={16} />
-          </span>
-        </a>
-      </footer>
     </div>
   )
 }

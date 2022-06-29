@@ -9,7 +9,6 @@ const LivePreview: React.FC<{
   className?: string;
 }> = (props) => {
   const { language } = useContext(LiveContext)
-  console.log('here', language);
 
   const Preview = {
     html: HtmlPreview,

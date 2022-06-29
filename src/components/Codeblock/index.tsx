@@ -56,18 +56,10 @@ const CodeBlock: React.FC<CodeBlockProps> = ({ children, className, onlyPreview,
   }
   if (!language) return <code>{children}</code>;
 
-
-  const previewCodeStyle = () => {
-    if (codeVisible) {
-      return {
-        height,
-      }
-    }
-  }
   if (onlyPreview) {
     return (
       <>
-        <div className={style.codeBlock} style={height ? { height } : { maxHeight: 1080 }}>
+        <div className={style.codeBlock} style={height ? { height } : {}}>
           <LiveProvider language={language} defaultCode={children} scope={scope} onCodeChange={setCode}>
             {onlyPreview && (
               // 懒加载，窗口滚动到这里后才真正渲染 children

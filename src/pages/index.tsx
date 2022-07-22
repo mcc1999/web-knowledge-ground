@@ -1,6 +1,5 @@
 import type { NextPage } from 'next'
 import Head from 'next/head'
-import Image from 'next/image'
 import Link from 'next/link'
 import styles from '../../styles/Home.module.css'
 
@@ -24,32 +23,32 @@ const Home: NextPage = () => {
         </p>
 
         <div className={styles.grid}>
-          <Link href="/router" className={styles.card}>
-            <h2>Route Learning &rarr;</h2>
-            <p>file-folder route、Dynamic Route ( index routes, catch all routes ).</p>
+          <Link href="/router">
+            <div className={styles.card}>
+              <h2>Route Learning &rarr;</h2>
+              <p>file-folder route、Dynamic Route ( index routes, catch all routes ).</p>
+            </div>
           </Link>
 
-          <Link href="/highlighting" className={styles.card}>
-            <h2>Code Highlight  &rarr;</h2>
-            <p>Highlight code in the mdx Docs with nightOwlLight themes</p>
+          <Link href="/highlighting">
+            <div className={styles.card}>
+              <h2>Code Highlight  &rarr;</h2>
+              <p>Highlight code in the mdx Docs with nightOwlLight themes</p>
+            </div>
           </Link>
 
-          <Link
-            href="/code-preview"
-            className={styles.card}
-          >
-            <h2>MDX Code Preview &rarr;</h2>
-            <p>Preview code in the MDX docs</p>
+          <Link href="/code-preview">
+            <div className={styles.card}>
+              <h2>MDX Code Preview &rarr;</h2>
+              <p>Preview code in the MDX docs</p>
+            </div>
           </Link>
 
-          <Link
-            href="/404"
-            className={styles.card}
-          >
-            <h2>404 Page &rarr;</h2>
-            <p>
-              Page Not Found......
-            </p>
+          <Link href="/404" >
+            <div className={styles.card}>
+              <h2>404 Page &rarr;</h2>
+              <p>Page Not Found......</p>
+            </div>
           </Link>
         </div>
       </main>

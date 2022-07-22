@@ -24,31 +24,31 @@ const Home: NextPage = () => {
 
         <div className={styles.grid}>
           <Link href="/router">
-            <div className={styles.card}>
+            <a className={styles.card}>
               <h2>Route Learning &rarr;</h2>
               <p>file-folder route、Dynamic Route ( index routes, catch all routes ).</p>
-            </div>
+            </a>
           </Link>
 
           <Link href="/highlighting">
-            <div className={styles.card}>
+            <a className={styles.card}>
               <h2>Code Highlight  &rarr;</h2>
               <p>Highlight code in the mdx Docs with nightOwlLight themes</p>
-            </div>
+            </a>
           </Link>
 
           <Link href="/code-preview">
-            <div className={styles.card}>
+            <a className={styles.card}>
               <h2>MDX Code Preview &rarr;</h2>
               <p>Preview code in the MDX docs</p>
-            </div>
+            </a>
           </Link>
 
           <Link href="/404" >
-            <div className={styles.card}>
+            <a className={styles.card}>
               <h2>404 Page &rarr;</h2>
               <p>Page Not Found......</p>
-            </div>
+            </a>
           </Link>
         </div>
       </main>

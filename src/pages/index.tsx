@@ -1,6 +1,7 @@
 import type { NextPage } from 'next'
 import Head from 'next/head'
 import Image from 'next/image'
+import Link from 'next/link'
 import styles from '../../styles/Home.module.css'
 
 const Home: NextPage = () => {
@@ -23,25 +24,25 @@ const Home: NextPage = () => {
         </p>
 
         <div className={styles.grid}>
-          <a href="/router" className={styles.card}>
+          <Link href="/router" className={styles.card}>
             <h2>Route Learning &rarr;</h2>
             <p>file-folder route、Dynamic Route ( index routes, catch all routes ).</p>
-          </a>
+          </Link>
 
-          <a href="/highlighting" className={styles.card}>
+          <Link href="/highlighting" className={styles.card}>
             <h2>Code Highlight  &rarr;</h2>
             <p>Highlight code in the mdx Docs with nightOwlLight themes</p>
-          </a>
+          </Link>
 
-          <a
+          <Link
             href="/code-preview"
             className={styles.card}
           >
             <h2>MDX Code Preview &rarr;</h2>
             <p>Preview code in the MDX docs</p>
-          </a>
+          </Link>
 
-          <a
+          <Link
             href="/404"
             className={styles.card}
           >
@@ -49,7 +50,7 @@ const Home: NextPage = () => {
             <p>
               Page Not Found......
             </p>
-          </a>
+          </Link>
         </div>
       </main>
     </div>

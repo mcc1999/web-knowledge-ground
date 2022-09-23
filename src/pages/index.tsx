@@ -14,13 +14,8 @@ const Home: NextPage = () => {
 
       <main className={styles.main}>
         <h1 className={styles.title}>
-          Welcome to <a>Next.js</a> with <a>MDX!</a>
+          Welcome to <a>Web Knowledge</a> Playground
         </h1>
-
-        <p className={styles.description}>
-          Get started by editing{' '}
-          <code className={styles.code}>pages/index.tsx</code>
-        </p>
 
         <div className={styles.grid}>
           <Link href="/router">
@@ -41,6 +36,13 @@ const Home: NextPage = () => {
             <a className={styles.card}>
               <h2>MDX Code Preview &rarr;</h2>
               <p>Preview code in the MDX docs</p>
+            </a>
+          </Link>
+
+          <Link href="/framework" >
+            <a className={styles.card}>
+              <h2>框架 &rarr;</h2>
+              <p>React、Vue...</p>
             </a>
           </Link>
 

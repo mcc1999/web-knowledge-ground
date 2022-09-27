@@ -1,9 +1,8 @@
-## 1. React Hooks使用过程中遇到的问题以及解决办法
-### Q：函数组件中的useState和类组件中setState的区别？
+### Q：函数组件中的useState和类组件中setState的区别？(React Hooks)
   - useState不同的state更新会触发多次渲染，类组件中setState会对state合并处理
   - useState设置state值不变时不会触发渲染，类组件中setState会触发渲染
 
-### Q：useState和useReducer的区别?
+### Q：useState和useReducer的区别?(React Hooks)
   - 初始值
     - const [state, setState] = useState(fn1(arg) | (s) => fn2(s)),若初始值是函数返回值，组件每次渲染都会执行fn1, 但不会赋值给state
     而初始值是回调函数仅在组件初始化执行
@@ -17,10 +16,10 @@
 
 
 
-### Q：useEffect的依赖比较原理?
+### Q：useEffect的依赖比较原理?(React Hooks)
   - Object.is(arg1, arg2)，如果依赖为引用类型， 则比较的是两者的地址，而非值，会再次调用执行函数，如果在useEffect中修改了引用类型，则会引发无限渲染的问题
 
-### Q：useEffect中取到的state一直是旧值？
+### Q：useEffect中取到的state一直是旧值？(React Hooks)
   - 组件的每一帧都有自己的state， props，下面这个组件只在初始化时添加了Click监听，此时count值为0，之后每次Click触发都是打印挂载监听时的count值
   ``` jsx
     function Counter() {

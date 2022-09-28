@@ -1,13 +1,15 @@
-import Header from "./Header";
-import Knowledge from "./Knowledge";
-import Nav from "./Nav";
+import Link from 'next/link'
+import React from 'react'
 
 const Framework = () => {
   return <>
-    <Header></Header>
-    <Nav></Nav>
-    <Knowledge></Knowledge>
+    <h1>Framework</h1>
+    <Link href={'/framework/React/react-hooks'}>react-hooks</Link>
+    <br />
+    <Link href={'/framework/Vue/vue'}>vue</Link>
   </>
 }
 
-export default Framework;
+export default Framework
+
+Framework.layoutType = 'framework'

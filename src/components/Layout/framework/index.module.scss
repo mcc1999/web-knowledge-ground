@@ -1,0 +1,34 @@
+@import "../../../styles/variable.scss";
+
+.layout {
+  width: 100vw;
+  height: 100vh;
+
+  :global {
+    .ant-layout-header {
+      padding: 0 24px;
+    }
+
+    .header {
+      background-color: $header-bg-color;
+
+      .title {
+        color: $react-blue;
+        font-size: 32px;
+        font-weight: 600;
+
+      }
+    }
+
+    .navbar {
+      width: 320px !important;
+      min-width: 320px !important;
+      max-width: 320px !important;
+      background-color: $navbar-bg-color;
+
+      border-right: 1px solid $gray-border ul {
+        overflow-y: scroll;
+      }
+    }
+  }
+}

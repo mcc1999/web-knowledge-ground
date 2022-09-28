@@ -9,7 +9,7 @@ import { scope } from './react-live-scope';
 import LazyLoad from 'react-lazyload';
 import LiveProvider from '../LiveProvider';
 import LivePreview from '../LivePreview';
-import { copyToClipboard } from '../../../utils/clipboard'
+import { copyToClipboard } from '../../utils/clipboard'
 
 interface CodeBlockProps {
   children: string,

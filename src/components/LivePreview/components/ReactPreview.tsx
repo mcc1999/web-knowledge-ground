@@ -1,7 +1,7 @@
 import { useDebounceEffect } from 'ahooks'
 import React, { useContext, useState } from 'react'
 import { LiveContext } from '../../LiveProvider'
-import { generateElement } from '../../../../utils/transpile'
+import { generateElement } from '../../../utils/transpile'
 
 function resolveElement(node: React.ReactNode) {
   const Element =

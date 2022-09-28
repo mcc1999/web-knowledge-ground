@@ -16,7 +16,20 @@ const withMDX = mdx({
   },
 })
 export default withMDX({
-  pageExtensions: ['js', 'jsx', 'ts', 'tsx', 'mdx'],
+  pageExtensions: ['js', 'jsx', 'ts', 'tsx', 'mdx', 'md'],
   reactStrictMode: false,
+  experimental: {
+    esmExternals: true,
+    externalDir: true,
+  },
+  webpack: (config, { isServer }) => {
+    if (!isServer) {
+      // don't resolve 'fs' module on the client to prevent this error on build --> Error: Can't resolve 'fs'
+      config.resolve.fallback = {
+        fs: false,
+      }
+    }
+    return config
+  },
 })
 

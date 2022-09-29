@@ -9,15 +9,15 @@ import matter from 'gray-matter'
 export async function getContentBySlug(slug: string[]) {
   // 这里的路径由于是动态的，格式需要严格注意
   // https://webpack.js.org/api/module-methods/#dynamic-expressions-in-import
-  return import(`../framework/${slug.join('/')}.mdx`).catch(
-    () => import(`../framework/${slug.join('/')}/index.mdx`)
+  return import(`../../framework/${slug.join('/')}.mdx`).catch(
+    () => import(`../../framework/${slug.join('/')}/index.mdx`)
   )
 }
 
-// export async function getFrontmatterBySlug(slug: string[]) {
-//   const readMdx = (path: string) => fs.readFile(path, 'utf8')
-//   const rawMdx = await readMdx(path.join(process.cwd(), `src/framework/${slug.join('/')}.mdx`)).catch(
-//     () => readMdx(path.join(process.cwd(), `src/framework/${slug.join('/')}/index.mdx`))
-//   )
-//   return matter(rawMdx)
-// }
+export async function getFrontmatterBySlug(slug: string[]) {
+  const readMdx = (path: string) => fs.readFile(path, 'utf8')
+  const rawMdx = await readMdx(path.join(process.cwd(), `src/framework/${slug.join('/')}.mdx`)).catch(
+    () => readMdx(path.join(process.cwd(), `src/framework/${slug.join('/')}/index.mdx`))
+  )
+  return matter(rawMdx)
+}

@@ -1,20 +1,30 @@
 
 import React from 'react';
 import styles from './index.module.scss'
-import { Card, Layout } from 'antd';
+import { Card, Layout, Menu } from 'antd';
+import Link from 'next/link';
+import useWebPlaygroundStore from '../../../store';
 
 const { Header, Content, Sider } = Layout;
 
 const FrameworkLayout = (props: any) => {
+  const siderData = useWebPlaygroundStore(state => state.siderData);
 
   return <>
     <Layout className={styles.layout}>
       <Header className="header">
         <div className="logo" />
-        <span className='title'>Web-Playground</span>
+        <Link href='/framework'><span className='title'>Web-Playground</span></Link>
       </Header>
       <Layout>
-        <Sider width={200} className={`site-layout-background navbar`}> </Sider>
+        <Sider width={200} className={`site-layout-background navbar`}>
+          <Menu
+            items={siderData.map(item => ({
+              label: <Link href={item.linkTo}>{item.title}</Link>,
+              key: item.id
+            }))}
+          />
+        </Sider>
         <Layout>
           <Content
             className="site-layout-background"

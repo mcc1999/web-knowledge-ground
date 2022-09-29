@@ -1,6 +1,7 @@
 import glob from 'fast-glob'
 import FrameworkContentPage from '../../components/FrameworkContentPage'
 import { GetStaticPaths, GetStaticProps } from 'next'
+import { getFrontmatterBySlug } from '../../utils/framework/framework'
 
 export default FrameworkContentPage
 
@@ -17,5 +18,7 @@ export const getStaticPaths: GetStaticPaths<{ slug: string[] }> = async () => {
 
 export const getStaticProps: GetStaticProps<any, { slug: string[] }> = async (context) => {
   const { slug } = context.params!
-  return { props: { slug } }
+  const { data: frontmatter, content } = await getFrontmatterBySlug(slug)
+
+  return { props: { slug, frontmatter } }
 }

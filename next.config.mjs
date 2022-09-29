@@ -1,6 +1,7 @@
 import remarkMdxMetaToProps from './remark-mdx-meta-to-props.mjs'
 // import remarkMdxTitleHeader from './remark-mdx-title-header.mjs'
 import mdx from '@next/mdx'
+import remarkFrontmatter from 'remark-frontmatter'
 
 /** @type {import('next').NextConfig} */
 const withMDX = mdx({
@@ -8,6 +9,7 @@ const withMDX = mdx({
   options: {
     remarkPlugins: [
       remarkMdxMetaToProps,
+      remarkFrontmatter,
       // remarkMdxTitleHeader,
     ],
     jsx: true,

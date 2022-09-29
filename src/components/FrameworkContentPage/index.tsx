@@ -1,15 +1,16 @@
 
 import React, { useState } from 'react';
 import { useAsyncEffect } from 'ahooks';
-import { getContentBySlug } from '../../utils/framework';
+import { getContentBySlug } from '../../utils/framework/framework';
 
 
 export interface LayoutProps {
   slug: string[];
+  frontmatter: Record<string, any>;
 }
 
 const FrameworkLayout = (props: LayoutProps) => {
-  const { slug } = props
+  const { slug, frontmatter } = props
   const [element, setElement] = useState<React.ReactNode>()
 
   useAsyncEffect(async () => {

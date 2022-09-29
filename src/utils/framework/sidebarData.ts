@@ -1,4 +1,5 @@
 import { promises as fs } from 'fs'
+import matter from 'gray-matter';
 import path from 'path'
 
 export async function getFrameworkSiderData() {
@@ -29,6 +30,19 @@ export async function getFrameworkSiderData() {
   }
   await getFileContents(frameworkDirectory);
 
-  return frameworkContents;
+  return formatSiderData(frameworkContents);
 }
 
+function formatSiderData(siderData: { filename: string; fileContent: string }[]) {
+  const formattedSiderData = siderData.map((item) => {
+    const { data: frontmatter } = matter(item.fileContent);
+    if (frontmatter.title) {
+      return {
+        id: Math.random(),
+        title: frontmatter.title,
+        linkTo: item.filename
+      }
+    }
+  })
+  return formattedSiderData;
+}

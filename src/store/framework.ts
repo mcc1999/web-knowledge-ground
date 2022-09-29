@@ -7,10 +7,8 @@ export interface SiderDataType {
 }
 
 export interface FrameworkSlice {
-  titleId: number;
   siderData: SiderDataType[];
   updateSiderData: (newData: SiderDataType[]) => void;
-  updateTitleId: (id: number) => void;
 }
 const createFrameworkSlice: StateCreator<
   FrameworkSlice,
@@ -18,10 +16,21 @@ const createFrameworkSlice: StateCreator<
   [],
   FrameworkSlice
 > = (set) => ({
-  titleId: 0,
   siderData: [],
-  updateSiderData: (newData) => set((state) => ({ siderData: [...state.siderData, ...newData] })),
-  updateTitleId: (id) => set(() => ({ titleId: id }))
+  updateSiderData: (newData) => set((state) => {
+    const { siderData: oldData } = state
+    const newState = [...oldData]
+
+    newData.forEach((d, i) => {
+      if (newState.findIndex(j => j.linkTo === d.linkTo) === -1) {
+        d.id = newData.length + i
+        newState.push(d)
+      }
+    })
+    return {
+      siderData: newState,
+    }
+  }),
 })
 
 export default createFrameworkSlice;

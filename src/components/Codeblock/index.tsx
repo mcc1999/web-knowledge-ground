@@ -19,11 +19,12 @@ interface CodeBlockProps {
   onlyPreview?: boolean,
 }
 
-const CodeBlock: React.FC<CodeBlockProps> = ({ children, className, onlyPreview, height }) => {
+const CodeBlock: React.FC<CodeBlockProps> = (props) => {
+  const { children, className, onlyPreview, height } = props;
   const language = className?.replace(/language-/, '') as Language;
-  const [code, setCode] = useState(children || '')
+  const [code, setCode] = useState(children || '');
   const [codeVisible, setCodeVisible] = useState(false);
-  const [copied, setCopied] = useState(false)
+  const [copied, setCopied] = useState(false);
 
   useEffect(() => {
     if (copied) {
@@ -63,7 +64,7 @@ const CodeBlock: React.FC<CodeBlockProps> = ({ children, className, onlyPreview,
           <LiveProvider language={language} defaultCode={children} scope={scope} onCodeChange={setCode}>
             {onlyPreview && (
               // 懒加载，窗口滚动到这里后才真正渲染 children
-              <LazyLoad className={style.previewWrap}>
+              <LazyLoad className={style.previewWrap} placeholder='I am Placeholder' offset={100}>
                 <div className={style.previewHeader}>
                   <div className={style.previewActions}>
                     <span onClick={fullscreen} >分享</span>
@@ -95,7 +96,7 @@ const CodeBlock: React.FC<CodeBlockProps> = ({ children, className, onlyPreview,
                 }
               </div>
             </div>
-            <div className={style.eidtorBody}>
+            <div className={style.editorBody}>
               <div className={style.previewCode}>
                 {HighlightCode}
               </div>

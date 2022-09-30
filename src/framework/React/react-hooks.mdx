@@ -26,7 +26,7 @@ date: 2022-09-30 10:30:00
 
 ### Q：useEffect中取到的state一直是旧值？(React Hooks)
   - 组件的每一帧都有自己的state， props，下面这个组件只在初始化时添加了Click监听，此时count值为0，之后每次Click触发都是打印挂载监听时的count值
-  ``` jsx
+  ```jsx onlyPreview
     function Counter() {
         const [count, setCount] = useState(0);
 

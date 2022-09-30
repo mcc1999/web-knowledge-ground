@@ -1,8 +1,10 @@
 import { defineDocumentType, makeSource } from 'contentlayer/source-files'
+import remarkMdxMetaToProps from './remark-mdx-meta-to-props.mjs'
 
 export const Framework = defineDocumentType(() => ({
   name: 'Framework',
   filePathPattern: `**/*.mdx`,
+  contentType: 'mdx',
   fields: {
     title: {
       type: 'string',
@@ -12,7 +14,7 @@ export const Framework = defineDocumentType(() => ({
     date: {
       type: 'date',
       description: 'The date of the post',
-      required: true,
+      required: false,
     },
   },
   computedFields: {
@@ -28,5 +30,8 @@ export default makeSource({
   documentTypes: [Framework],
   mdx: {
     cwd: process.cwd(),
+    remarkPlugins: [
+      remarkMdxMetaToProps,
+    ]
   }
 })

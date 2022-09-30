@@ -21,7 +21,7 @@ const FrameworkLayout = (props: any) => {
           <Menu
             selectable={false}
             items={siderData.map(item => ({
-              label: <Link href={item.linkTo} >{item.title}</Link>,
+              label: <Link href={item.linkTo}>{item.title}</Link>,
               key: item.id
             }))}
           />

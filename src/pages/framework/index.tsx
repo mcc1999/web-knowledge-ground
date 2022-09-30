@@ -1,11 +1,11 @@
 import Link from 'next/link'
 import React, { useEffect } from 'react'
 import { GetStaticProps } from 'next';
-import { getFrameworkSiderData } from '../../utils/framework/sidebarData';
 import useWebPlaygroundStore from '../../store';
 import { SiderDataType } from '../../store/framework';
+import { allFrameworks } from 'contentlayer/generated'
 
-const Framework = (prop: { siderData: SiderDataType[] }) => {
+const FrameworkIndex = (prop: { siderData: SiderDataType[] }) => {
   const { siderData } = prop
   const updateSiderData = useWebPlaygroundStore(state => state.updateSiderData)
 
@@ -21,14 +21,13 @@ const Framework = (prop: { siderData: SiderDataType[] }) => {
   </>
 }
 
-export default Framework
+export default FrameworkIndex
 
-Framework.layoutType = 'framework'
+FrameworkIndex.layoutType = 'framework'
 
 
 export const getStaticProps: GetStaticProps = async () => {
-  const siderData = await getFrameworkSiderData();
-  return {
-    props: { siderData }, // will be passed to the page component as props
-  }
+  const siderData = allFrameworks.map(item => ({ id: item._id, title: item.title, linkTo: item.url.slice(3,) }));
+
+  return { props: { siderData } };
 }

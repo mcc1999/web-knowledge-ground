@@ -1,25 +1,29 @@
 
-import React, { ReactNode, useEffect, useState } from 'react';
-import { useAsyncEffect } from 'ahooks';
-import { getContentBySlug } from '../../utils/framework/framework';
+import React, { useEffect } from 'react';
 import { SiderDataType } from '../../store/framework';
 import useWebPlaygroundStore from '../../store';
-
-
+import { useMDXComponent } from 'next-contentlayer/hooks';
+import CodeBlock from '../Codeblock';
 export interface LayoutProps {
   siderData: SiderDataType[];
-  rawString: string;
+  MDXComponentCode: string;
 }
 
+const MDXcomponents = {
+  // Pass Custom Components here (for use in markdown files)
+  code: CodeBlock,
+};
+
 const FrameworkLayout = (props: LayoutProps) => {
-  const { siderData, rawString } = props
+  const { siderData, MDXComponentCode } = props
   const updateSiderData = useWebPlaygroundStore(state => state.updateSiderData)
+  const MDXContent = useMDXComponent(MDXComponentCode)
 
   useEffect(() => {
     updateSiderData(siderData);
   }, [])
 
-  return <div dangerouslySetInnerHTML={{ __html: rawString }}></div>
+  return <MDXContent components={MDXcomponents} />
 }
 
 export default FrameworkLayout;

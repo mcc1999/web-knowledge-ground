@@ -39,11 +39,6 @@ export default function MyApp({ Component, pageProps }: AppPropsWithLayout) {
             </MDXProvider >
           )
       }
-      // return (
-      //   <MDXProvider components={components} >
-      //     {page}
-      //   </MDXProvider >
-      // )
     })
   return getLayout(<Component {...pageProps} />)
 }

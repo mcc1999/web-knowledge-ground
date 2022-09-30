@@ -18,8 +18,9 @@ export const getStaticPaths: GetStaticPaths<{ slug: string[] }> = async () => {
 
 export const getStaticProps: GetStaticProps<any, { slug: string[] }> = async (context) => {
   const { slug } = context.params!
+  // @ts-ignore
+  const MDXComponentCode = allFrameworks.find((item: Framework) => item._raw.flattenedPath === slug.join('/'))!.body.code;
+  const siderData = allFrameworks.map(item => ({ id: item._id, title: item.title, linkTo: item.url.slice(3,) }));
 
-  const rawString = allFrameworks.find((item: Framework) => item._raw.flattenedPath === slug.join('/'))!.body.html;
-  const siderData = allFrameworks.map(item => ({ id: item._id, title: item.title, linkTo: item._raw.flattenedPath }))
-  return { props: { rawString, siderData } };
+  return { props: { MDXComponentCode, siderData } };
 }

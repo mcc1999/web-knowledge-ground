@@ -16,9 +16,9 @@ export type Framework = {
   /** The title of the post */
   title: string
   /** The date of the post */
-  date: IsoDateTimeString
-  /** Markdown file body */
-  body: Markdown
+  date?: IsoDateTimeString | undefined
+  /** MDX file body */
+  body: MDX
   url: string
 }  
 

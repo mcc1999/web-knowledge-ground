@@ -19,7 +19,7 @@ const withMDX = mdx({
     providerImportSource: "@mdx-js/react",
   },
 })
-export default withContentlayer(withMDX({
+export default withMDX(withContentlayer({
   pageExtensions: ['js', 'jsx', 'ts', 'tsx', 'mdx', 'md'],
   reactStrictMode: false,
   experimental: {

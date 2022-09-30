@@ -1,28 +1,5 @@
 {
   "cacheItemsMap": {
-    "Vue/vue.mdx": {
-      "document": {
-        "title": "I am Vue!!!",
-        "date": "2022-09-30T02:30:00.000Z",
-        "body": {
-          "raw": "I am Vue!!!",
-          "html": "<p>I am Vue!!!</p>"
-        },
-        "_id": "Vue/vue.mdx",
-        "_raw": {
-          "sourceFilePath": "Vue/vue.mdx",
-          "sourceFileName": "vue.mdx",
-          "sourceFileDir": "Vue",
-          "contentType": "mdx",
-          "flattenedPath": "Vue/vue"
-        },
-        "type": "Framework",
-        "url": "src/framework/Vue/vue"
-      },
-      "documentHash": "1664504961644",
-      "hasWarnings": false,
-      "documentTypeName": "Framework"
-    },
     "React/react-hooks.mdx": {
       "document": {
         "title": "React Hooks",
@@ -42,7 +19,30 @@
         "type": "Framework",
         "url": "src/framework/React/react-hooks"
       },
-      "documentHash": "1664505537806",
+      "documentHash": "1664507152537",
+      "hasWarnings": false,
+      "documentTypeName": "Framework"
+    },
+    "Vue/vue.mdx": {
+      "document": {
+        "title": "I am Vue!!!",
+        "date": "2022-09-30T02:30:00.000Z",
+        "body": {
+          "raw": "I am Vue!!!",
+          "html": "<p>I am Vue!!!</p>"
+        },
+        "_id": "Vue/vue.mdx",
+        "_raw": {
+          "sourceFilePath": "Vue/vue.mdx",
+          "sourceFileName": "vue.mdx",
+          "sourceFileDir": "Vue",
+          "contentType": "mdx",
+          "flattenedPath": "Vue/vue"
+        },
+        "type": "Framework",
+        "url": "src/framework/Vue/vue"
+      },
+      "documentHash": "1664507152538",
       "hasWarnings": false,
       "documentTypeName": "Framework"
     }

@@ -13,16 +13,13 @@ export interface LayoutProps {
 
 const FrameworkLayout = (props: LayoutProps) => {
   const { siderData, rawString } = props
-  // const [element, setElement] = useState<React.ReactNode>()
-  console.log('siderData,', siderData);
-
   const updateSiderData = useWebPlaygroundStore(state => state.updateSiderData)
 
   useEffect(() => {
     updateSiderData(siderData);
   }, [])
 
-  return <div dangerouslySetInnerHTML={{ __html: rawString }} />
+  return <div dangerouslySetInnerHTML={{ __html: rawString }}></div>
 }
 
 export default FrameworkLayout;

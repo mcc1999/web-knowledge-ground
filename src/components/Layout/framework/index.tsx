@@ -1,7 +1,7 @@
 
 import React from 'react';
 import styles from './index.module.scss'
-import { Card, Layout, Menu } from 'antd';
+import { Card, Layout, Menu, Tooltip, Typography } from 'antd';
 import Link from 'next/link';
 import useWebPlaygroundStore from '../../../store';
 
@@ -13,15 +13,18 @@ const FrameworkLayout = (props: any) => {
   return <>
     <Layout className={styles.layout}>
       <Header className="header">
-        <div className="logo" />
+        <img src="/icon.JPG" alt="ICON" />
         <Link href='/framework'><span className='title'>Web-Playground</span></Link>
       </Header>
       <Layout>
         <Sider width={200} className={`site-layout-background navbar`}>
           <Menu
             selectable={false}
-            items={siderData.map(item => ({
-              label: <Link href={item.linkTo}>{item.title}</Link>,
+            items={siderData.map((item, i) => ({
+              label: <Link href={item.linkTo}>
+                <Tooltip title={`${item.title}`} placement='topLeft' overlayInnerStyle={{ fontSize: 8 }}>
+                  {`${i + 1}. ${item.title}`}
+                </Tooltip></Link>,
               key: item.id
             }))}
           />

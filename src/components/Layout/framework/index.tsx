@@ -4,21 +4,24 @@ import styles from './index.module.scss'
 import { Card, Layout, Menu, Switch, Tooltip } from 'antd';
 import Link from 'next/link';
 import useWebPlaygroundStore from '../../../store';
+import useDarkMode from "use-dark-mode"
+import { ThemeType } from 'src/store/theme';
 
 const { Header, Content, Sider } = Layout;
 
 const FrameworkLayout = (props: any) => {
   const siderData = useWebPlaygroundStore(state => state.siderData);
-  const toggleTheme = (checked: boolean) => {
-
-  }
+  const [updateTheme, darkmode] = useWebPlaygroundStore(state => [state.updateTheme, state.darkmode])
 
   return <>
     <Layout className={styles.layout}>
       <Header className="header">
         <img src="/icon.JPG" alt="ICON" />
         <Link href='/framework'><span className='title'>Web-Playground</span></Link>
-        {/* <Switch unCheckedChildren='Light' checkedChildren='Dark' onChange={toggleTheme} /> */}
+        <Switch unCheckedChildren='Light' checkedChildren='Dark' onChange={(checked) => {
+          darkmode.toggle();
+          updateTheme(checked ? ThemeType.Dark : ThemeType.Light);
+        }} />
       </Header>
       <Layout>
         <Sider width={200} className={`site-layout-background navbar`}>

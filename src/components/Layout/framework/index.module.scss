@@ -12,6 +12,16 @@
     .header {
       background-color: $header-bg-color;
 
+      img {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        position: relative;
+        bottom: 50%;
+        transform: translateY(50%);
+        margin-right: 8px;
+      }
+
       .title {
         color: $react-blue;
         font-size: 32px;

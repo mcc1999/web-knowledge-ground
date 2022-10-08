@@ -3,7 +3,9 @@ import jsx from 'acorn-jsx'
 import { visit } from 'unist-util-visit'
 
 const parser = Parser.extend(jsx())
-
+/**
+ * Code fence only pass code and language, this plugin can pass custom properties
+ */
 /** @type {import('unified').Plugin<[], import('mdast').Root>} */
 export default function remarkMdxMetaToProps() {
   return (tree) => {

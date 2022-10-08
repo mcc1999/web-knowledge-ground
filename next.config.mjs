@@ -1,7 +1,9 @@
 import remarkMdxMetaToProps from './remark-mdx-meta-to-props.mjs'
-// import remarkMdxTitleHeader from './remark-mdx-title-header.mjs'
+import remarkMdxTitleHeader from './remark-mdx-title-header.mjs'
 import mdx from '@next/mdx'
-import remarkFrontmatter from 'remark-frontmatter'
+// remarkFrontmatter去除mdx顶部属性信息
+// import remarkFrontmatter from 'remark-frontmatter'
+import { withContentlayer } from 'next-contentlayer'
 
 /** @type {import('next').NextConfig} */
 const withMDX = mdx({
@@ -9,15 +11,15 @@ const withMDX = mdx({
   options: {
     remarkPlugins: [
       remarkMdxMetaToProps,
-      remarkFrontmatter,
-      // remarkMdxTitleHeader,
+      // remarkFrontmatter,
+      remarkMdxTitleHeader,
     ],
     jsx: true,
     // If you use `MDXProvider`, uncomment the following line.
     providerImportSource: "@mdx-js/react",
   },
 })
-export default withMDX({
+export default withContentlayer(withMDX({
   pageExtensions: ['js', 'jsx', 'ts', 'tsx', 'mdx', 'md'],
   reactStrictMode: false,
   experimental: {
@@ -33,5 +35,5 @@ export default withMDX({
     }
     return config
   },
-})
+}))
 

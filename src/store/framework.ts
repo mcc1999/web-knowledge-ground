@@ -21,9 +21,8 @@ const createFrameworkSlice: StateCreator<
     const { siderData: oldData } = state
     const newState = [...oldData]
 
-    newData.forEach((d, i) => {
+    newData?.forEach((d, i) => {
       if (newState.findIndex(j => j.linkTo === d.linkTo) === -1) {
-        d.id = newData.length + i
         newState.push(d)
       }
     })

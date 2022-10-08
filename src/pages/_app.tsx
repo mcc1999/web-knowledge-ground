@@ -15,8 +15,6 @@ const CodeBlockWithNoSSR = dynamic(() => import('../components/Codeblock'), { ss
 
 const components = {
   code: CodeBlockWithNoSSR,
-  h1: props => <h1 style={{ color: 'blue' }} {...props} />,
-  p: props => <p {...props} style={{ color: 'red' }} />,
 } as import("mdx/types").MDXComponents;
 
 type AppPropsWithLayout = AppProps & {
@@ -41,11 +39,6 @@ export default function MyApp({ Component, pageProps }: AppPropsWithLayout) {
             </MDXProvider >
           )
       }
-      // return (
-      //   <MDXProvider components={components} >
-      //     {page}
-      //   </MDXProvider >
-      // )
     })
   return getLayout(<Component {...pageProps} />)
 }

@@ -9,7 +9,6 @@ import { ThemeProvider } from "styled-components"
 import { lightTheme, darkTheme, GlobalStyles } from "../../themeConfig"
 import useDarkMode from "use-dark-mode"
 import useWebPlaygroundStore from 'src/store'
-import { ThemeType } from 'src/store/theme'
 
 type NextPageWithLayout = NextPage & {
   getLayout?: (page: ReactElement) => ReactNode;
@@ -27,14 +26,11 @@ type AppPropsWithLayout = AppProps & {
 }
 export default function MyApp({ Component, pageProps }: AppPropsWithLayout) {
   const [isMounted, setIsMounted] = useState(false)
-  const [theme, updateDarkmode, updateTheme] = useWebPlaygroundStore(state => [state.theme, state.updateDarkmode, state.updateTheme])
+  const [theme, setTheme] = useState<'dark' | 'light'>()
   const darkmode = useDarkMode(theme === 'dark')
-  updateDarkmode(darkmode);
 
   useEffect(() => {
     setIsMounted(true);
-    const themeInLocalStorage = localStorage.getItem('theme')
-    updateTheme(!!themeInLocalStorage && themeInLocalStorage === 'dark' ? ThemeType.Dark : ThemeType.Light)
   }, [])
 
   const getLayout =

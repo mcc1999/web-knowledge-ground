@@ -25,6 +25,7 @@
     "react-dom": "18.2.0",
     "react-lazyload": "^3.2.0",
     "react-live": "^2.4.1",
+    "simplebar-react": "^2.4.3",
     "sucrase": "^3.21.0",
     "zustand": "^4.1.1"
   },

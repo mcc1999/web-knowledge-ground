@@ -3,13 +3,15 @@
 import React, { useEffect, useState } from 'react'
 import style from './index.module.scss';
 import Highlight, { defaultProps, Language } from 'prism-react-renderer'
-import defaultTheme from 'prism-react-renderer/themes/nightOwlLight'
+import defaultTheme from 'prism-react-renderer/themes/vsLight'
+import darkTheme from 'prism-react-renderer/themes/vsDark'
 import lzString from 'lz-string';
 import { scope } from './react-live-scope';
 import LazyLoad from 'react-lazyload';
 import LiveProvider from '../LiveProvider';
 import LivePreview from '../LivePreview';
 import { copyToClipboard } from '../../utils/clipboard'
+import { useTheme } from '@nextui-org/react'
 
 interface CodeBlockProps {
   children: string,
@@ -25,6 +27,7 @@ const CodeBlock: React.FC<CodeBlockProps> = (props) => {
   const [code, setCode] = useState(children || '');
   const [codeVisible, setCodeVisible] = useState(false);
   const [copied, setCopied] = useState(false);
+  const { isDark } = useTheme()
 
   useEffect(() => {
     if (copied) {
@@ -35,7 +38,7 @@ const CodeBlock: React.FC<CodeBlockProps> = (props) => {
   }, [copied])
 
   const HighlightCode = (
-    <Highlight {...defaultProps} code={children.trim()} language={language} theme={defaultTheme}>
+    <Highlight {...defaultProps} code={children.trim()} language={language} theme={isDark ? darkTheme : defaultTheme}>
       {({ className, style, tokens, getLineProps, getTokenProps }) => (
         <pre className={className} style={{ ...style, padding: '20px' }}>
           {tokens.map((line, i) => (
@@ -64,14 +67,14 @@ const CodeBlock: React.FC<CodeBlockProps> = (props) => {
           <LiveProvider language={language} defaultCode={children} scope={scope} onCodeChange={setCode}>
             {onlyPreview && (
               // 懒加载，窗口滚动到这里后才真正渲染 children
-              <LazyLoad className={style.previewWrap} placeholder='I am Placeholder' offset={100}>
-                <div className={style.previewHeader}>
+              <LazyLoad className={style.previewWrap} placeholder='I am Placeholder' offset={200} style={isDark ? { background: 'rgb(30, 30, 30)' } : {}}>
+                <div className={style.previewHeader} style={isDark ? { background: 'rgb(30, 30, 30)', color: '#ecedee' } : {}}>
                   <div className={style.previewActions}>
-                    <span onClick={fullscreen} >分享</span>
+                    {/* <span onClick={fullscreen} >分享</span> */}
                     <span onClick={() => setCodeVisible((v) => !v)}>{codeVisible ? "折叠代码" : "查看代码"}</span>
                   </div>
                 </div>
-                <div className={style.previewBody}>
+                <div className={style.previewBody} style={isDark ? { background: 'rgb(30, 30, 30)', color: '#ecedee' } : {}}>
                   {/* // @ts-ignore */}
                   <LivePreview className={style.preview} language={language} />
                 </div>
@@ -79,7 +82,7 @@ const CodeBlock: React.FC<CodeBlockProps> = (props) => {
             )}
           </LiveProvider>
           <div className={style.editorWrap} style={codeVisible ? {} : { display: "none" }}>
-            <div className={style.editorHeader}>
+            <div className={style.editorHeader} style={isDark ? { backgroundColor: 'rgb(30, 30, 30)', color: '#ecedee' } : {}}>
               <span className={style.language}>{language}</span>
               <div className={style.editorActions}>
                 {!copied ?
@@ -96,7 +99,7 @@ const CodeBlock: React.FC<CodeBlockProps> = (props) => {
                 }
               </div>
             </div>
-            <div className={style.editorBody}>
+            <div className={style.editorBody} style={isDark ? { backgroundColor: 'rgb(30, 30, 30)', color: '#ecedee' } : {}}>
               <div className={style.previewCode}>
                 {HighlightCode}
               </div>

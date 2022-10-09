@@ -22,7 +22,7 @@
     background: #fff;
     color: #ccc;
     font-size: 12px;
-    border-bottom: 1px solid #f6f6f6;
+    border-bottom: 1px solid;
   }
 
   .editorActions,
@@ -124,6 +124,5 @@
 
   .previewCode {
     overflow: scroll;
-    margin: 15px;
   }
 }

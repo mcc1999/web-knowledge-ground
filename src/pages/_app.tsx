@@ -5,6 +5,8 @@ import { ReactElement, ReactNode } from 'react'
 import { MDXProvider } from '@mdx-js/react'
 import dynamic from 'next/dynamic'
 import FrameworkLayout from '../components/Layout/framework'
+import { ThemeProvider } from 'next-themes'
+import { darkTheme } from "../../theme.config";
 
 type NextPageWithLayout = NextPage & {
   getLayout?: (page: ReactElement) => ReactNode;
@@ -40,5 +42,14 @@ export default function MyApp({ Component, pageProps }: AppPropsWithLayout) {
           )
       }
     })
-  return getLayout(<Component {...pageProps} />)
+  return <ThemeProvider
+    attribute="class"
+    enableSystem={false}
+    value={{
+      light: "light",
+      dark: darkTheme
+    }}
+  >
+    {getLayout(<Component {...pageProps} />)}
+  </ThemeProvider>
 }

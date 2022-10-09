@@ -1,11 +1,13 @@
 import type { NextPage } from 'next'
 import Head from 'next/head'
 import Link from 'next/link'
+import ThemeSwitch from 'src/components/ThemeSwitch'
 import styles from './index.module.scss'
 
 const Home: NextPage = () => {
   return (
     <div className={styles.container}>
+      <ThemeSwitch />
       <Head>
         <title>Web playground</title>
         <meta name="description" content="Web playground" />

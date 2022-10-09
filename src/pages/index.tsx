@@ -1,6 +1,7 @@
 import type { NextPage } from 'next'
 import Head from 'next/head'
 import Link from 'next/link'
+import ThemeSwitch from 'src/components/ThemeSwitch'
 import styles from './index.module.scss'
 
 const Home: NextPage = () => {
@@ -11,7 +12,7 @@ const Home: NextPage = () => {
         <meta name="description" content="Web playground" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-
+      <ThemeSwitch />
       <main className={styles.main}>
         <h1 className={styles.title}>
           Welcome to <a>Web Knowledge</a> Playground

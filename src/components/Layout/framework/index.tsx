@@ -1,54 +1,44 @@
 
 import React from 'react';
-import styles from './index.module.scss'
-import { Card, Layout, Menu, Switch, Tooltip } from 'antd';
-import Link from 'next/link';
+import { Navbar, Image, Container, Text, Card } from '@nextui-org/react';
 import useWebPlaygroundStore from '../../../store';
-
-const { Header, Content, Sider } = Layout;
+import styles from './index.module.scss';
+import Link from 'next/link';
 
 const FrameworkLayout = (props: any) => {
   const siderData = useWebPlaygroundStore(state => state.siderData);
-  const toggleTheme = (checked: boolean) => {
 
-  }
-
-  return <>
-    <Layout className={styles.layout}>
-      <Header className="header">
-        <img src="/icon.JPG" alt="ICON" />
-        <Link href='/framework'><span className='title'>Web-Playground</span></Link>
+  return (
+    <Container className={styles.layout} responsive={false} css={{ padding: 0 }}>
+      <Navbar className="header">
+        <Navbar.Brand>
+          <Image src="/icon.JPG" alt="ICON" objectFit='fill' />
+          <Link href='/framework'>
+            <span className='title'>Web-Playground</span>
+          </Link>
+        </Navbar.Brand>
         {/* <Switch unCheckedChildren='Light' checkedChildren='Dark' onChange={toggleTheme} /> */}
-      </Header>
-      <Layout>
-        <Sider width={200} className={`site-layout-background navbar`}>
-          <Menu
-            selectable={false}
-            items={siderData.map((item, i) => ({
-              label: <Link href={item.linkTo}>
-                <Tooltip title={`${item.title}`} placement='topLeft' overlayInnerStyle={{ fontSize: 8 }}>
-                  {`${i + 1}. ${item.title}`}
-                </Tooltip></Link>,
-              key: item.id
-            }))}
-          />
-        </Sider>
-        <Layout>
-          <Content
-            className="site-layout-background"
-            style={{
-              margin: 0,
-              minHeight: 280,
-            }}
-          >
-            <Card style={{ height: '100%', overflowY: 'scroll' }}>
-              {props.children}
-            </Card>
-          </Content>
-        </Layout>
-      </Layout>
-    </Layout>
-  </>
+      </Navbar>
+      <Card css={{ width: 200, height: 'calc(100% - 76px)', borderRadius: 0, display: 'inline-block', verticalAlign: 'top' }}>
+        <Card.Body>
+          {siderData.map((item, i) =>
+            <Text key={item.title + i} css={{ overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis', padding: 'auto 4px', }}>
+              <Link href={item.linkTo}>
+                {`${i + 1}. ${item.title}`}
+                {/* <Tooltip content={`${item.title}`} placement='topStart'>
+              </Tooltip> */}
+              </Link>
+            </Text>
+          )}
+        </Card.Body>
+      </Card>
+      <Card css={{ width: 'calc(100% - 200px)', height: 'calc(100% - 76px)', display: 'inline-block', overflowY: 'scroll', borderRadius: 0, verticalAlign: 'top' }}>
+        <Card.Body>
+          {props.children}
+        </Card.Body>
+      </Card>
+    </Container >
+  )
 }
 
 export default FrameworkLayout;

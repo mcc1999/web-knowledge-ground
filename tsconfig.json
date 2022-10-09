@@ -31,7 +31,7 @@
     "**/*.tsx",
     "src/pages/router/index.tsx",
     ".contentlayer/generated"
-  ],
+, "src/components/ThemeSwitch/SunIcon.js", "src/components/ThemeSwitch/SunIcon.js"  ],
   "exclude": [
     "node_modules"
   ]

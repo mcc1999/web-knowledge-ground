@@ -5,39 +5,19 @@
   height: 100vh;
 
   :global {
-    .ant-layout-header {
-      padding: 0 24px;
-    }
-
     .header {
-      background-color: $header-bg-color;
-
       img {
         width: 48px;
         height: 48px;
         border-radius: 50%;
-        position: relative;
-        bottom: 50%;
-        transform: translateY(50%);
-        margin-right: 8px;
+        cursor: pointer;
       }
 
       .title {
-        color: $react-blue;
         font-size: 32px;
         font-weight: 600;
+        margin-left: 16px;
         cursor: pointer;
-      }
-    }
-
-    .navbar {
-      width: 320px !important;
-      min-width: 320px !important;
-      max-width: 320px !important;
-      background-color: $navbar-bg-color;
-
-      border-right: 1px solid $gray-border ul {
-        overflow-y: scroll;
       }
     }
   }

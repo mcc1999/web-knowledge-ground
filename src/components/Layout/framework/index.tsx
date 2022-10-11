@@ -32,6 +32,7 @@ const FrameworkLayout = (props: any) => {
           >
             <Input
               clearable
+              animated={false}
               color='secondary'
               bordered
               contentLeft={
@@ -59,7 +60,7 @@ const FrameworkLayout = (props: any) => {
           {siderData.map((item, i) =>
             <Text key={item.title + i} color='' css={{ overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis', padding: 'auto 4px', '&:hover': { color: '$secondary' } }}>
               <Link href={item.linkTo}>
-                {`${i + 1}. ${item.title}qwertyuioplkjhgfdsazxcvbnm`}
+                {`${i + 1}. ${item.title}`}
                 {/* <Tooltip content={`${item.title}`} placement='topStart'>
               </Tooltip> */}
               </Link>

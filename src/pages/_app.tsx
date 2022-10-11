@@ -1,12 +1,12 @@
 import type { AppProps } from 'next/app'
 import type { NextPage } from 'next'
-import '../styles/globals.scss'
 import { createContext, ReactElement, ReactNode, useEffect, useMemo, useState } from 'react'
 import { MDXProvider } from '@mdx-js/react'
 import dynamic from 'next/dynamic'
 import FrameworkLayout from '../components/Layout/framework'
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
+import '../styles/globals.scss'
 
 type NextPageWithLayout = NextPage & {
   getLayout?: (page: ReactElement) => ReactNode;
@@ -26,6 +26,7 @@ type AppPropsWithLayout = AppProps & {
 export const ColorModeContext = createContext({ toggleColorMode: () => { } });
 
 export default function MyApp({ Component, pageProps }: AppPropsWithLayout) {
+  const [mounted, setMounted] = useState(false)
   const [mode, setMode] = useState<'light' | 'dark'>('light');
 
   useEffect(() => {
@@ -33,6 +34,7 @@ export default function MyApp({ Component, pageProps }: AppPropsWithLayout) {
     if (!!themeModeFromLocal) {
       setMode(themeModeFromLocal)
     }
+    setMounted(true)
   }, [])
 
   const colorMode = useMemo(() => ({
@@ -66,6 +68,10 @@ export default function MyApp({ Component, pageProps }: AppPropsWithLayout) {
           )
       }
     })
+
+  if (!mounted) {
+    return null
+  }
 
   return (
     <ColorModeContext.Provider value={colorMode}>

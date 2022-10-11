@@ -3,7 +3,7 @@ import DarkModeIcon from '@mui/icons-material/DarkMode';
 import LightModeIcon from '@mui/icons-material/LightMode';
 import { useContext } from 'react';
 import { ColorModeContext } from 'src/pages/_app';
-import Switch from '@mui/material/Switch';
+import { Switch } from '@mui/material';
 
 const ThemeSwitch = () => {
   const theme = useTheme();

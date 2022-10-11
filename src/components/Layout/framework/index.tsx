@@ -1,10 +1,11 @@
 
 import React from 'react';
-import { Navbar, Image, Container, Text, Card } from '@nextui-org/react';
+import { Navbar, Image, Container, Text, Card, Input } from '@nextui-org/react';
 import useWebPlaygroundStore from '../../../store';
 import styles from './index.module.scss';
 import Link from 'next/link';
 import SimpleBar from 'simplebar-react';
+import { SearchIcon } from '../../../assets/svg/searchIcon'
 
 const FrameworkLayout = (props: any) => {
   const siderData = useWebPlaygroundStore(state => state.siderData);
@@ -20,13 +21,45 @@ const FrameworkLayout = (props: any) => {
             <span className='title'>Web-Playground</span>
           </Link>
         </Navbar.Brand>
+        <Navbar.Content>
+          <Navbar.Item
+            css={{
+              "@xsMax": {
+                w: "100%",
+                jc: "center",
+              },
+            }}
+          >
+            <Input
+              clearable
+              color='secondary'
+              bordered
+              contentLeft={
+                <SearchIcon fill="var(--nextui-colors-accents6)" size={16} />
+              }
+              contentLeftStyling={false}
+              css={{
+                w: "100%",
+                "@xsMax": {
+                  mw: "300px",
+                },
+                "& .nextui-input-content--left": {
+                  h: "100%",
+                  ml: "$4",
+                  dflex: "center",
+                },
+              }}
+              placeholder="Search..."
+            />
+          </Navbar.Item>
+        </Navbar.Content>
       </Navbar>
       <Card css={{ width: 275, height: 'calc(100% - 76px)', borderRadius: 0, display: 'inline-block', verticalAlign: 'top' }}>
         <Card.Body>
           {siderData.map((item, i) =>
-            <Text key={item.title + i} color='' css={{ overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis', padding: 'auto 4px', '&:hover': { color: '#3694FF' } }}>
+            <Text key={item.title + i} color='' css={{ overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis', padding: 'auto 4px', '&:hover': { color: '$secondary' } }}>
               <Link href={item.linkTo}>
-                {`${i + 1}. ${item.title}`}
+                {`${i + 1}. ${item.title}qwertyuioplkjhgfdsazxcvbnm`}
                 {/* <Tooltip content={`${item.title}`} placement='topStart'>
               </Tooltip> */}
               </Link>

@@ -10,7 +10,7 @@ date: 2022-09-30 10:30:00
 ### Q：useState和useReducer的区别?(React Hooks)
   - 初始值
     - const [state, setState] = useState(fn1(arg) | (s) => fn2(s)),若初始值是函数返回值，组件每次渲染都会执行fn1, 但不会赋值给state
-    而初始值是回调函数仅在组件初始化执行
+    而初始值是回调函数fn2仅在组件初始化执行
     - useReducer初始值, 第二参数只能是值或者函数返回值，且每次渲染会重复执行，但不会赋值给state，第三个参数可为回调函数，效果同上
     - 注：以回调函数的方式初始化称为惰性初始化
 

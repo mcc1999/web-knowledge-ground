@@ -30,8 +30,9 @@
     "**/*.ts",
     "**/*.tsx",
     "src/pages/router/index.tsx",
-    ".contentlayer/generated"
-, "src/assets/svg/SunIcon.jsts/ssrc/assets/svg/SunIcon.js
+    ".contentlayer/generated",
+    "src/assets/svg/SunIcon.jsts/ssrc/assets/svg/SunIcon.js"
+  ],
   "exclude": [
     "node_modules"
   ]

@@ -1,13 +1,12 @@
 import type { AppProps } from 'next/app'
 import type { NextPage } from 'next'
 import '../styles/globals.scss'
-import { ReactElement, ReactNode } from 'react'
+import { createContext, ReactElement, ReactNode, useEffect, useMemo, useState } from 'react'
 import { MDXProvider } from '@mdx-js/react'
 import dynamic from 'next/dynamic'
 import FrameworkLayout from '../components/Layout/framework'
-import { NextUIProvider } from '@nextui-org/react';
-import { ThemeProvider as NextThemesProvider } from 'next-themes';
-import { lightTheme, darkTheme } from '../../theme.config';
+import { ThemeProvider, createTheme } from '@mui/material/styles';
+import CssBaseline from '@mui/material/CssBaseline';
 
 type NextPageWithLayout = NextPage & {
   getLayout?: (page: ReactElement) => ReactNode;
@@ -23,7 +22,31 @@ const components = {
 type AppPropsWithLayout = AppProps & {
   Component: NextPageWithLayout
 }
+
+export const ColorModeContext = createContext({ toggleColorMode: () => { } });
+
 export default function MyApp({ Component, pageProps }: AppPropsWithLayout) {
+  const [mode, setMode] = useState<'light' | 'dark'>('light');
+
+  useEffect(() => {
+    const themeModeFromLocal = localStorage.getItem('theme') as 'light' | 'dark';
+    if (!!themeModeFromLocal) {
+      setMode(themeModeFromLocal)
+    }
+  }, [])
+
+  const colorMode = useMemo(() => ({
+    toggleColorMode: () => {
+      setMode((prevMode) => (prevMode === 'light' ? 'dark' : 'light'));
+    },
+  }), []);
+  const theme = useMemo(() =>
+    createTheme({
+      palette: {
+        mode,
+      },
+    }), [mode]);
+
   const getLayout =
     Component.getLayout ?? ((page: React.ReactElement) => {
       switch (Component.layoutType) {
@@ -43,15 +66,15 @@ export default function MyApp({ Component, pageProps }: AppPropsWithLayout) {
           )
       }
     })
+
   return (
-    <NextThemesProvider
-      attribute="class"
-      value={{
-        light: lightTheme.className,
-        dark: darkTheme.className
-      }}
-    >
-      <NextUIProvider>{getLayout(<Component {...pageProps} />)}</NextUIProvider>
-    </NextThemesProvider>
+    <ColorModeContext.Provider value={colorMode}>
+      <ThemeProvider
+        theme={theme}
+      >
+        <CssBaseline />
+        {getLayout(<Component {...pageProps} />)}
+      </ThemeProvider>
+    </ColorModeContext.Provider>
   )
 }

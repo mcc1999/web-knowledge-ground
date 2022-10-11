@@ -1,18 +1,23 @@
-import { useTheme as useNextTheme } from 'next-themes'
-import { Switch, useTheme } from '@nextui-org/react'
-import { SunIcon } from '../../assets/svg/SunIcon';
-import { MoonIcon } from '../../assets/svg/MoonIcon';
+import { useTheme } from '@mui/material/styles';
+import DarkModeIcon from '@mui/icons-material/DarkMode';
+import LightModeIcon from '@mui/icons-material/LightMode';
+import { useContext } from 'react';
+import { ColorModeContext } from 'src/pages/_app';
+import Switch from '@mui/material/Switch';
 
 const ThemeSwitch = () => {
-  const { setTheme } = useNextTheme();
-  const { isDark } = useTheme();
+  const theme = useTheme();
+  const colorMode = useContext(ColorModeContext);
 
   return (
     <Switch
-      iconOn={<SunIcon filled size={undefined} height={undefined} width={undefined} label={undefined} />}
-      iconOff={<MoonIcon filled size={undefined} height={undefined} width={undefined} label={undefined} />}
-      checked={isDark}
-      onChange={(e) => setTheme(e.target.checked ? 'dark' : 'light')}
+      icon={<LightModeIcon color='primary' fontSize='small' />}
+      checkedIcon={<DarkModeIcon fontSize='small' />}
+      checked={theme.palette.mode === 'dark'}
+      onChange={() => {
+        colorMode.toggleColorMode();
+        localStorage.setItem('theme', theme.palette.mode === 'dark' ? 'light' : 'dark')
+      }}
     />
   )
 }

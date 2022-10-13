@@ -1,0 +1,45 @@
+---
+title: I am 9999!!!I am Vue444444444!!!I am Vue444444444!!!I am Vue444444444!!!I am Vue444444444!!!
+date: 2022-09-30 10:30:00
+---
+I am Vue!!!<br/>
+I am Vue!!!<br/>
+I am Vue!!!<br/>
+I am Vue!!!<br/>
+I am Vue!!!<br/>
+I am Vue!!!<br/>
+I am Vue!!!<br/>
+I am Vue!!!<br/>
+I am Vue!!!<br/>
+I am Vue!!!<br/>
+I am Vue!!!<br/>
+I am Vue!!!<br/>
+I am Vue!!!<br/>
+I am Vue!!!<br/>
+I am Vue!!!<br/>
+I am Vue!!!<br/>
+I am Vue!!!<br/>
+I am Vue!!!<br/>
+I am Vue!!!<br/>
+I am Vue!!!<br/>
+I am Vue!!!<br/>
+I am Vue!!!<br/>
+I am Vue!!!<br/>
+```jsx onlyPreview
+  function Counter() {
+    const [count, setCount] = useState(0);
+
+    useEffect(() => {
+      const handleClick = function() {
+        console.log('count: ', count);
+      }
+        window.addEventListener('click', handleClick, false)
+
+        return () => {
+          window.removeEventListener('click', handleClick, false)
+        };
+    }, []);
+
+    return <p onClick={() => setCount(count + 1)}>clicked {count} times</p>;
+  }
+```

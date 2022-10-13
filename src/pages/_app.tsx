@@ -7,6 +7,8 @@ import FrameworkLayout from '../components/Layout/framework'
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import '../styles/globals.scss'
+import { useMediaQuery } from '@mui/material'
+import { getThemeTokens } from '../utils/getThemeTokens'
 
 type NextPageWithLayout = NextPage & {
   getLayout?: (page: ReactElement) => ReactNode;
@@ -26,8 +28,9 @@ type AppPropsWithLayout = AppProps & {
 export const ColorModeContext = createContext({ toggleColorMode: () => { } });
 
 export default function MyApp({ Component, pageProps }: AppPropsWithLayout) {
+  const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
   const [mounted, setMounted] = useState(false)
-  const [mode, setMode] = useState<'light' | 'dark'>('light');
+  const [mode, setMode] = useState<'light' | 'dark'>(prefersDarkMode ? 'dark' : 'light');
 
   useEffect(() => {
     const themeModeFromLocal = localStorage.getItem('theme') as 'light' | 'dark';
@@ -43,11 +46,9 @@ export default function MyApp({ Component, pageProps }: AppPropsWithLayout) {
     },
   }), []);
   const theme = useMemo(() =>
-    createTheme({
-      palette: {
-        mode,
-      },
-    }), [mode]);
+    createTheme(
+      getThemeTokens(mode)
+    ), [mode]);
 
   const getLayout =
     Component.getLayout ?? ((page: React.ReactElement) => {

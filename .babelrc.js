@@ -19,4 +19,7 @@ const plugins = [
   ],
 ];
 
-module.exports = { plugins };
+module.exports = {
+  presets: ["next/babel"],
+  plugins
+};

@@ -1,24 +1,4 @@
-@import "../../../styles/variable.scss";
-
-.layout {
+.framework-layout {
   width: 100vw;
   height: 100vh;
-
-  :global {
-    .header {
-      img {
-        width: 48px;
-        height: 48px;
-        border-radius: 50%;
-        cursor: pointer;
-      }
-
-      .title {
-        font-size: 32px;
-        font-weight: 600;
-        margin-left: 16px;
-        cursor: pointer;
-      }
-    }
-  }
 }

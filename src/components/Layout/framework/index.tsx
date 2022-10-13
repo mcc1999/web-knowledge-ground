@@ -1,13 +1,14 @@
 
 import React from 'react';
-import { alpha, AppBar, Box, Card, styled, Typography, InputBase, Toolbar, Avatar } from '@mui/material';
+import { AppBar, Box, Card, Typography, Autocomplete, Toolbar, Avatar, TextField, Paper, Popper } from '@mui/material';
 import useWebPlaygroundStore from '../../../store';
 import styles from './index.module.scss';
 import Link from 'next/link';
 import SimpleBar from 'simplebar-react';
-import SearchIcon from '@mui/icons-material/Search';
+import { styled, alpha, useTheme } from '@mui/material/styles';
+import { useRouter } from 'next/router'
 
-const Search = styled('div')(({ theme }) => ({
+const SearchAutocomplete = styled(Autocomplete)(({ theme }) => ({
   position: 'relative',
   borderRadius: theme.shape.borderRadius,
   backgroundColor: alpha(theme.palette.common.white, 0.15),
@@ -15,6 +16,7 @@ const Search = styled('div')(({ theme }) => ({
     backgroundColor: alpha(theme.palette.common.white, 0.25),
   },
   marginLeft: 0,
+  marginRight: 100,
   width: '100%',
   [theme.breakpoints.up('sm')]: {
     marginLeft: theme.spacing(1),
@@ -22,17 +24,7 @@ const Search = styled('div')(({ theme }) => ({
   },
 }));
 
-const SearchIconWrapper = styled('div')(({ theme }) => ({
-  padding: theme.spacing(0, 2),
-  height: '100%',
-  position: 'absolute',
-  pointerEvents: 'none',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-}));
-
-const StyledInputBase = styled(InputBase)(({ theme }) => ({
+const StyledTextField = styled(TextField)(({ theme }) => ({
   color: 'inherit',
   '& .MuiInputBase-input': {
     padding: theme.spacing(1, 1, 1, 0),
@@ -41,23 +33,33 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
     transition: theme.transitions.create('width'),
     width: '100%',
     [theme.breakpoints.up('sm')]: {
-      width: '12ch',
-      '&:focus': {
-        width: '20ch',
-      },
+      width: '20ch !important',
+    },
+  },
+  '& .MuiOutlinedInput-root': {
+    '&:hover fieldset': {
+      borderColor: theme.palette.purple.main,
+      borderWidth: '2px',
+    },
+    '&.Mui-focused fieldset': {
+      borderColor: theme.palette.purple.main,
     },
   },
 }));
 
 const FrameworkLayout = (props: any) => {
   const siderData = useWebPlaygroundStore(state => state.siderData);
+  const router = useRouter()
 
+  const handelAutocompleteChange = (event: any, value: any) => {
+    router.push(value.value)
+  }
   return (
-    <Box className={styles.layout}>
-      <AppBar className="header" position='sticky'>
+    <Box className={styles['framework-layout']}>
+      <AppBar className="appBar-header" position='sticky'>
         <Toolbar>
-          <Link href='/'>
-            <Avatar src="/icon.JPG" alt="ICON" />
+          <Link href='/' >
+            <Avatar src="/icon.JPG" alt="ICON" sx={{ marginRight: '16px' }} />
           </Link>
           <Typography
             variant="h4"
@@ -69,30 +71,45 @@ const FrameworkLayout = (props: any) => {
               Web-Playground
             </Link>
           </Typography>
-          <Search>
-            <SearchIconWrapper>
-              <SearchIcon />
-            </SearchIconWrapper>
-            <StyledInputBase
-              placeholder="Search…"
-              inputProps={{ 'aria-label': 'search' }}
-            />
-          </Search>
+          <SearchAutocomplete
+            options={siderData.map(item => ({ label: item.title, value: item.linkTo }))}
+            disableClearable
+            forcePopupIcon={false}
+            ListboxProps={{
+              // @ts-ignore
+              sx: {
+                '.MuiAutocomplete-option': {
+                  display: 'block',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  whiteSpace: 'nowrap'
+                }
+              },
+            }}
+            PopperComponent={(params) => <Popper {...params} placement='bottom-start' />}
+            PaperComponent={(params) => <Paper {...params} sx={{ width: '300px', maxHeight: '300px', backgroundColor: 'purple.light' }} />}
+            onChange={handelAutocompleteChange}
+            renderInput={(params) =>
+              <StyledTextField
+                {...params}
+                size='small'
+                id="input-with-icon-textfield"
+                placeholder="Search..."
+              />
+            }
+          />
         </Toolbar>
       </AppBar>
-      {/* <Card css={{ width: 275, height: 'calc(100% - 76px)', borderRadius: 0, display: 'inline-block', verticalAlign: 'top' }}> */}
-      <Card sx={{ width: 275, height: 'calc(100% - 76px)', borderRadius: 0, display: 'inline-block', verticalAlign: 'top' }}>
+      <Paper elevation={3} sx={{ width: 275, height: 'calc(100% - 64px)', padding: '16px', borderRadius: 0, display: 'inline-block', verticalAlign: 'top', }}>
         {siderData.map((item, i) =>
-          // <Typography key={item.title + i} color='' css={{ overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis', padding: 'auto 4px', '&:hover': { color: '$secondary' } }}>
-          <Typography key={item.title + i}>
+          <Typography key={item.title + i} noWrap sx={{ '&:hover': { color: 'purple.main' } }}>
             <Link href={item.linkTo}>
               {`${i + 1}. ${item.title}`}
             </Link>
           </Typography>
         )}
-      </Card>
-      {/* <Card css={{ width: 'calc(100% - 275px)', height: 'calc(100% - 76px)', display: 'inline-block', overflowY: 'scroll', borderRadius: 0, verticalAlign: 'top' }}> */}
-      <Card sx={{ width: 'calc(100% - 275px)', height: 'calc(100% - 76px)', display: 'inline-block', overflowY: 'scroll', borderRadius: 0, verticalAlign: 'top' }}>
+      </Paper>
+      <Card sx={{ width: 'calc(100% - 275px)', height: 'calc(100% - 64px)', padding: '16px', display: 'inline-block', overflowY: 'scroll', borderRadius: 0, verticalAlign: 'top' }}>
         <SimpleBar autoHide={false}>
           {props.children}
         </SimpleBar>

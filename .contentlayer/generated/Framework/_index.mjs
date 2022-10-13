@@ -2,5 +2,13 @@
 
 import react__reactHooksMdx from './React__react-hooks.mdx.json'
 import vue__vueMdx from './Vue__vue.mdx.json'
+import vue__vue2Mdx from './Vue__vue2.mdx.json'
+import vue__vue3Mdx from './Vue__vue3.mdx.json'
+import vue__vue4Mdx from './Vue__vue4.mdx.json'
+import vue__vue5Mdx from './Vue__vue5.mdx.json'
+import vue__vue6Mdx from './Vue__vue6.mdx.json'
+import vue__vue7Mdx from './Vue__vue7.mdx.json'
+import vue__vue8Mdx from './Vue__vue8.mdx.json'
+import vue__vue9Mdx from './Vue__vue9.mdx.json'
 
-export const allFrameworks = [react__reactHooksMdx, vue__vueMdx]
+export const allFrameworks = [react__reactHooksMdx, vue__vueMdx, vue__vue2Mdx, vue__vue3Mdx, vue__vue4Mdx, vue__vue5Mdx, vue__vue6Mdx, vue__vue7Mdx, vue__vue8Mdx, vue__vue9Mdx]

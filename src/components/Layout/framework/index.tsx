@@ -59,7 +59,7 @@ const FrameworkLayout = (props: any) => {
       <AppBar className="appBar-header" position='sticky'>
         <Toolbar>
           <Link href='/' >
-            <Avatar src="/icon.JPG" alt="ICON" sx={{ marginRight: '16px' }} />
+            <Avatar src="/icon.JPG" alt="ICON" sx={{ marginRight: '16px', cursor: 'pointer' }} />
           </Link>
           <Typography
             variant="h4"

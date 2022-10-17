@@ -29,7 +29,6 @@ export default makeSource({
   contentDirPath: 'src/framework',
   documentTypes: [Framework],
   mdx: {
-    cwd: process.cwd(),
     remarkPlugins: [
       remarkMdxMetaToProps,
     ]

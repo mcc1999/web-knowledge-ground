@@ -23,6 +23,7 @@ interface CodeBlockProps {
 
 const CodeBlock: React.FC<CodeBlockProps> = (props) => {
   const { children, className, onlyPreview, height } = props;
+  console.log('props', props)
   const language = className?.replace(/language-/, '') as Language;
   const [code, setCode] = useState(children || '');
   const [codeVisible, setCodeVisible] = useState(false);

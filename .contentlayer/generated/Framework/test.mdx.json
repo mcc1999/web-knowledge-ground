@@ -1,0 +1,18 @@
+{
+  "title": "I am Test!!!",
+  "date": "2022-09-30T02:30:00.000Z",
+  "body": {
+    "raw": "\nimport Counter  from '../components/Counter'\n\n<Counter />",
+    "code": "var Component=(()=>{var j=Object.create;var r=Object.defineProperty;var _=Object.getOwnPropertyDescriptor;var b=Object.getOwnPropertyNames;var D=Object.getPrototypeOf,M=Object.prototype.hasOwnProperty;var s=(t,n)=>()=>(n||t((n={exports:{}}).exports,n),n.exports),w=(t,n)=>{for(var e in n)r(t,e,{get:n[e],enumerable:!0})},i=(t,n,e,a)=>{if(n&&typeof n==\"object\"||typeof n==\"function\")for(let o of b(n))!M.call(t,o)&&o!==e&&r(t,o,{get:()=>n[o],enumerable:!(a=_(n,o))||a.enumerable});return t};var m=(t,n,e)=>(e=t!=null?j(D(t)):{},i(n||!t||!t.__esModule?r(e,\"default\",{value:t,enumerable:!0}):e,t)),X=t=>i(r({},\"__esModule\",{value:!0}),t);var p=s((L,f)=>{f.exports=_jsx_runtime});var C=s((O,x)=>{x.exports=React});var y={};w(y,{default:()=>k,frontmatter:()=>g});var u=m(p());var d=m(C());function c(){let[t,n]=(0,d.useState)(0);return React.createElement(React.Fragment,null,React.createElement(\"p\",null,\"count: \",t),React.createElement(\"button\",{onClick:()=>n(t+1)},\"+1\"))}var g={title:\"I am Test!!!\",date:new Date(16645338e5)};function l(t){return(0,u.jsx)(c,{})}function h(t={}){let{wrapper:n}=t.components||{};return n?(0,u.jsx)(n,Object.assign({},t,{children:(0,u.jsx)(l,t)})):l(t)}var k=h;return X(y);})();\n;return Component;"
+  },
+  "_id": "test.mdx",
+  "_raw": {
+    "sourceFilePath": "test.mdx",
+    "sourceFileName": "test.mdx",
+    "sourceFileDir": ".",
+    "contentType": "mdx",
+    "flattenedPath": "test"
+  },
+  "type": "Framework",
+  "url": "src/framework/test"
+}

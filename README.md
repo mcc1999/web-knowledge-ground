@@ -7,3 +7,10 @@ ToDo
 1. Summary of Mdx文件导入用contentlayer/mdx-bundler替换
 2. Summary of主题切换
 3. sass/scss和less区别，及其引入
+4. mdx中的date pre-commit hook 更新
+5. mdx实现： 
+  - The official way, with @next/mdx
+  - Hashicorp's next-mdx-enhanced
+  - Hashicorp's next-mdx-remote
+  - Kent C Dodds' mdx-bundler
+6. 

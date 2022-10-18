@@ -4,6 +4,8 @@ import { SiderDataType } from '../../store/framework';
 import useWebPlaygroundStore from '../../store';
 import { useMDXComponent } from 'next-contentlayer/hooks';
 import CodeBlock from '../Codeblock';
+import CustomSandpack from '../CustomSandpack';
+
 export interface LayoutProps {
   siderData: SiderDataType[];
   MDXComponentCode: string;
@@ -12,6 +14,7 @@ export interface LayoutProps {
 const MDXcomponents = {
   // Pass Custom Components here (for use in markdown files)
   code: CodeBlock,
+  CustomSandpack
 };
 
 const FrameworkLayout = (props: LayoutProps) => {

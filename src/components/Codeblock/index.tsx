@@ -23,12 +23,12 @@ interface CodeBlockProps {
 
 const CodeBlock: React.FC<CodeBlockProps> = (props) => {
   const { children, className, onlyPreview, height } = props;
-  console.log('props', props)
   const language = className?.replace(/language-/, '') as Language;
   const [code, setCode] = useState(children || '');
   const [codeVisible, setCodeVisible] = useState(false);
   const [copied, setCopied] = useState(false);
   const { palette: { mode } } = useTheme()
+  console.log('props', props, mode)
 
   useEffect(() => {
     if (copied) {

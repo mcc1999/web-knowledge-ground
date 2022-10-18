@@ -311,6 +311,11 @@
     react-devtools-inline "4.4.0"
     react-is "^17.0.2"
 
+"@codesandbox/sandpack-themes@^1.13.0":
+  version "1.13.0"
+  resolved "https://registry.npmmirror.com/@codesandbox/sandpack-themes/-/sandpack-themes-1.13.0.tgz#42d370a840de2e2404426a65a53dabc41f4d21bd"
+  integrity sha512-A+Ix4rTPi9KT6SRYKeMEDsVqibjut5HYCjPxgZ/O9OecDfoymqm2j/GtVF93NKaxf47QS6yEW4MQp32kFs5KlA==
+
 "@contentlayer/cli@0.2.8":
   version "0.2.8"
   resolved "https://registry.npmmirror.com/@contentlayer/cli/-/cli-0.2.8.tgz"

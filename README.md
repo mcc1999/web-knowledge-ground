@@ -13,4 +13,5 @@ ToDo
   - Hashicorp's next-mdx-enhanced
   - Hashicorp's next-mdx-remote
   - Kent C Dodds' mdx-bundler
-6. 
+  - contentLayer
+6. Combine @next/mdx with contentLayer

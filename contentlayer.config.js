@@ -1,5 +1,11 @@
 import { defineDocumentType, makeSource } from 'contentlayer/source-files'
-import remarkMdxMetaToProps from './remark-mdx-meta-to-props.mjs'
+import remarkMdxMetaToProps from './src/plugins/remark-mdx-meta-to-props.mjs'
+import remarkMdxTitleHeader from './src/plugins/remark-mdx-title-header.mjs'
+import remarkNoteBlock from './src/plugins/remark-note-block.mjs'
+import remarkGfm from 'remark-gfm'
+import rehypeSlug from 'rehype-slug'
+import rehypeAutolinkHeadings from 'rehype-autolink-headings'
+import remarkDirective from 'remark-directive'
 
 export const Framework = defineDocumentType(() => ({
   name: 'Framework',
@@ -30,7 +36,15 @@ export default makeSource({
   documentTypes: [Framework],
   mdx: {
     remarkPlugins: [
+      remarkDirective,
+      remarkGfm,
       remarkMdxMetaToProps,
-    ]
+      remarkMdxTitleHeader,
+      remarkNoteBlock,
+    ],
+    rehypePlugins: [
+      rehypeAutolinkHeadings,
+      rehypeSlug,
+    ],
   }
 })

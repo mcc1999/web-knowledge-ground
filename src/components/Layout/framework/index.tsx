@@ -48,10 +48,9 @@ const StyledTextField = styled(TextField)(({ theme }) => ({
 }));
 
 const FrameworkLayout = (props: any) => {
-  const siderData = useWebPlaygroundStore(state => state.siderData);
   const router = useRouter();
   const theme = useTheme();
-  const [selectPostId, updateSelectPostId] = useWebPlaygroundStore(state => [state.selectPostId, state.updateSelectPostId]);
+  const [siderData, updateSelectPostId] = useWebPlaygroundStore(state => [state.siderData, state.updateSelectPostId]);
 
   const handelAutocompleteChange = (event: any, value: any) => {
     router.push(value.value)
@@ -77,6 +76,9 @@ const FrameworkLayout = (props: any) => {
             options={siderData.map(item => ({ label: item.title, value: item.linkTo }))}
             disableClearable
             forcePopupIcon={false}
+            isOptionEqualToValue={(option: any, value: any) => {
+              return option.value === value.value
+            }}
             ListboxProps={{
               // @ts-ignore
               sx: {
@@ -89,7 +91,7 @@ const FrameworkLayout = (props: any) => {
               },
             }}
             PopperComponent={(params) => <Popper {...params} placement='bottom-start' />}
-            PaperComponent={(params) => <Paper {...params} sx={{ width: '300px', maxHeight: '300px', backgroundColor: 'purple.light' }} />}
+            PaperComponent={(params) => <Paper {...params} sx={{ width: '300px', maxHeight: '300px', }} />}
             onChange={handelAutocompleteChange}
             renderInput={(params) =>
               <StyledTextField
@@ -102,7 +104,7 @@ const FrameworkLayout = (props: any) => {
           />
         </Toolbar>
       </AppBar>
-      <Paper elevation={3} sx={{ width: 275, height: 'calc(100% - 64px)', padding: '16px', borderRadius: 0, display: 'inline-block', verticalAlign: 'top', }}>
+      <Paper elevation={3} sx={{ width: 275, height: 'calc(100% - 64px)', padding: '16px 0', borderRadius: 0, display: 'inline-block', verticalAlign: 'top', }}>
         {siderData.map((item, i) =>
           <Typography
             key={item.title + i}
@@ -110,7 +112,9 @@ const FrameworkLayout = (props: any) => {
             onClick={() => updateSelectPostId(item.id)}
             sx={{
               '&:hover': { color: 'purple.main', backgroundColor: alpha(theme.palette.purple.light, 0.15) },
-              color: selectPostId === item.id ? 'purple.main' : 'inherit',
+              color: router.asPath === item.linkTo ? 'purple.main' : 'inherit',
+              marginBottom: '4px',
+              padding: '4px  0 4px 16px',
             }}
           >
             <Link href={item.linkTo}>
@@ -119,9 +123,9 @@ const FrameworkLayout = (props: any) => {
           </Typography>
         )}
       </Paper>
-      <Card sx={{ width: 'calc(100% - 275px)', height: 'calc(100% - 64px)', padding: '16px', display: 'inline-block', overflowY: 'scroll', borderRadius: 0, verticalAlign: 'top' }}>
+      <Card sx={{ width: 'calc(100% - 275px)', height: 'calc(100% - 64px)', padding: '32px', display: 'inline-block', overflowY: 'scroll', borderRadius: 0, verticalAlign: 'top' }}>
         <SimpleBar autoHide={false}>
-          {props.children}
+          <div className='markdown-body'>{props.children}</div>
         </SimpleBar>
       </Card>
     </Box >

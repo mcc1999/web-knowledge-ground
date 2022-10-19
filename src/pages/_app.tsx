@@ -7,6 +7,7 @@ import FrameworkLayout from '../components/Layout/framework'
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import '../styles/globals.scss'
+import '../styles/markdown.scss'
 import { useMediaQuery } from '@mui/material'
 import { getThemeTokens } from '../utils/getThemeTokens'
 

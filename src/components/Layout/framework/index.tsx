@@ -49,7 +49,9 @@ const StyledTextField = styled(TextField)(({ theme }) => ({
 
 const FrameworkLayout = (props: any) => {
   const siderData = useWebPlaygroundStore(state => state.siderData);
-  const router = useRouter()
+  const router = useRouter();
+  const theme = useTheme();
+  const [selectPostId, updateSelectPostId] = useWebPlaygroundStore(state => [state.selectPostId, state.updateSelectPostId]);
 
   const handelAutocompleteChange = (event: any, value: any) => {
     router.push(value.value)
@@ -102,7 +104,15 @@ const FrameworkLayout = (props: any) => {
       </AppBar>
       <Paper elevation={3} sx={{ width: 275, height: 'calc(100% - 64px)', padding: '16px', borderRadius: 0, display: 'inline-block', verticalAlign: 'top', }}>
         {siderData.map((item, i) =>
-          <Typography key={item.title + i} noWrap sx={{ '&:hover': { color: 'purple.main' } }}>
+          <Typography
+            key={item.title + i}
+            noWrap
+            onClick={() => updateSelectPostId(item.id)}
+            sx={{
+              '&:hover': { color: 'purple.main', backgroundColor: alpha(theme.palette.purple.light, 0.15) },
+              color: selectPostId === item.id ? 'purple.main' : 'inherit',
+            }}
+          >
             <Link href={item.linkTo}>
               {`${i + 1}. ${item.title}`}
             </Link>

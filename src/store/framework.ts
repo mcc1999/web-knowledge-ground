@@ -7,8 +7,10 @@ export interface SiderDataType {
 }
 
 export interface FrameworkSlice {
+  selectPostId: number,
   siderData: SiderDataType[];
   updateSiderData: (newData: SiderDataType[]) => void;
+  updateSelectPostId: (postId: number) => void;
 }
 const createFrameworkSlice: StateCreator<
   FrameworkSlice,
@@ -16,6 +18,7 @@ const createFrameworkSlice: StateCreator<
   [],
   FrameworkSlice
 > = (set) => ({
+  selectPostId: -1,
   siderData: [],
   updateSiderData: (newData) => set((state) => {
     const { siderData: oldData } = state
@@ -30,6 +33,7 @@ const createFrameworkSlice: StateCreator<
       siderData: newState,
     }
   }),
+  updateSelectPostId: (postId) => set(() => ({ selectPostId: postId }))
 })
 
 export default createFrameworkSlice;

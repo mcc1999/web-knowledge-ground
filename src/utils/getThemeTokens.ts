@@ -2,7 +2,11 @@ import { PaletteMode, ThemeOptions } from "@mui/material";
 import { blue, green, purple } from "@mui/material/colors";
 
 const commonPalette = {
-  purple: { main: purple[600], contrastText: '#fff' },
+  purple: {
+    light: purple[100],
+    main: purple[600],
+    contrastText: '#fff'
+  },
   green: { main: green[600], contrastText: '#fff' }
 }
 export const getThemeTokens: (mode: PaletteMode) => ThemeOptions = (mode: PaletteMode) => {

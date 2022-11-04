@@ -3,9 +3,8 @@
 import React, { useEffect, useState } from 'react'
 import style from './index.module.scss';
 import Highlight, { defaultProps, Language } from 'prism-react-renderer'
-import defaultTheme from 'prism-react-renderer/themes/vsLight'
-import darkTheme from 'prism-react-renderer/themes/vsDark'
-import lzString from 'lz-string';
+import defaultTheme from 'prism-react-renderer/themes/vsDark'
+import darkTheme from 'prism-react-renderer/themes/vsLight'
 import { scope } from './react-live-scope';
 import LazyLoad from 'react-lazyload';
 import LiveProvider from '../LiveProvider';
@@ -54,11 +53,6 @@ const CodeBlock: React.FC<CodeBlockProps> = (props) => {
     </Highlight>
   )
 
-  function fullscreen() {
-    // TODO: scope 怎么传入？
-    // prettier-ignore
-    window.open(`/preview?code=${lzString.compressToEncodedURIComponent(code)}&language=${language}`, '_blank')
-  }
   if (!language) return <code>{children}</code>;
 
   if (onlyPreview) {

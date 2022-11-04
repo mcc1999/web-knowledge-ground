@@ -113,6 +113,7 @@ const FrameworkLayout = (props: any) => {
             sx={{
               '&:hover': { color: 'purple.main', backgroundColor: alpha(theme.palette.purple.light, 0.15) },
               color: router.asPath === item.linkTo ? 'purple.main' : 'inherit',
+              backgroundColor: router.asPath === item.linkTo ? alpha(theme.palette.purple.light, 0.15) : '',
               marginBottom: '4px',
               padding: '4px  0 4px 16px',
             }}

@@ -11,5 +11,6 @@ import vue__vue6Mdx from './Vue__vue6.mdx.json'
 import vue__vue7Mdx from './Vue__vue7.mdx.json'
 import vue__vue8Mdx from './Vue__vue8.mdx.json'
 import vue__vue9Mdx from './Vue__vue9.mdx.json'
+import typeScript__indexMdx from './TypeScript__index.mdx.json'
 
-export const allFrameworks = [testMdx, react__reactHooksMdx, vue__vueMdx, vue__vue2Mdx, vue__vue3Mdx, vue__vue4Mdx, vue__vue5Mdx, vue__vue6Mdx, vue__vue7Mdx, vue__vue8Mdx, vue__vue9Mdx]
+export const allFrameworks = [testMdx, react__reactHooksMdx, vue__vueMdx, vue__vue2Mdx, vue__vue3Mdx, vue__vue4Mdx, vue__vue5Mdx, vue__vue6Mdx, vue__vue7Mdx, vue__vue8Mdx, vue__vue9Mdx, typeScript__indexMdx]

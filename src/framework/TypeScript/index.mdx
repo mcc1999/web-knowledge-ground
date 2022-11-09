@@ -61,30 +61,3 @@ let readonlyPerson: ReadonlyPerson = writablePerson;
 console.log(readonlyPerson.age); // prints '42'
 writablePerson.age++;
 ```
-
-<CustomSandpack 
-  template="react-ts" 
-  files={{
-    '/App.tsx': `interface Person {
-        name: string;
-        age: number;
-      }
-      
-      interface ReadonlyPerson {
-        readonly name: string;
-        readonly age: number;
-      }
-      
-      let writablePerson: Person = {
-        name: "Person Mike",
-        age: 42,
-      };
-      
-      // works
-      let readonlyPerson: ReadonlyPerson = writablePerson;
-      
-      console.log(readonlyPerson.age); // prints '42'
-      writablePerson.age++;
-    `,
-  }} 
-/>

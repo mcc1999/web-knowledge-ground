@@ -7,6 +7,7 @@ import Link from 'next/link';
 import SimpleBar from 'simplebar-react';
 import { styled, alpha, useTheme } from '@mui/material/styles';
 import { useRouter } from 'next/router'
+import ThemeSwitch from 'src/components/ThemeSwitch';
 
 const SearchAutocomplete = styled(Autocomplete)(({ theme }) => ({
   position: 'relative',
@@ -102,6 +103,7 @@ const FrameworkLayout = (props: any) => {
               />
             }
           />
+          <ThemeSwitch />
         </Toolbar>
       </AppBar>
       <Paper elevation={3} sx={{ width: 275, height: 'calc(100% - 64px)', padding: '16px 0', borderRadius: 0, display: 'inline-block', verticalAlign: 'top', }}>
@@ -124,7 +126,7 @@ const FrameworkLayout = (props: any) => {
           </Typography>
         )}
       </Paper>
-      <Card sx={{ width: 'calc(100% - 275px)', height: 'calc(100% - 64px)', padding: '32px', display: 'inline-block', overflowY: 'scroll', borderRadius: 0, verticalAlign: 'top' }}>
+      <Card sx={{ width: 'calc(100% - 275px)', height: 'calc(100% - 64px)', padding: '32px 10%', display: 'inline-block', overflowY: 'scroll', borderRadius: 0, verticalAlign: 'top' }}>
         <SimpleBar autoHide={false}>
           <div className='markdown-body'>{props.children}</div>
         </SimpleBar>

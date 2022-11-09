@@ -9,6 +9,7 @@ import {
   SandpackPreview,
   SandpackProviderProps
 } from "@codesandbox/sandpack-react";
+import styles from './index.module.scss'
 
 interface CustomSandpackProps extends SandpackProviderProps {
   onlyCode: boolean
@@ -17,8 +18,8 @@ const CustomSandpack: React.FC<CustomSandpackProps> = (props) => {
   const { onlyCode } = props
   const { palette: { mode } } = useTheme();
   return (
-    <SandpackProvider template="react" theme={mode === 'dark' ? cobalt2 : githubLight} {...props}>
-      <SandpackLayout>
+    <SandpackProvider className={styles.CustomSandpackStyle} template="react" theme={mode === 'dark' ? cobalt2 : githubLight} {...props}>
+      <SandpackLayout style={onlyCode ? { width: '50%' } : {}}>
         <SandpackCodeEditor />
         {!onlyCode && <SandpackPreview />}
       </SandpackLayout>

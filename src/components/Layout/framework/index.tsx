@@ -127,9 +127,7 @@ const FrameworkLayout = (props: any) => {
         )}
       </Paper>
       <Card sx={{ width: 'calc(100% - 275px)', height: 'calc(100% - 64px)', padding: '32px 10%', display: 'inline-block', overflowY: 'scroll', borderRadius: 0, verticalAlign: 'top' }}>
-        <SimpleBar autoHide={false}>
-          <div className='markdown-body'>{props.children}</div>
-        </SimpleBar>
+        <div className='markdown-body'>{props.children}</div>
       </Card>
     </Box >
   )

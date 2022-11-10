@@ -11,8 +11,8 @@ const ThemeSwitch = () => {
 
   return (
     <Switch
-      icon={<LightModeIcon color='primary' fontSize='small' />}
-      checkedIcon={<DarkModeIcon fontSize='small' />}
+      icon={<LightModeIcon color='warning' fontSize='small' />}
+      checkedIcon={<DarkModeIcon color='info' fontSize='small' />}
       checked={theme.palette.mode === 'dark'}
       onChange={() => {
         colorMode.toggleColorMode();

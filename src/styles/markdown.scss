@@ -1,0 +1,103 @@
+.markdown-body {
+  line-height: 1.7;
+  /* padding: 0 20px;
+  overflow: hidden; */
+}
+
+.markdown-body .anchor {
+  color: inherit;
+}
+.markdown-body .anchor:hover::after,
+.markdown-body .anchor:hover::after,
+.markdown-body .anchor:hover::after,
+.markdown-body .anchor:hover::after,
+.markdown-body .anchor:hover::after,
+.markdown-body .anchor:hover::after {
+  content: '#';
+  color: #c0c0c0;
+}
+
+.markdown-body p,
+.markdown-body blockquote,
+.markdown-body ul,
+.markdown-body on,
+.markdown-body table,
+.markdown-body .note {
+  margin: 1em 0;
+}
+
+.markdown-body blockquote {
+  position: relative;
+  border-left: 4px solid #42b983;
+  padding: 10px 15px;
+  color: #777;
+  background-color: #dbf2e6;
+}
+
+.markdown-body .note { padding: 0.1rem 1.5rem; border-left-width: 4px; border-left-style: solid; border-radius: 4px; }
+.markdown-body .note.tip { background-color: #f3f5f7; border-color: #42b983; color: #2c3e50 }
+.markdown-body .note.warning { background-color: #fff7d3; border-color: #fabc38; color: #6b5900; }
+.markdown-body .note.danger { background-color: #ffe6e6; border-color: #e8443c; color: #4d0000; }
+
+.markdown-body code {
+  color: #f98c4d;
+  background-color: #f1f4f8;
+  border-radius: 2px;
+  padding: 2px 5px;
+  font-weight: 500;
+  font-family: 'Fira code', monospace;
+  font-weight: 400;
+  font-size: 13px;
+}
+
+.markdown-body img {
+  position: relative;
+  max-width: 100%;
+  height: auto;
+  box-sizing: border-box;
+  padding: 3px;
+  margin: 0 auto;
+  border: 1px solid #ddd;
+  vertical-align: middle;
+}
+
+.markdown-body hr { border: 0; margin: 2em 0; border-top: 1px solid #9c27b0; }
+
+.markdown-body a {
+  color: #9c27b0;
+  font-weight: 600;
+  padding: 0 2px;
+  text-decoration: none;
+}
+.markdown-body a:hover {
+  text-decoration: underline;
+}
+
+.markdown-body del {
+  text-decoration-color: rgba(250, 188, 56, 0.85);
+}
+
+.markdown-body table {
+  width: 100%;
+  font-size: 13px;
+  line-height: 1.5;
+  border-collapse: collapse;
+  color: #34495e;
+}
+.markdown-body table th {
+  padding: 10px;
+  text-align: left;
+  background-color: #f1f4f8;
+  white-space: nowrap;
+  word-wrap: normal;
+}
+.markdown-body table td {
+  padding: 10px;
+  border-bottom: 1px solid #f1f4f8;
+  line-height: 1.8;
+}
+
+.markdown-body ul, .markdown-body ol { padding-left: 1em; }
+.markdown-body ul { list-style-type: circle; }
+
+

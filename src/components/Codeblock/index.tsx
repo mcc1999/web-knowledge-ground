@@ -1,29 +1,24 @@
 /* eslint react/jsx-key: 0 */
 
 import React, { useEffect, useState } from 'react'
-import style from './index.module.scss';
+import styles from './index.module.scss';
 import Highlight, { defaultProps, Language } from 'prism-react-renderer'
-import defaultTheme from 'prism-react-renderer/themes/nightOwlLight'
-import lzString from 'lz-string';
-import { scope } from './react-live-scope';
-import LazyLoad from 'react-lazyload';
-import LiveProvider from '../LiveProvider';
-import LivePreview from '../LivePreview';
-import { copyToClipboard } from '../../../utils/clipboard'
+import defaultTheme from 'prism-react-renderer/themes/vsLight'
+import darkTheme from 'prism-react-renderer/themes/vsDark'
+import { useTheme } from '@mui/material/styles';
+import SimpleBar from 'simplebar-react';
 
 interface CodeBlockProps {
   children: string,
   className: string,
-  live?: boolean,
-  height?: number,
-  onlyPreview?: boolean,
 }
 
-const CodeBlock: React.FC<CodeBlockProps> = ({ children, className, onlyPreview, height }) => {
+const CodeBlock: React.FC<CodeBlockProps> = (props) => {
+  const { children, className } = props;
   const language = className?.replace(/language-/, '') as Language;
-  const [code, setCode] = useState(children || '')
-  const [codeVisible, setCodeVisible] = useState(false);
-  const [copied, setCopied] = useState(false)
+  const [copied, setCopied] = useState(false);
+  const { palette: { mode } } = useTheme()
+  console.log('props', props, mode)
 
   useEffect(() => {
     if (copied) {
@@ -34,7 +29,7 @@ const CodeBlock: React.FC<CodeBlockProps> = ({ children, className, onlyPreview,
   }, [copied])
 
   const HighlightCode = (
-    <Highlight {...defaultProps} code={children.trim()} language={language} theme={defaultTheme}>
+    <Highlight {...defaultProps} code={children.trim()} language={language} theme={mode === 'dark' ? darkTheme : defaultTheme}>
       {({ className, style, tokens, getLineProps, getTokenProps }) => (
         <pre className={className} style={{ ...style, padding: '20px' }}>
           {tokens.map((line, i) => (
@@ -49,62 +44,24 @@ const CodeBlock: React.FC<CodeBlockProps> = ({ children, className, onlyPreview,
     </Highlight>
   )
 
-  function fullscreen() {
-    // TODO: scope 怎么传入？
-    // prettier-ignore
-    window.open(`/preview?code=${lzString.compressToEncodedURIComponent(code)}&language=${language}`, '_blank')
-  }
   if (!language) return <code>{children}</code>;
 
-  if (onlyPreview) {
-    return (
-      <>
-        <div className={style.codeBlock} style={height ? { height } : {}}>
-          <LiveProvider language={language} defaultCode={children} scope={scope} onCodeChange={setCode}>
-            {onlyPreview && (
-              // 懒加载，窗口滚动到这里后才真正渲染 children
-              <LazyLoad className={style.previewWrap}>
-                <div className={style.previewHeader}>
-                  <div className={style.previewActions}>
-                    <span onClick={fullscreen} >分享</span>
-                    <span onClick={() => setCodeVisible((v) => !v)}>{codeVisible ? "折叠代码" : "查看代码"}</span>
-                  </div>
-                </div>
-                <div className={style.previewBody}>
-                  {/* // @ts-ignore */}
-                  <LivePreview className={style.preview} language={language} />
-                </div>
-              </LazyLoad>
-            )}
-          </LiveProvider>
-          <div className={style.editorWrap} style={codeVisible ? {} : { display: "none" }}>
-            <div className={style.editorHeader}>
-              <span className={style.language}>{language}</span>
-              <div className={style.editorActions}>
-                {!copied ?
-                  <span
-                    onClick={async () => {
-                      await copyToClipboard(code)
-                      setCopied(true)
-                    }}
-                  >
-                    复制
-                  </span>
-                  :
-                  '✅'
-                }
-              </div>
-            </div>
-            <div className={style.eidtorBody}>
-              <div className={style.previewCode}>
-                {HighlightCode}
-              </div>
-            </div>
-          </div>
+  return (
+    <div className={styles.codeBlock}>
+      <div className='codeHeader'>
+        <div className='headerIcon'>
+          <div className='redIcon iconItem' />
+          <div className='yellowIcon iconItem' />
+          <div className='greenIcon iconItem' />
         </div>
-      </>
-    )
-  }
-  return HighlightCode;
+        <div>复制代码</div>
+      </div>
+      <div className='codeBody'>
+        <SimpleBar style={{maxHeight: 360}} autoHide>
+          {HighlightCode}
+        </SimpleBar>
+      </div>
+    </div>
+  )
 }
 export default CodeBlock;

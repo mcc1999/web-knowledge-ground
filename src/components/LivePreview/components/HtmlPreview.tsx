@@ -1,5 +1,5 @@
 import React, { useContext } from 'react'
-import { NativeProps, withNativeProps } from '../../../../utils/native-props'
+import { NativeProps, withNativeProps } from '../../../utils/native-props'
 import { LiveContext } from '../../LiveProvider'
 
 export interface LiveEditorProps extends NativeProps { }

@@ -7,6 +7,8 @@ import defaultTheme from 'prism-react-renderer/themes/vsLight'
 import darkTheme from 'prism-react-renderer/themes/vsDark'
 import { useTheme } from '@mui/material/styles';
 import SimpleBar from 'simplebar-react';
+import { copyToClipboard } from 'src/utils/clipboard';
+import { AiOutlineCopy } from 'react-icons/ai';
 
 interface CodeBlockProps {
   children: string,
@@ -18,7 +20,6 @@ const CodeBlock: React.FC<CodeBlockProps> = (props) => {
   const language = className?.replace(/language-/, '') as Language;
   const [copied, setCopied] = useState(false);
   const { palette: { mode } } = useTheme()
-  console.log('props', props, mode)
 
   useEffect(() => {
     if (copied) {
@@ -54,10 +55,10 @@ const CodeBlock: React.FC<CodeBlockProps> = (props) => {
           <div className='yellowIcon iconItem' />
           <div className='greenIcon iconItem' />
         </div>
-        <div>复制代码</div>
+        <div className='copyBtn' onClick={() => { copyToClipboard(children); setCopied(true) }}>{!copied ? <AiOutlineCopy style={{ color: '#1e1e1e' }} /> : '✅'}</div>
       </div>
       <div className='codeBody'>
-        <SimpleBar style={{maxHeight: 360}} autoHide>
+        <SimpleBar style={{ maxHeight: 360 }} autoHide>
           {HighlightCode}
         </SimpleBar>
       </div>

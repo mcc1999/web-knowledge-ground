@@ -16,7 +16,7 @@ type NextPageWithLayout = NextPage & {
   layoutType?: string;
 }
 
-const CodeBlockWithNoSSR = dynamic(() => import('../components/Codeblock'), { ssr: false })
+const CodeBlockWithNoSSR = dynamic(() => import('../components/mdxComponents/Codeblock'), { ssr: false })
 
 const components = {
   code: CodeBlockWithNoSSR,

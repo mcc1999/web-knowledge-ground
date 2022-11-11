@@ -3,8 +3,8 @@ import React, { useEffect } from 'react';
 import { SiderDataType } from '../../store/framework';
 import useWebPlaygroundStore from '../../store';
 import { useMDXComponent } from 'next-contentlayer/hooks';
-import CodeBlock from '../Codeblock';
-import CustomSandpack from '../CustomSandpack';
+import CodeBlock from '../mdxComponents/Codeblock';
+import CustomSandpack from '../mdxComponents/CustomSandpack';
 
 export interface LayoutProps {
   siderData: SiderDataType[];

@@ -1,0 +1,134 @@
+---
+title: TypesScript Handbook Mark
+date: 2022-11-04 10:30:00
+---
+
+# TypesScript Handbook
+> Much of the time, you will know better than TypeScript.
+
+## 常见类型
+### 类型别名和接口的区别 [🔗](https://www.typescriptlang.org/docs/handbook/2/everyday-types.html#differences-between-type-aliases-and-interfaces)
+- 扩展
+```typescript
+// interface
+interfaces A extends B{
+  property1: string;
+  property2: string;
+}
+
+// type alias
+type A  = {
+  property1: string;
+}
+type B = {
+  property2: string;
+}
+type Union = A & B
+```
+- 重复定义：interface重复定义是往接口内添加属性，type类型别名不能重复定义
+
+## Narrowing
+### Truthiness narrowing [🔗](https://www.typescriptlang.org/docs/handbook/2/narrowing.html#truthiness-narrowing)
+- Double-Boolean negation：TypeScript infers a narrow literal boolean type true，rather than boolean.  
+`!!"str"; //type: true value: true`  
+`Boolean("str); //type: boolean value: true`
+
+## Function Types
+
+## Object Types
+### 只读属性：
+- TS在判断是否是同一类型时不考虑readonly属性
+- 可通过使用别名改变readonly属性
+- 普通类型值可以赋值给readonly变量，但readonly值不能复制给普通类型变量
+```typescript
+interface Person {
+  name: string;
+  age: number;
+}
+ 
+interface ReadonlyPerson {
+  readonly name: string;
+  readonly age: number;
+}
+ 
+let writablePerson: Person = {
+  name: "Person Mike",
+  age: 42,
+};
+ 
+// works
+let readonlyPerson: ReadonlyPerson = writablePerson;
+ 
+console.log(readonlyPerson.age); // prints '42'
+writablePerson.age++;
+```
+
+## Conditional Types
+### Distributive Conditional Types
+``` typescript
+/*
+ * Distributivity
+ */
+type ToArray<Type> = Type extends any ? Type[] : never;
+type StrArrOrNumArr = ToArray<string | number>;
+// type StrArrOrNumArr = string[] | number[]
+
+
+/*
+ * Avoid Distributivity
+ */
+type ToArrayNonDis<Type> = [Type] extends [any] ? Type[] : never;
+type StrArrOrNumArr = ToArrayNonDis<string | number>;
+// type StrArrOrNumArr = (string | number)[]
+```
+
+## Mapping Types
+Mapping Types是指从一种类型映射到另一种类型
+### Mapping Modifier
+Modifier有readonly和可选符号？，modifier在映射过程中改变类型属性的特性, +/-表示新增/去除该特性
+- readonly
+```typescript
+// Removes 'readonly' attributes from a type's properties
+type CreateMutable<Type> = {
+  -readonly [Property in keyof Type]: Type[Property];
+};
+ 
+type LockedAccount = {
+  readonly id: string;
+  readonly name: string;
+};
+ 
+type UnlockedAccount = CreateMutable<LockedAccount>;
+/*
+ *type UnlockedAccount = {
+ *  id: string;
+ *  name: string;
+ *}
+ */
+```
+
+- 可选符号？
+``` typescript
+// Add 'optional' attributes from a type's properties
+type Concrete<Type> = {
+  [Property in keyof Type]+?: Type[Property];
+};
+ 
+type MaybeUser = {
+  id: string;
+  name: string;
+  age: number;
+};
+ 
+type User = Concrete<MaybeUser>;
+/*
+ *type User = {
+ *  id?: string;
+ *  name?: string;
+ *  age?: number;
+ *}
+ */
+```
+
+ToRead: 
+https://www.typescriptlang.org/docs/handbook/2/template-literal-types.html#string-unions-in-types

@@ -130,5 +130,34 @@ type User = Concrete<MaybeUser>;
  */
 ```
 
+## Class
+### implements Clauses
+implements Clauses只是检查类是否可以被视为接口类型。它根本不会改变类或其方法的类型。
+```typescript
+// Example 1
+interface Checkable {
+  check(name: string): boolean;
+}
+ 
+class NameChecker implements Checkable {
+  check(s) {
+    // Parameter 's' implicitly has an 'any' type, 而不会因为implements了Checkable，被推断为string
+    return s.toLowercse() === "ok";
+  }
+}
+
+// Example 2
+interface A {
+  x: number;
+  y?: number;
+}
+class C implements A {
+  x = 0;
+}
+const c = new C();
+c.y = 10;
+Property 'y' does not exist on type 'C'.
+```
+
 ToRead: 
-https://www.typescriptlang.org/docs/handbook/2/template-literal-types.html#string-unions-in-types
+https://www.typescriptlang.org/docs/handbook/2/classes.html#extends-clauses

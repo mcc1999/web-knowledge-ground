@@ -12,7 +12,9 @@ const Home: NextPage = () => {
         <meta name="description" content="Web playground" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <ThemeSwitch />
+      <div style={{position: 'absolute', top: 13, right: 24}}>
+        <ThemeSwitch />
+      </div>
       <main className={styles.main}>
         <h1 className={styles.title}>
           Welcome to <a>Web Knowledge</a> Playground

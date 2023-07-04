@@ -1,16 +1,21 @@
 import create, { StateCreator } from 'zustand'
 
 export interface SiderDataType {
-  id: number;
+  id: string;
   title: string;
   linkTo: string;
 }
 
+export interface SiderDataTreeItem {
+  folder: string;
+  children: SiderDataType[]
+}
+
 export interface FrameworkSlice {
-  selectPostId: number,
+  selectPostId: string,
   siderData: SiderDataType[];
   updateSiderData: (newData: SiderDataType[]) => void;
-  updateSelectPostId: (postId: number) => void;
+  updateSelectPostId: (postId: string) => void;
 }
 const createFrameworkSlice: StateCreator<
   FrameworkSlice,
@@ -18,7 +23,7 @@ const createFrameworkSlice: StateCreator<
   [],
   FrameworkSlice
 > = (set) => ({
-  selectPostId: -1,
+  selectPostId: '-1',
   siderData: [],
   updateSiderData: (newData) => set((state) => {
     const { siderData: oldData } = state

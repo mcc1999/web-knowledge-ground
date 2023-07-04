@@ -53,7 +53,7 @@ const FrameworkLayout = (props: any) => {
   const router = useRouter();
   const theme = useTheme();
   const [siderData, updateSelectPostId] = useWebPlaygroundStore(state => [state.siderData, state.updateSelectPostId]);
-  const [folded, setFolded] = useState<boolean>(false)
+  const [folded, setFolded] = useState<boolean>(false)  
 
   const handelAutocompleteChange = (event: any, value: any) => {
     router.push(value.value)
@@ -117,16 +117,16 @@ const FrameworkLayout = (props: any) => {
             onClick={() => updateSelectPostId(item.id)}
             sx={{
               '&:hover': { color: 'purple.main', backgroundColor: alpha(theme.palette.purple.light, 0.15) },
-              color: router.asPath === item.linkTo ? 'purple.main' : 'inherit',
-              backgroundColor: router.asPath === item.linkTo ? alpha(theme.palette.purple.light, 0.15) : '',
+              color: decodeURIComponent(router.asPath) === item.linkTo ? 'purple.main' : 'inherit',
+              backgroundColor: decodeURIComponent(router.asPath) === item.linkTo ? alpha(theme.palette.purple.light, 0.15) : '',
               marginBottom: '4px',
               padding: '4px  0 4px 16px',
             }}
           >
             <Link href={item.linkTo}>
-              <div title={item.title} className={styles['content-item']}>  
+              <span title={item.title} className={styles['content-item']}>  
                 {`${i + 1}. ${item.title}`}
-              </div>
+              </span>
             </Link>
           </Typography>
         )}

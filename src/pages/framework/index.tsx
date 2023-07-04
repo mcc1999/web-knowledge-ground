@@ -1,23 +1,34 @@
 import Link from 'next/link'
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { GetStaticProps } from 'next';
-import useWebPlaygroundStore from '../../store';
-import { SiderDataType } from '../../store/framework';
+import useWebPlaygroundStore from '@/store';
+import { SiderDataTreeItem, SiderDataType } from '@/store/framework';
 import { allFrameworks } from 'contentlayer/generated'
+import { buildSiderDataTree } from '@/utils';
 
 const FrameworkIndex = (prop: { siderData: SiderDataType[] }) => {
   const { siderData } = prop
   const updateSiderData = useWebPlaygroundStore(state => state.updateSiderData)
-
+  const [siderTree, setSiderTree] = useState<SiderDataTreeItem[]>([])
+  console.log('siderData', siderData)  
+  
   useEffect(() => {
     updateSiderData(siderData);
   }, [])
 
+  useEffect(() => {
+    setSiderTree(buildSiderDataTree(siderData))
+  }, [siderData])
+
   return <>
-    <h1>Framework</h1>
-    <Link href={'/framework/React/react-hooks'}>react-hooks</Link>
-    <br />
-    <Link href={'/framework/Vue/vue'}>vue</Link>
+    {
+      siderTree.map(branch => {
+        return <>
+          <h1>{branch.folder}</h1>
+          {branch.children.map(child => <><Link href={child.linkTo} key={child.id}>{child.title}</Link><br/></>)}
+        </>
+      })
+    }
   </>
 }
 

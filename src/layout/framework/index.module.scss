@@ -3,6 +3,17 @@
   height: 100vh;
   overflow-x: hidden;
 
+  .content {
+    .content-item {
+      width: 243px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      cursor: pointer;
+      user-select: none;
+    }
+  }
+
   .fold-icon {
     position: absolute;
     top: 50%;

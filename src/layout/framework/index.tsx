@@ -108,7 +108,7 @@ const FrameworkLayout = (props: any) => {
           <ThemeSwitch />
         </Toolbar>
       </AppBar>
-      <Paper elevation={3} sx={{ width: folded ? 0 : 275, height: 'calc(100% - 64px)', padding: '16px 0', borderRadius: 0, display: 'inline-block', verticalAlign: 'top', transition: 'width .5s' }}>
+      <Paper className={styles['content']} elevation={3} sx={{ width: folded ? 0 : 275, height: 'calc(100% - 64px)', padding: '16px 0', borderRadius: 0, display: 'inline-block', verticalAlign: 'top', transition: 'width .5s' }}>
         <div className={styles['fold-icon']} style={{left: folded ? 0 : 275}} onClick={() => setFolded(!folded)}>{folded ? <AiOutlineCaretRight /> : <AiOutlineCaretLeft />}</div>
         {siderData.map((item, i) =>
           <Typography
@@ -124,7 +124,9 @@ const FrameworkLayout = (props: any) => {
             }}
           >
             <Link href={item.linkTo}>
-              {`${i + 1}. ${item.title}`}
+              <div title={item.title} className={styles['content-item']}>  
+                {`${i + 1}. ${item.title}`}
+              </div>
             </Link>
           </Typography>
         )}

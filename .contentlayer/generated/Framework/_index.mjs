@@ -12,7 +12,7 @@ import _2Vue__vue6Mdx from './_2-Vue__vue6.mdx.json'
 import _2Vue__vue7Mdx from './_2-Vue__vue7.mdx.json'
 import _2Vue__vue8Mdx from './_2-Vue__vue8.mdx.json'
 import _2Vue__vue9Mdx from './_2-Vue__vue9.mdx.json'
-import _3TypeScript__indexMdx from './_3-TypeScript__index.mdx.json'
 import others__1Mdx from './Others__1-跨域问题.mdx.json'
+import _3TypeScript__indexMdx from './_3-TypeScript__index.mdx.json'
 
-export const allFrameworks = [testMdx, _1React__reactHooksMdx, _1React__tiledBaseRender_virtualListMdx, _2Vue__vueMdx, _2Vue__vue2Mdx, _2Vue__vue3Mdx, _2Vue__vue4Mdx, _2Vue__vue5Mdx, _2Vue__vue6Mdx, _2Vue__vue7Mdx, _2Vue__vue8Mdx, _2Vue__vue9Mdx, _3TypeScript__indexMdx, others__1Mdx]
+export const allFrameworks = [testMdx, _1React__reactHooksMdx, _1React__tiledBaseRender_virtualListMdx, _2Vue__vueMdx, _2Vue__vue2Mdx, _2Vue__vue3Mdx, _2Vue__vue4Mdx, _2Vue__vue5Mdx, _2Vue__vue6Mdx, _2Vue__vue7Mdx, _2Vue__vue8Mdx, _2Vue__vue9Mdx, others__1Mdx, _3TypeScript__indexMdx]

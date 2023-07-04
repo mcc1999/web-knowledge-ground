@@ -24,3 +24,13 @@ a {
 .simplebar-scrollbar::before {
   background: gray;
 }
+
+::-webkit-scrollbar {
+  width: 8px;
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: gray;
+  border-radius: 8px;
+}

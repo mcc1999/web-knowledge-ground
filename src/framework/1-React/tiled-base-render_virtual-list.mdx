@@ -1,0 +1,49 @@
+---
+title: Tiled-Base Rendering && Virtual List
+date: 2022-11-11 10:30:00
+--- 
+# 长列表渲染
+
+>> JS操作远比DOM操作块，大量JS操作导致的DOM更新会引起页面卡顿、奔溃
+
+## 分片渲染
+
+分片渲染采用定时器，在一段时间内只渲染每一分片大小的列表数据
+
+<CustomSandpack template='react-ts' files={{
+  'App.tsx': `import {useState, useEffect} from 'react'
+    import {useMemoizedFn} from 'ahooks'
+
+    export default function App(): JSX.Element {
+      const size = 20;
+      const [startIndex, setStartIndex] = useState<number>(0)
+      const [data, setData] = useState<string[]>([])
+      const [renderList, setRenderList] = useState<string[]>([])
+
+      useEffect(() => {
+        setData(Array.from(Array(10000), (_, i) => 'I am data: ' + i))
+      }, [])
+
+      const TiledBaseRendering = useMemoizedFn(function (){
+        const tmpList = data.slice(startIndex, startIndex+size)
+        if(tmpList && tmpList.length){
+          setTimeout(() => {
+            setRenderList(s => [...s, ...tmpList])
+            setStartIndex(s => s+size)
+            TiledBaseRendering()
+          }, 100)
+        }
+      })
+      return <div>
+        <div><button onClick={TiledBaseRendering}>render</button></div>
+        {renderList.map(item => <div>{item}</div>)}
+      </div>
+    }
+  `,
+  }} 
+  customSetup={{
+    dependencies: {
+      "ahooks": "^3.7.2",
+    },
+  }} 
+/>

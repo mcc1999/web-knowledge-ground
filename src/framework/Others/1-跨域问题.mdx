@@ -1,0 +1,36 @@
+---
+title: 跨域问题
+date: 2022-12-05 15:30:00
+---
+
+# 跨域问题
+
+## 1.URL构成
+`Protocol://Domain(Host):Port/Filepath/Filename`
+
+## 2.跨域原因
+浏览器限制了跨域资源(不同协议、不用域名、不同端口)的资源交互
+
+## 2.解决跨越的方法
+- 前端代理(dev->nodejs， prod->Nginx)
+- 后端开启跨域资源共享
+
+### 前端代理
+- dev开发环境下运行项目都会起dev server，通过dev server将请求代理转发
+```nodejs
+  proxy: {
+    '/api': {
+      target: 'http://domainName.com',
+      pathRewrite: { '^/api': '' }, 
+      changeOrigin: true,
+    },
+  }
+```
+参数解析：
+1. `/api`: 一个标识，告诉dev server(node)哪些请求需要代理  
+不然的话 html css js这些静态资源请求都跑去代理。  
+接口以`/api`开头的才使用代理，所以代码里请求接口都需要写成 `/api/xx/xx `   
+2.`pathRewrite`: 路径重写  
+最终代理完的路径是 `http://domainName.com/api/xx/xx`    
+但后端实际接口路径是：`http://domainName.com/xx/xx`  
+pathRewrite的值` ^/api: ''`，表明把路径中的 `/api` 替换成`''`

@@ -1,10 +1,10 @@
 
 import React, { useEffect } from 'react';
-import { SiderDataType } from '../../store/framework';
-import useWebPlaygroundStore from '../../store';
+import { SiderDataType } from '@/store/framework';
+import useWebPlaygroundStore from '@/store';
 import { useMDXComponent } from 'next-contentlayer/hooks';
-import CodeBlock from '../mdxComponents/Codeblock';
-import CustomSandpack from '../mdxComponents/CustomSandpack';
+import CodeBlock from '@/components/mdxComponents/Codeblock';
+import CustomSandpack from '@/components/mdxComponents/CustomSandpack';
 
 export interface LayoutProps {
   siderData: SiderDataType[];

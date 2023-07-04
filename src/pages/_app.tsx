@@ -3,20 +3,20 @@ import type { NextPage } from 'next'
 import { createContext, ReactElement, ReactNode, useEffect, useMemo, useState } from 'react'
 import { MDXProvider } from '@mdx-js/react'
 import dynamic from 'next/dynamic'
-import FrameworkLayout from '../components/Layout/framework'
+import FrameworkLayout from '@/layout/framework'
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
+import { useMediaQuery } from '@mui/material'
+import { getThemeTokens } from '@/utils/getThemeTokens'
 import '../styles/globals.scss'
 import '../styles/markdown.scss'
-import { useMediaQuery } from '@mui/material'
-import { getThemeTokens } from '../utils/getThemeTokens'
 
 type NextPageWithLayout = NextPage & {
   getLayout?: (page: ReactElement) => ReactNode;
   layoutType?: string;
 }
 
-const CodeBlockWithNoSSR = dynamic(() => import('../components/mdxComponents/Codeblock'), { ssr: false })
+const CodeBlockWithNoSSR = dynamic(() => import('@/components/mdxComponents/Codeblock'), { ssr: false })
 
 const components = {
   code: CodeBlockWithNoSSR,

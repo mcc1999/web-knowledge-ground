@@ -1,0 +1,17 @@
+.framework-layout {
+  width: 100vw;
+  height: 100vh;
+  overflow-x: hidden;
+
+  .fold-icon {
+    position: absolute;
+    top: 50%;
+    left: 275px;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    transition: left .5s;
+  }
+}

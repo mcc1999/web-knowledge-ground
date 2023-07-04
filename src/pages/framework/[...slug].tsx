@@ -1,5 +1,5 @@
 import glob from 'fast-glob'
-import FrameworkContentPage from '../../components/FrameworkContentPage'
+import FrameworkContentPage from '@/layout/frameworkContentPage'
 import { GetStaticPaths, GetStaticProps } from 'next'
 import { allFrameworks, Framework } from 'contentlayer/generated'
 

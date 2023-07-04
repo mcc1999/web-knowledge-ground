@@ -1,13 +1,14 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { AppBar, Box, Card, Typography, Autocomplete, Toolbar, Avatar, TextField, Paper, Popper } from '@mui/material';
-import useWebPlaygroundStore from '../../../store';
-import styles from './index.module.scss';
+import useWebPlaygroundStore from '@/store';
 import Link from 'next/link';
 import SimpleBar from 'simplebar-react';
 import { styled, alpha, useTheme } from '@mui/material/styles';
 import { useRouter } from 'next/router'
-import ThemeSwitch from 'src/components/ThemeSwitch';
+import ThemeSwitch from '@/components/ThemeSwitch';
+import { AiOutlineCaretLeft, AiOutlineCaretRight } from 'react-icons/ai'
+import styles from './index.module.scss';
 
 const SearchAutocomplete = styled(Autocomplete)(({ theme }) => ({
   position: 'relative',
@@ -52,6 +53,7 @@ const FrameworkLayout = (props: any) => {
   const router = useRouter();
   const theme = useTheme();
   const [siderData, updateSelectPostId] = useWebPlaygroundStore(state => [state.siderData, state.updateSelectPostId]);
+  const [folded, setFolded] = useState<boolean>(false)
 
   const handelAutocompleteChange = (event: any, value: any) => {
     router.push(value.value)
@@ -106,7 +108,8 @@ const FrameworkLayout = (props: any) => {
           <ThemeSwitch />
         </Toolbar>
       </AppBar>
-      <Paper elevation={3} sx={{ width: 275, height: 'calc(100% - 64px)', padding: '16px 0', borderRadius: 0, display: 'inline-block', verticalAlign: 'top', }}>
+      <Paper elevation={3} sx={{ width: folded ? 0 : 275, height: 'calc(100% - 64px)', padding: '16px 0', borderRadius: 0, display: 'inline-block', verticalAlign: 'top', transition: 'width .5s' }}>
+        <div className={styles['fold-icon']} style={{left: folded ? 0 : 275}} onClick={() => setFolded(!folded)}>{folded ? <AiOutlineCaretRight /> : <AiOutlineCaretLeft />}</div>
         {siderData.map((item, i) =>
           <Typography
             key={item.title + i}
@@ -126,7 +129,7 @@ const FrameworkLayout = (props: any) => {
           </Typography>
         )}
       </Paper>
-      <Card sx={{ width: 'calc(100% - 275px)', height: 'calc(100% - 64px)', padding: '32px 10%', display: 'inline-block', overflowY: 'scroll', borderRadius: 0, verticalAlign: 'top' }}>
+      <Card sx={{ width: `calc(100% - ${folded ? 0 : 275}px)`, height: 'calc(100% - 64px)', padding: '32px 10%', display: 'inline-block', overflowY: 'scroll', borderRadius: 0, verticalAlign: 'top', transition: 'width .5s' }}>
         <div className='markdown-body'>{props.children}</div>
       </Card>
     </Box >

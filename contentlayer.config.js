@@ -7,7 +7,7 @@ import rehypeSlug from 'rehype-slug'
 import rehypeAutolinkHeadings from 'rehype-autolink-headings'
 import remarkDirective from 'remark-directive'
 
-export const Framework = defineDocumentType(() => ({
+export const MdxDocumentType = defineDocumentType(() => ({
   name: 'Framework',
   filePathPattern: `**/*.mdx`,
   contentType: 'mdx',
@@ -26,14 +26,14 @@ export const Framework = defineDocumentType(() => ({
   computedFields: {
     url: {
       type: 'string',
-      resolve: (post) => `src/framework/${post._raw.flattenedPath}`,
+      resolve: (post) => `src/mdx/${post._raw.flattenedPath}`,
     },
   },
 }))
 
 export default makeSource({
-  contentDirPath: 'src/framework',
-  documentTypes: [Framework],
+  contentDirPath: 'src/mdx',
+  documentTypes: [MdxDocumentType],
   mdx: {
     remarkPlugins: [
       remarkDirective,

@@ -42,7 +42,7 @@ const Home: NextPage = () => {
             </a>
           </Link>
 
-          <Link href="/framework" >
+          <Link href="/mdx" >
             <a className={styles.card}>
               <h2>框架 &rarr;</h2>
               <p>React、Vue...</p>

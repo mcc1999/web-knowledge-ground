@@ -71,7 +71,7 @@ const FrameworkLayout = (props: any) => {
             component="div"
             sx={{ flexGrow: 1, display: { xs: 'none', sm: 'block' } }}
           >
-            <Link href='/framework'>
+            <Link href='/mdx'>
               Web-Playground
             </Link>
           </Typography>

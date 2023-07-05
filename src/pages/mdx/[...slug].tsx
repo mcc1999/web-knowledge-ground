@@ -6,11 +6,11 @@ import { allFrameworks, Framework } from 'contentlayer/generated'
 export default FrameworkContentPage
 
 export const getStaticPaths: GetStaticPaths<{ slug: string[] }> = async () => {
-  const framework = await glob('src/framework/**/*.mdx')
+  const framework = await glob('src/mdx/**/*.mdx')
 
   return {
     paths: framework.map((path) => ({
-      params: { slug: path.replace(/^src\/framework\/|(\/index)?\.mdx$/g, '').split('/') },
+      params: { slug: path.replace(/^src\/mdx\/|(\/index)?\.mdx$/g, '').split('/') },
     })),
     fallback: false,
   }

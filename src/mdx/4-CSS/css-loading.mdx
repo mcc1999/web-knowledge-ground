@@ -1,0 +1,83 @@
+---
+title: CSS-Loading
+date: 2023-07-05 17:30:00
+---
+
+import { Sandpack } from "@codesandbox/sandpack-react";
+import { cobalt2, githubLight, aquaBlue } from "@codesandbox/sandpack-themes";
+
+## 纯 CSS 实现 Loading (进度条 & 文字版) 
+
+- `@property` 实现 css 变量
+- `counter-reset` 和 `counter(var)` 实现将整数赋值给伪元素的 content 属性
+- `transition` 属性实现 css 变量的改变
+
+[codesandbox](https://codesandbox.io/s/wei-yuan-su-css-loading-wdfh69)
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Static Template</title>
+    <style>
+      @property --percent {
+        syntax: "<integer>";
+        inherits: false;
+        initial-value: 0;
+      }
+      .box {
+        width: 200px;
+        height: 16px;
+        margin: 16px;
+        border: 1px solid yellowgreen;
+      }
+      .box::after {
+        --percent: 0;
+        counter-reset: progress var(--percent);
+        content: counter(progress) "%\2002";
+        display: block;
+        width: calc(200px * var(--percent) / 100);
+        height: 100%;
+        font-size: 12px;
+        background: cyan;
+        text-align: right;
+        white-space: nowrap;
+        overflow: hidden;
+        transition: none;
+      }
+      .box.active::after {
+        --percent: 99;
+        transition: 100s --percent cubic-bezier(0.08, 0.81, 0.29, 0.99);
+      }
+      #num::after {
+        --percent: 0;
+        counter-reset: progress var(--percent);
+        content: counter(progress);
+      }
+      #num.active::after {
+        --percent: 99;
+        transition: 100s --percent cubic-bezier(0.08, 0.81, 0.29, 0.99);
+      }
+    </style>
+  </head>
+  <body>
+    <div id="box" class="box"></div>
+    <div>进度：<span id="num"></span>%</div>
+    <button id="btn">start</button>
+    <script>
+      const progress = document.getElementById("box");
+      const num = document.getElementById("num");
+      const button = document.getElementById("btn");
+      button.onclick = function () {
+        progress.classList.remove("active");
+        num.classList.remove("active");
+        progress.classList.add("active");
+        num.classList.add("active");
+      };
+    </script>
+  </body>
+</html>
+```

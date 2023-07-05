@@ -1,7 +1,7 @@
 import React from 'react'
 import { Sandpack } from "@codesandbox/sandpack-react";
 import { useTheme } from '@mui/material/styles';
-import { cobalt2, githubLight } from "@codesandbox/sandpack-themes";
+import { cobalt2, githubLight, aquaBlue } from "@codesandbox/sandpack-themes";
 import {
   SandpackProvider,
   SandpackLayout,
@@ -18,7 +18,7 @@ const CustomSandpack: React.FC<CustomSandpackProps> = (props) => {
   const { onlyCode } = props
   const { palette: { mode } } = useTheme();
   return (
-    <SandpackProvider className={styles.CustomSandpackStyle} template="react" theme={mode === 'dark' ? cobalt2 : githubLight} {...props}>
+    <SandpackProvider className={styles.CustomSandpackStyle} template="react" theme={mode === 'dark' ? cobalt2 : aquaBlue} {...props}>
       <SandpackLayout style={onlyCode ? { width: '50%' } : {}}>
         <SandpackCodeEditor />
         {!onlyCode && <SandpackPreview />}

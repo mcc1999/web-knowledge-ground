@@ -1,0 +1,65 @@
+---
+title: CSS-Selector
+date: 2023-07-05 16:00:00
+---
+
+import { Sandpack } from "@codesandbox/sandpack-react";
+import { cobalt2, githubLight, aquaBlue } from "@codesandbox/sandpack-themes";
+
+## CSS 选择器：nth-child & not()
+
+选择前 x 个元素
+
+- `h1:nth-child(-n + x) { }`
+
+选择除最后一个的元素
+
+- `h1:not(:last-child) { }`
+
+<Sandpack 
+  template="static"
+  theme={aquaBlue}
+  options={{
+    showLineNumbers: true, // default - true
+    showInlineErrors: true, // default - false
+    wrapContent: true, // default - false
+    editorHeight: 480, // default - 300
+    editorWidthPercentage: 60, // default - 50
+  }}
+  files={{
+    "/index.html": {
+      code: 
+        `<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Static Template</title>
+    <style>
+      h1:nth-child(-n + 3) {
+        color: yellowgreen;
+      }
+      h1:not(:last-child) {
+        border: 1px dashed darkcyan;
+      }
+    </style>
+  </head>
+  <body>
+    <div>
+      <h1>title</h1>
+      <h1>title</h1>
+      <h1>title</h1>
+      <h1>title</h1>
+      <h1>title</h1>
+      <h1>title</h1>
+      <h1>title</h1>
+      <h1>title</h1>
+    </div>
+  </body>
+</html>
+`
+      }
+
+}}
+/>

@@ -1,0 +1,57 @@
+---
+title: 文字百分比颜色
+date: 2023-07-05 16:30:00
+---
+
+import { Sandpack } from "@codesandbox/sandpack-react";
+import { cobalt2, githubLight, aquaBlue } from "@codesandbox/sandpack-themes";
+
+## 文字百分比颜色
+
+利用 `background-clip: text` 和 `background: linear-gradient(to right, #4caf50 30%, #000000 30%)` 实现
+
+- 背景渐变色两个颜色百分比都是左侧颜色所占百分比
+
+<Sandpack 
+  template="static"
+  theme={aquaBlue}
+  options={{
+    showLineNumbers: true, // default - true
+    showInlineErrors: true, // default - false
+    wrapContent: true, // default - false
+    editorHeight: 440, // default - 300
+    editorWidthPercentage: 60, // default - 50
+  }}
+  files={{
+    "/index.html": {
+      code: 
+        `<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="author" content="Milena Carecho" />
+    <title>Mudança de cor de texto quando entra em outra div</title>
+    <link rel="stylesheet" type="text/css" href="style.css" />
+    <style>
+      .half-color-text {
+        background: linear-gradient(to right, #4caf50 30%, #000000 30%);
+        background-clip: text;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        font-size: 24px;
+        font-weight: bold;
+      }
+    </style>
+  </head>
+  <body>
+    <span class="half-color-text">
+      HelloHelloHelloHelloHelloHello
+    </span>
+  </body>
+</html>
+`
+      }
+
+}}
+/>

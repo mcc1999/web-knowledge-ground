@@ -3,7 +3,7 @@ import type { NextPage } from 'next'
 import { createContext, ReactElement, ReactNode, useEffect, useMemo, useState } from 'react'
 import { MDXProvider } from '@mdx-js/react'
 import dynamic from 'next/dynamic'
-import FrameworkLayout from '@/layout/framework'
+import MDXLayout from '@/layout/mdx'
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import { useMediaQuery } from '@mui/material'
@@ -54,13 +54,13 @@ export default function MyApp({ Component, pageProps }: AppPropsWithLayout) {
   const getLayout =
     Component.getLayout ?? ((page: React.ReactElement) => {
       switch (Component.layoutType) {
-        case 'framework':
+        case 'mdx':
           return (
-            <FrameworkLayout>
+            <MDXLayout>
               <MDXProvider components={components} >
                 {page}
               </MDXProvider >
-            </FrameworkLayout>
+            </MDXLayout>
           )
         default:
           return (

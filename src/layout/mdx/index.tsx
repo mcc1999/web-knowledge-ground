@@ -49,7 +49,7 @@ const StyledTextField = styled(TextField)(({ theme }) => ({
   },
 }));
 
-const FrameworkLayout = (props: any) => {
+const MDXLayout = (props: any) => {
   const router = useRouter();
   const theme = useTheme();
   const [siderData, updateSelectPostId] = useWebPlaygroundStore(state => [state.siderData, state.updateSelectPostId]);
@@ -59,7 +59,7 @@ const FrameworkLayout = (props: any) => {
     router.push(value.value)
   }
   return (
-    <Box className={styles['framework-layout']}>
+    <Box className={styles['mdx-layout']}>
       <AppBar className="appBar-header" position='sticky'>
         <Toolbar>
           <Link href='/' >
@@ -138,4 +138,4 @@ const FrameworkLayout = (props: any) => {
   )
 }
 
-export default FrameworkLayout;
+export default MDXLayout;

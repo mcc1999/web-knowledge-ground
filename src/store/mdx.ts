@@ -11,17 +11,17 @@ export interface SiderDataTreeItem {
   children: SiderDataType[]
 }
 
-export interface FrameworkSlice {
+export interface MDXSlice {
   selectPostId: string,
   siderData: SiderDataType[];
   updateSiderData: (newData: SiderDataType[]) => void;
   updateSelectPostId: (postId: string) => void;
 }
-const createFrameworkSlice: StateCreator<
-  FrameworkSlice,
+const createMDXSlice: StateCreator<
+  MDXSlice,
   [],
   [],
-  FrameworkSlice
+  MDXSlice
 > = (set) => ({
   selectPostId: '-1',
   siderData: [],
@@ -41,4 +41,4 @@ const createFrameworkSlice: StateCreator<
   updateSelectPostId: (postId) => set(() => ({ selectPostId: postId }))
 })
 
-export default createFrameworkSlice;
+export default createMDXSlice;

@@ -1,8 +1,8 @@
 import create from 'zustand'
-import createFrameworkSlice, { FrameworkSlice } from './framework'
+import createMDXSlice, { MDXSlice } from './mdx'
 
-const useWebPlaygroundStore = create<FrameworkSlice>()((...a) => ({
-  ...createFrameworkSlice(...a),
+const useWebPlaygroundStore = create<MDXSlice>()((...a) => ({
+  ...createMDXSlice(...a),
 }))
 
 export default useWebPlaygroundStore;

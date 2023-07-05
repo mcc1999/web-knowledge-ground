@@ -1,4 +1,4 @@
-import { SiderDataTreeItem, SiderDataType } from "@/store/framework";
+import { SiderDataTreeItem, SiderDataType } from "@/store/mdx";
 
 export function buildSiderDataTree(siderData: SiderDataType[]) {
   const tree: SiderDataTreeItem[] = []

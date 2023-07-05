@@ -2,15 +2,14 @@ import Link from 'next/link'
 import React, { useEffect, useState } from 'react'
 import { GetStaticProps } from 'next';
 import useWebPlaygroundStore from '@/store';
-import { SiderDataTreeItem, SiderDataType } from '@/store/framework';
+import { SiderDataTreeItem, SiderDataType } from '@/store/mdx';
 import { allFrameworks } from 'contentlayer/generated'
 import { buildSiderDataTree } from '@/utils';
 
-const FrameworkIndex = (prop: { siderData: SiderDataType[] }) => {
+const MDXIndex = (prop: { siderData: SiderDataType[] }) => {
   const { siderData } = prop
   const updateSiderData = useWebPlaygroundStore(state => state.updateSiderData)
   const [siderTree, setSiderTree] = useState<SiderDataTreeItem[]>([])
-  console.log('siderData', siderData)  
   
   useEffect(() => {
     updateSiderData(siderData);
@@ -23,18 +22,18 @@ const FrameworkIndex = (prop: { siderData: SiderDataType[] }) => {
   return <>
     {
       siderTree.map(branch => {
-        return <>
+        return <div key={branch.folder}>
           <h1>{branch.folder}</h1>
-          {branch.children.map(child => <><Link href={child.linkTo} key={child.id}>{child.title}</Link><br/></>)}
-        </>
+          {branch.children.map(child => <div key={child.id}><Link href={child.linkTo}>{child.title}</Link><br/></div>)}
+        </div>
       })
     }
   </>
 }
 
-export default FrameworkIndex
+export default MDXIndex
 
-FrameworkIndex.layoutType = 'framework'
+MDXIndex.layoutType = 'mdx'
 
 
 export const getStaticProps: GetStaticProps = async () => {

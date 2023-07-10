@@ -15,3 +15,7 @@ ToDo
   - Kent C Dodds' mdx-bundler
   - contentLayer
 6. Combine @next/mdx with contentLayer
+
+
+注意：
+- MDX文件名不能全部为中文，contentlayer生成json文件时识别不了中文，同一文件夹下两个全中文名的文件生成的json文件名会重复导致报错

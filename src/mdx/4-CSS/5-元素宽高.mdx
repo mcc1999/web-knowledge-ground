@@ -1,0 +1,58 @@
+---
+title: 元素宽高
+date: 2023-07-10 15:00:00
+---
+
+## 块级元素
+
+### 元素模型
+
+- 块级元素都有块级盒子 `block level box` 和标记盒子 `marker box`
+
+  - 只有 `li` 元素的标记盒子有内容
+  - 块级盒子又分外在盒子和内在盒子(容器盒子)
+
+    - 外在盒子负责元素是可以一行显示，还是只能换行显示；
+    - 内在盒子(容器盒子)负责 宽高、内容呈现什么
+
+  - 外部尺寸：宽度由外部元素决定，只有 `width: 100%` 属于该尺寸
+  - 内部尺寸：宽度由内部元素决定
+    - [自适应性](https://demo.cssworld.cn/3/2-5.php)(包裹性：shrink-to-fit)：元素尺寸由内部元素决定，但永远小于“包含块”容器的尺寸（除非容器尺寸小于元素的“首选最小宽度 min-height”）
+      - 例：inline-block、浮动元素、absolute 定位元素
+    - [首选最小宽度](https://demo.cssworld.cn/3/2-6.php)：元素最适合的最小宽度。
+      - 汉字单个文字
+      - 英文特定连续单元空格(单词)，break by 普通空格、短横线、问号以及其他非英文字符，`word-break: break-all`使得每个字符 break
+        <details>
+          <summary>文字换行、折叠、省略</summary>
+          <img src="/images/word-break.jpeg" />
+        </details>
+    - 图片等替换元素最小宽度即自身宽度
+  - 最大宽度: 如果内部没有块级元素或者块级元素没有设定宽度值，则“最大宽度”实际上是最大的连 续内联盒子的宽。实际等同于“包裹性”元素设置 `white-space: nowrap` 声明后的宽
+    度
+
+### 盒模型
+
+- box-sizing：默认值是`content-box`
+- 边框模型可以通过宽度分离实现，利用流的特性实现 content width 自适应
+
+```css
+.father {
+  /* 父元素设置宽度 */
+  width: 1000px;
+}
+.son {
+  /* 子元素设置padding、border */
+  padding: 16px 24px;
+  border: 2px solid #000;
+}
+```
+
+- 边框模型的设计初衷：是解决替换元素宽度自适应问题，例：&lt;input /&gt;、&lt;textarea /&gt;等
+
+### height
+
+- 绝对定位的宽高百分比计算是相对于 `padding box` 的，但是非绝对定位元素则是相对于 `content box` 计算
+
+## 内联元素
+
+- 内联元素有内联盒子`inline box`

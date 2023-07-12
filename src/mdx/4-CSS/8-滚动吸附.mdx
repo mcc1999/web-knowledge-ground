@@ -1,0 +1,197 @@
+---
+title: 滚动吸附
+date: 2023-07-12 16:00:00
+---
+
+import { Sandpack } from "@codesandbox/sandpack-react";
+import { cobalt2, githubLight, aquaBlue } from "@codesandbox/sandpack-themes";
+
+## 滚动吸附
+
+利用 `position：sticky` 实现首个 li 吸附效果
+
+<Sandpack 
+  template="static"
+  theme={aquaBlue}
+  options={{
+    showLineNumbers: true, // default - true
+    showInlineErrors: true, // default - false
+    wrapContent: true, // default - false
+    editorHeight: 480, // default - 300
+    editorWidthPercentage: 60, // default - 50
+  }}
+  files={{
+    "/index.html": {
+      code: 
+        `<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>滚动吸附</title>
+    <style type="text/css">
+      li {
+        list-style: none;
+        padding: 8px 16px;
+        border: 1px solid gray;
+        background: seagreen;
+      }
+      li:not(:first-of-type) {
+        margin-top: 8px;
+      }
+      ul {
+        border: 1px solid black;
+        padding: 8px;
+        margin-top: 0;
+      }
+      ul li:first-of-type {
+        position: sticky;
+        top: 0;
+        background: sienna;
+      }
+      .box {
+        margin-top: 48px;
+        height: 400px;
+        overflow: scroll;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="box">
+      <ul>
+        <li>A</li>
+        <li>asdfd</li>
+        <li>ahgfsa</li>
+        <li>absgrs</li>
+        <li>avfhf</li>
+        <li>akinds</li>
+      </ul>
+      <ul>
+        <li>B</li>
+        <li>bsdfd</li>
+        <li>bhgfsa</li>
+        <li>bbsgrs</li>
+        <li>bvfhf</li>
+        <li>bkinds</li>
+      </ul>
+      <ul>
+        <li>C</li>
+        <li>csdfd</li>
+        <li>chgfsa</li>
+        <li>cbsgrs</li>
+        <li>cvfhf</li>
+        <li>ckinds</li>
+      </ul>
+      <ul>
+        <li>D</li>
+        <li>csdfd</li>
+        <li>chgfsa</li>
+        <li>cbsgrs</li>
+        <li>cvfhf</li>
+        <li>ckinds</li>
+      </ul>
+      <ul>
+        <li>E</li>
+        <li>csdfd</li>
+        <li>chgfsa</li>
+        <li>cbsgrs</li>
+        <li>cvfhf</li>
+        <li>ckinds</li>
+      </ul>
+      <ul>
+        <li>F</li>
+        <li>csdfd</li>
+        <li>chgfsa</li>
+        <li>cbsgrs</li>
+        <li>cvfhf</li>
+        <li>ckinds</li>
+      </ul>
+      <ul>
+        <li>G</li>
+        <li>csdfd</li>
+        <li>chgfsa</li>
+        <li>cbsgrs</li>
+        <li>cvfhf</li>
+        <li>ckinds</li>
+      </ul>
+      <ul>
+        <li>H</li>
+        <li>csdfd</li>
+        <li>chgfsa</li>
+        <li>cbsgrs</li>
+        <li>cvfhf</li>
+        <li>ckinds</li>
+      </ul>
+      <ul>
+        <li>I</li>
+        <li>csdfd</li>
+        <li>chgfsa</li>
+        <li>cbsgrs</li>
+        <li>cvfhf</li>
+        <li>ckinds</li>
+      </ul>
+      <ul>
+        <li>J</li>
+        <li>csdfd</li>
+        <li>chgfsa</li>
+        <li>cbsgrs</li>
+        <li>cvfhf</li>
+        <li>ckinds</li>
+      </ul>
+      <ul>
+        <li>K</li>
+        <li>csdfd</li>
+        <li>chgfsa</li>
+        <li>cbsgrs</li>
+        <li>cvfhf</li>
+        <li>ckinds</li>
+      </ul>
+      <ul>
+        <li>L</li>
+        <li>csdfd</li>
+        <li>chgfsa</li>
+        <li>cbsgrs</li>
+        <li>cvfhf</li>
+        <li>ckinds</li>
+      </ul>
+      <ul>
+        <li>M</li>
+        <li>csdfd</li>
+        <li>chgfsa</li>
+        <li>cbsgrs</li>
+        <li>cvfhf</li>
+        <li>ckinds</li>
+      </ul>
+      <ul>
+        <li>N</li>
+        <li>csdfd</li>
+        <li>chgfsa</li>
+        <li>cbsgrs</li>
+        <li>cvfhf</li>
+        <li>ckinds</li>
+      </ul>
+      <ul>
+        <li>O</li>
+        <li>csdfd</li>
+        <li>chgfsa</li>
+        <li>cbsgrs</li>
+        <li>cvfhf</li>
+        <li>ckinds</li>
+      </ul>
+      <ul>
+        <li>P</li>
+        <li>csdfd</li>
+        <li>chgfsa</li>
+        <li>cbsgrs</li>
+        <li>cvfhf</li>
+        <li>ckinds</li>
+      </ul>
+    </div>
+  </body>
+</html>
+`
+      }
+
+}}
+/>

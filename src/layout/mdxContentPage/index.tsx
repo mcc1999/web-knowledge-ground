@@ -5,6 +5,7 @@ import useWebPlaygroundStore from '@/store';
 import { useMDXComponent } from 'next-contentlayer/hooks';
 import CodeBlock from '@/components/mdxComponents/Codeblock';
 import CustomSandpack from '@/components/mdxComponents/CustomSandpack';
+import Counter from '@/components/mdxComponents/Counter';
 
 export interface LayoutProps {
   siderData: SiderDataType[];
@@ -14,7 +15,8 @@ export interface LayoutProps {
 const MDXcomponents = {
   // Pass Custom Components here (for use in markdown files)
   code: CodeBlock,
-  CustomSandpack
+  CustomSandpack,
+  Counter,
 };
 
 const MDXCurrentPage = (props: LayoutProps) => {

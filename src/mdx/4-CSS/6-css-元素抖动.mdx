@@ -1,0 +1,71 @@
+---
+title: CSS-元素抖动
+date: 2023-07-11 10:00:00
+---
+
+import { Sandpack } from "@codesandbox/sandpack-react";
+import { cobalt2, githubLight, aquaBlue } from "@codesandbox/sandpack-themes";
+
+## 元素抖动动画
+
+<Sandpack 
+  template="static"
+  theme={aquaBlue}
+  options={{
+    showLineNumbers: true, // default - true
+    showInlineErrors: true, // default - false
+    wrapContent: true, // default - false
+    editorHeight: 480, // default - 300
+    editorWidthPercentage: 60, // default - 50
+  }}
+  files={{
+    "/index.html": {
+      code: 
+        `<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Static Template</title>
+    <style>
+      .box {
+        width: 64px;
+        height: 24px;
+        margin： 16px;
+        border: 1px solid #000;
+        text-align: center;
+        cursor: pointer;
+      }
+      .shake {
+        animation: shaking 800ms ease-in-out; 
+      }
+
+      @keyframes shaking {
+        10%, 90% { transform: translate3d(-1px, 0, 0) }
+        20%, 80% { transform: translate3d(+2px, 0, 0) }
+        30%, 70% { transform: translate3d(-4px, 0, 0) }
+        40%, 60% { transform: translate3d(+4px, 0, 0) }
+        50% { transform: translate3d(-4px, 0, 0) }
+      }
+    </style>
+
+  </head>
+  <body>
+    <div class="box" id ="box" onclick="shakeEle()"> Click </div>
+    <script>
+      function shakeEle() {
+        const ele = document.getElementById('box')
+        ele.classList.add('shake')
+        setTimeout(() => {
+          ele.classList.remove('shake')
+        }, 800)
+      }
+    </script>
+  </body>
+</html>
+`
+      }
+
+}}
+/>

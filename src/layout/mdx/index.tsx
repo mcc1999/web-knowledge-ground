@@ -63,7 +63,7 @@ const MDXLayout = (props: any) => {
       <AppBar className="appBar-header" position='sticky'>
         <Toolbar>
           <Link href='/' >
-            <Avatar src="/icon.JPG" alt="ICON" sx={{ marginRight: '16px', cursor: 'pointer' }} />
+            <Avatar src="/images/icon.JPG" alt="ICON" sx={{ marginRight: '16px', cursor: 'pointer' }} />
           </Link>
           <Typography
             variant="h4"

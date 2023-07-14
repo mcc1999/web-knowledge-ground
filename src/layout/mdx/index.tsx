@@ -52,8 +52,7 @@ const StyledTextField = styled(TextField)(({ theme }) => ({
 const MDXLayout = (props: any) => {
   const router = useRouter();
   const theme = useTheme();
-  const [siderData, updateSelectPostId] = useWebPlaygroundStore(state => [state.siderData, state.updateSelectPostId]);
-  const [folded, setFolded] = useState<boolean>(false)  
+  const [siderData, updateSelectPostId, siderFolded, toggleSiderFolded] = useWebPlaygroundStore(state => [state.siderData, state.updateSelectPostId, state.siderFolded, state.toggleSiderFolded]);
 
   const handelAutocompleteChange = (event: any, value: any) => {
     router.push(value.value)
@@ -108,8 +107,8 @@ const MDXLayout = (props: any) => {
           <ThemeSwitch />
         </Toolbar>
       </AppBar>
-      <Paper className={styles['content']} elevation={3} sx={{ width: folded ? 0 : 275, height: 'calc(100% - 64px)', padding: '16px 0', borderRadius: 0, display: 'inline-block', verticalAlign: 'top', transition: 'width .5s' }}>
-        <div className={styles['fold-icon']} style={{left: folded ? 0 : 275}} onClick={() => setFolded(!folded)}>{folded ? <AiOutlineCaretRight /> : <AiOutlineCaretLeft />}</div>
+      <Paper className={styles['content']} elevation={3} sx={{ width: siderFolded ? 0 : 275, height: 'calc(100% - 64px)', padding: '16px 0', borderRadius: 0, display: 'inline-block', verticalAlign: 'top', transition: 'width .5s' }}>
+        <div className={styles['fold-icon']} style={{left: siderFolded ? 0 : 275}} onClick={() => toggleSiderFolded()}>{siderFolded ? <AiOutlineCaretRight /> : <AiOutlineCaretLeft />}</div>
         {siderData.map((item, i) =>
           <Typography
             key={item.title + i}
@@ -131,7 +130,7 @@ const MDXLayout = (props: any) => {
           </Typography>
         )}
       </Paper>
-      <Card sx={{ width: `calc(100% - ${folded ? 0 : 275}px)`, height: 'calc(100% - 64px)', padding: '32px 10%', display: 'inline-block', overflowY: 'scroll', borderRadius: 0, verticalAlign: 'top', transition: 'width .5s' }}>
+      <Card sx={{ width: `calc(100% - ${siderFolded ? 0 : 275}px)`, height: 'calc(100% - 64px)', padding: '32px 10%', display: 'inline-block', overflowY: 'scroll', borderRadius: 0, verticalAlign: 'top', transition: 'width .5s' }}>
         <div className='markdown-body'>{props.children}</div>
       </Card>
     </Box >

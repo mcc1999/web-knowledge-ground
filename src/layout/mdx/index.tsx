@@ -71,8 +71,14 @@ const MDXLayout = (props: any) => {
             sx={{ flexGrow: 1, display: { xs: 'none', sm: 'block' } }}
           >
             <Link href='/mdx'>
-              Web-Playground
+              <span className={styles['header-title']}>Web-Playground</span> 
             </Link>
+            <svg width="0" height="0">
+              <filter id="filter">
+                <feTurbulence id="turbulence" type="fractalNoise" baseFrequency=".03" numOctaves="20" />
+                <feDisplacementMap in="SourceGraphic" scale="10" />
+              </filter>
+            </svg>
           </Typography>
           <SearchAutocomplete
             options={siderData.map(item => ({ label: item.title, value: item.linkTo }))}

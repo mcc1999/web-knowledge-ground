@@ -3,6 +3,16 @@
   height: 100vh;
   overflow-x: hidden;
 
+  .header-title {
+    background: linear-gradient(#fff, #999, #ddd, #888);
+    background-clip: text;
+    cursor: pointer;
+
+    &:hover {
+      filter: url("#filter");
+    }
+  }
+
   .content {
     .content-item {
       display: inline-block;

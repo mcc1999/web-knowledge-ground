@@ -14,6 +14,11 @@
   }
 
   .content {
+    overflow: hidden;
+    
+    &:hover {
+      overflow: auto;
+    }
     .content-item {
       display: inline-block;
       width: 243px;

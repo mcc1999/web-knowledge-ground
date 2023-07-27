@@ -59,10 +59,10 @@ const MDXLayout = (props: any) => {
   }
   return (
     <Box className={styles['mdx-layout']}>
-      <AppBar className="appBar-header" position='sticky'>
+      <AppBar position='sticky'>
         <Toolbar>
-          <Link href='/' >
-            <Avatar src="/images/icon.JPG" alt="ICON" sx={{ marginRight: '16px', cursor: 'pointer' }} />
+          <Link href='/'>
+            <Avatar src="/images/icon.JPG" className={styles['avatar-img']} alt="ICON" sx={{ marginRight: '16px', cursor: 'pointer' }} />
           </Link>
           <Typography
             variant="h4"

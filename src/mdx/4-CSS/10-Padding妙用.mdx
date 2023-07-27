@@ -1,0 +1,135 @@
+---
+title: Padding妙用
+date: 2023-07-12 23:00:00
+---
+
+import { Sandpack } from "@codesandbox/sandpack-react";
+import { cobalt2, githubLight, aquaBlue } from "@codesandbox/sandpack-themes";
+
+## Padding 妙用 -- 分隔符 && 固定比例 && Icon
+
+- 利用了行内元素设置 padding 不影响布局，实际发生渲染但不影响行高的特性，可实现分隔符
+- 块级元素 padding 百分比值，水平和垂直方向都是根据宽度计算的，设置百分比可实现宽高比例固定
+
+<Sandpack 
+  template="static"
+  theme={aquaBlue}
+  options={{
+    showLineNumbers: true, // default - true
+    showInlineErrors: true, // default - false
+    wrapContent: true, // default - false
+    editorHeight: 480, // default - 300
+    editorWidthPercentage: 60, // default - 50
+  }}
+  files={{
+    "/index.html": {
+      code: 
+        `<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Padding分隔符</title>
+    <style type="text/css">
+      a + a::before {
+        content: '';
+        font-size: 0;
+        padding: 10px 3px 1px;
+        border-left: 1px solid #000;
+      }
+
+      .icon-menu {
+        display: inline-block;
+        width: 140px;
+        height: 10px;
+        border-top: 10px solid #000;
+        border-bottom: 10px solid #000;
+        padding: 35px 0;
+        background-color: #000;
+        background-clip: content-box;
+      }
+      .icon-menu2 {
+        display: inline-block;
+        width: 120px;
+        height: 20px;
+        border-top: 60px double;
+        border-bottom: 20px solid;
+      }
+      .icon-dot {
+        display: inline-block;
+        width: 100px;
+        height: 100px;
+        border: 10px solid #000;
+        border-radius: 50%;
+        padding: 10px;
+        background-color: #000;
+        background-clip: content-box;
+      }
+
+      .box {
+        width: 500px;
+        height: 500px;
+      }
+      .box .child {
+        width: 100%;
+        height: 0;
+        padding: 0;
+        padding-top: 75%;
+        position: relative;
+      }
+      .box .child img {
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        left: 0;
+        right: 0;
+        margin-top: -75%;
+      }
+
+      .box2 {
+        width: 100%;
+        height: auto;
+        aspect-ratio: 16 / 9;
+        position: relative;
+      }
+      .box2 img {
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        left: 0;
+        right: 0;
+      }
+    </style>
+
+  </head>
+  <body>
+    <h3>分隔符</h3>
+    <a href="">登陆</a> 
+    <a href="">注册</a>
+
+    <h3>Padding Icon</h3>
+    <i class="icon-menu"></i>
+    <i class="icon-menu2"></i>
+    <i class="icon-dot"></i>
+
+    <h3>固定宽高比</h3>
+    <h4>IMG1</h4>
+    <div class="box">
+      <div class="child">
+        <img src="https://demo.cssworld.cn/images/4/cover-5-1.jpg" alt="16:9图" />
+      </div>
+    </div>
+
+    <h4>IMG2</h4>
+    <div class="box2">
+      <img src="https://demo.cssworld.cn/images/4/cover-5-1.jpg" alt="16:9图" />
+    </div>
+
+  </body>
+</html>
+`
+      }
+
+}}
+/>

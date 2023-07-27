@@ -1,0 +1,93 @@
+---
+title: font家族样式
+date: 2023-07-26 14:30:00
+---
+
+## font 家族样式
+
+> font 缩写规则：[ [ font-style || font-variant || font-weight ]? font-size [ / line-height ]? font-family ]
+
+### font-size
+
+- lint-height 的数字值和百分比值根据当前元素的 font-size 计算，vertical-align 百分比值是根据 line-height 计算
+- em 为一个汉字的高度、ex 是字母 x 的高度、ch 是数字 0 的**宽度**
+- CSS 世界的渲染是一次渲染，是先计算 font-size，然后再计算给其他使用 em 单位的属性值大小。
+
+### font-family
+
+- font-family 分为 `字体名` 和 `字体族`
+  - 字体名即宋体、雅黑...
+  - 字体族如下
+    • serif：衬线字体，笔画开始、结束的地方有额外装饰而且笔画的粗细会有所不同的字体。
+    • sans-serif：无衬线字体。
+    • monospace：等宽字体。
+    • cursive：手写字体。
+    • fantasy：奇幻字体。
+    • system-ui：系统 UI 字体
+- 字体族最好放最后，字体族后的字体名可能不生效
+- 字体名包含空格，需要使用引号包起
+- 多个字体设定，用逗号隔断，浏览器从左往右依次寻找本地是否有对应的字体
+- 字体名称中经常会出现“SC”，指的是“简体”（simplified chinese），相对应的还有“TC”，指的是“繁体”（traditional chinese）
+
+### font-weight
+
+- normal：400， bold：700，min：100， max：900
+- bolder、lighter：在这几个值之间变
+- 100 - 900 设置某些值没有看到任何粗细的变化，是因为我们的系统里面缺乏对应粗细的字体
+
+### font-style
+
+- 可选值：normal、italic、oblique
+- italic 斜体和 oblique 仅倾斜效果一样，是因为该字体没有相应斜体字体
+
+### font-variant
+
+- 可选值：normal、small-cap：英文字母大小但跟小写一样大小
+
+### @font face
+
+- 支持的 CSS 属性
+
+```css
+/* 含义为当文字的font-family、font-style、font-weight等值为下面@font-face定义的值时，使用src中定义的字体集 */
+@font-face {
+  font-family: "Family-Name";
+  font-style: "normal" | "italic" | "oblique";
+  font-weight: 100 ~900;
+  src: local() / url() format();
+  unique-range: "";
+  font-variant: "";
+  font-stretch: "";
+  font-feature-settings: "";
+}
+```
+
+- src：local()表示系统字体；url()表示外链字体；format()表示字体格式，让浏览器提前知道字体的格式，以决定是否需要加载这个字体；
+```css
+/* 实际src只需要一个值，其他都是为了兼容性*/
+@font-face {
+  /* 
+      eot：IE私有字体 
+      woff2：比woff尺寸更小的字体， 首选
+      woff：world open font format
+      ttf：系统字体居多
+      svg：兼容ios4以前系统
+    */
+  src: url("icon.eot") format("eot"); /* 兼容ie7、8兼容模式，无法识别下一行中的问号?*/
+  src: url("icon.eot?#iefix") format("embedded-opentype"),
+      url("icon.woff2") format("woff2"), 
+      url("icon.woff") format("woff"), 
+      url("icon.ttf") format("typetrue"),  
+      url("icon.svg#icon") format("svg");
+
+}
+/* 最常用兼容性写法*/
+@font-face {
+  font-family: ICON;
+  src: url('icon.eot');
+  src: local('☺'), /* 识别不了功能符号，不加载该字体*/
+      url('icon.woff2') format("woff2"), 
+      url('icon.woff') format("woff"), 
+      url('icon.ttf');
+} 
+```

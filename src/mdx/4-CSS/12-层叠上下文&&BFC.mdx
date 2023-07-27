@@ -1,0 +1,28 @@
+---
+title: 层叠上下文&&BFC
+date: 2023-07-25 17:30:00
+---
+
+## 层叠上下文&&BFC 触发条件
+
+### BFC 块级格式化上下文
+
+- float 不为 none
+- display 为 inline-block、table-cell、table-caption
+- overflow 为 hidden、scroll、auto
+- position 不为 relative、static
+
+### 层叠上下文 stacking context
+
+层叠顺序：background/border &lt; z-index 负值 &lt; 块级元素 &lt; float 元素 &lt; inline 元素 &lt; z-index 为 auto/0 &lt; z-index 正值
+
+- html 根元素
+- position 不为 static 且 z-index 值不为 auto
+- CSS3 新属性
+  - opacity 不为 1
+  - transform 不为 none
+  - mix-blend-mode 不为 normal
+  - filter 不为 none
+  - isolation 为 isolate
+  - will-change 包含以上之一或以上
+  - -webkit-overflow-scrolling 为 touch

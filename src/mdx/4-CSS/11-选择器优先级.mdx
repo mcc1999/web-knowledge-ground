@@ -1,0 +1,30 @@
+---
+title: 选择器优先级
+date: 2023-07-25 17:00:00
+---
+
+## 选择器优先级
+
+《CSS REFACTORING》 中提到了算法的过程 。
+A specificity is determined by plugging numbers into (a, b, c, d):
+
+1. If the styles are applied via the style attribute, a=1; otherwise, a=0.
+2. b is equal to the number of ID selectors present.
+3. c is equal to the number of class selectors, attribute selectors, and pseudoclasses present.
+4. d is equal to the number of type selectors and pseudoelements present.
+
+优先级是由 A 、B、C、D 的值来决定的，其中它们的值计算规则如下：
+
+- 如果存在内联样式，那么 A = 1, 否则 A = 0;
+- B 的值等于 ID 选择器 出现的次数;
+- C 的值等于 类选择器 和 属性选择器 和 伪类 出现的总次数;
+- D 的值等于 标签选择器 和 伪元素 出现的总次数 。
+
+_参考_ [《深入理解 CSS 选择器优先级》](https://juejin.cn/post/6844903709772611592)
+
+
+### 符号选择器
+- `>` 子选择器
+- `+` 相邻兄弟选择器
+- `～` 兄弟选择器
+- ``

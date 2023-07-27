@@ -1,0 +1,39 @@
+---
+title: 文本控制
+date: 2023-07-27 16:30:00
+---
+
+## 文本控制
+
+### text-indent
+
+- 文字缩进，text-indent 百分比值是根据包含块计算的
+
+### letter-space
+
+- 非 IE 浏览器，取负值且足够大能实现反向排列
+
+### word-break && word-wrap
+
+- word-break 可选值：`normal`、`break-all`、`keep-all`
+- word-wrap 可选值：`normal`、`break-word`
+- `word-break:break-all`的作用是所有的都换行，毫不留情，一点儿空隙都不放过
+- `word-wrap:break-word`则带有怜悯之心，如果这一行文字有可以换行的点，如空格或 CJK（中文/日文/韩文）等
+
+### white-space
+
+| 属性     | 合并空格&&Tab 制表符 | 合并换行 | 自动换行 |
+| -------- | -------------------- | -------- | -------- |
+| normal   | yes                  | yes      | yes      |
+| nowrap   | yes                  | yes      | no       |
+| pre      | no                   | no       | no       |
+| pre-warp | no                   | no       | yes      |
+| pre-line | yes                  | no       | yes      |
+
+### text-decoration
+
+- text-decoration: underline 下划线会和汉字下边缘粘连
+- 纯内联元素可用 border-bottom 模拟
+
+### text-transform
+- `uppercase`、`lowercase`英文字母大小写，自动转换

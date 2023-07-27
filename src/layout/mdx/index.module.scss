@@ -3,7 +3,31 @@
   height: 100vh;
   overflow-x: hidden;
 
+  @keyframes avatar-rotate {
+    0% { transform: rotate(0); }
+    100% { transform: rotate(360deg); }
+  }
+
+  .avatar-img:hover > img {
+    animation: avatar-rotate 1s infinite linear;
+  }
+
+  .header-title {
+    background: linear-gradient(#fff, #999, #ddd, #888);
+    background-clip: text;
+    cursor: pointer;
+
+    &:hover {
+      filter: url("#filter");
+    }
+  }
+
   .content {
+    overflow: hidden;
+    
+    &:hover {
+      overflow: auto;
+    }
     .content-item {
       display: inline-block;
       width: 243px;

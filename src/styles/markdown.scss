@@ -82,7 +82,6 @@
   font-size: 13px;
   line-height: 1.5;
   border-collapse: collapse;
-  color: #34495e;
 }
 .markdown-body table th {
   padding: 10px;
@@ -99,5 +98,18 @@
 
 .markdown-body ul, .markdown-body ol { padding-left: 1em; }
 .markdown-body ul { list-style-type: circle; }
+
+.markdown-body h1, h2 {
+  text-align: center;
+}
+.markdown-body h1 {
+  color: #9c27b0;
+}
+.markdown-body h2 {
+  color: rgba(#9c27b0, .8);
+}
+.markdown-body h3 {
+  color: rgba(#9c27b0, .6);
+}
 
 

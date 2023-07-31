@@ -99,7 +99,7 @@ const MDXLayout = (props: any) => {
               },
             }}
             PopperComponent={(params) => <Popper {...params} placement='bottom-start' />}
-            PaperComponent={(params) => <Paper {...params} sx={{ width: '300px', maxHeight: '300px', }} />}
+            PaperComponent={(params) => <Paper {...params} sx={{ width: '300px', maxHeight: '300px', overflow: 'hidden !important' }} />}
             onChange={handelAutocompleteChange}
             renderInput={(params) =>
               <StyledTextField

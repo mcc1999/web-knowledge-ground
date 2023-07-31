@@ -23,6 +23,7 @@ const lightTheme = {
 const darkTheme = {
   palette: {
     mode: 'dark',
+    background: {default: '#010409', paper: '#010409'},
     ...commonPalette
   },
 } as const;

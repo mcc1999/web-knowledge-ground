@@ -3,19 +3,19 @@ title: 跨域问题
 date: 2022-12-05 15:30:00
 ---
 
-# 跨域问题
+## 跨域问题
 
-## 1.URL构成
+### 1.URL构成
 `Protocol://Domain(Host):Port/Filepath/Filename`
 
-## 2.跨域原因
+### 2.跨域原因
 浏览器限制了跨域资源(不同协议、不用域名、不同端口)的资源交互
 
-## 2.解决跨越的方法
+### 3.解决跨越的方法
 - 前端代理(dev->nodejs， prod->Nginx)
 - 后端开启跨域资源共享
 
-### 前端代理
+#### 前端代理
 - dev开发环境下运行项目都会起dev server，通过dev server将请求代理转发
 ```nodejs
   proxy: {

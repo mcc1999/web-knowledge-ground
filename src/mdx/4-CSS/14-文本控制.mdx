@@ -3,7 +3,7 @@ title: 文本控制
 date: 2023-07-27 16:30:00
 ---
 
-## 文本控制
+# 文本控制
 
 ### text-indent
 
@@ -24,11 +24,11 @@ date: 2023-07-27 16:30:00
 
 | 属性     | 合并空格&&Tab 制表符 | 合并换行 | 自动换行 |
 | -------- | -------------------- | -------- | -------- |
-| normal   | yes                  | yes      | yes      |
-| nowrap   | yes                  | yes      | no       |
-| pre      | no                   | no       | no       |
-| pre-warp | no                   | no       | yes      |
-| pre-line | yes                  | no       | yes      |
+| normal   | yes✅                | yes✅    | yes✅    |
+| nowrap   | yes✅                | yes✅    | no❌     |
+| pre      | no❌                 | no❌     | no❌     |
+| pre-warp | no❌                 | no❌     | yes✅    |
+| pre-line | yes✅                | no❌     | yes✅    |
 
 ### text-decoration
 
@@ -36,4 +36,17 @@ date: 2023-07-27 16:30:00
 - 纯内联元素可用 border-bottom 模拟
 
 ### text-transform
+
 - `uppercase`、`lowercase`英文字母大小写，自动转换
+
+### ::first-letter
+
+- 生效元素：display 计算值是 block、inline-block、list-item、table- cell 或者 table-caption
+- 生效字符：数字、英文字母、中文、$、一些运算符，以及非常容易被忽视的**空格**
+- 生效字符前有其他符号，设置样式会一同生效
+- 有效样式
+  - 所有 font 属性
+  - 所有 background 属性
+  - margin、padding、border、color
+  - 本节其他文本控制属性
+- 可跨标签获取元素，除了跨越标签的 display 为 inline-block、inline-table 或 flex

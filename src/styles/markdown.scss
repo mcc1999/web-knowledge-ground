@@ -86,7 +86,7 @@
 .markdown-body table th {
   padding: 10px;
   text-align: left;
-  background-color: #f1f4f8;
+  background-color: rgba(225, 190, 231, 0.15);
   white-space: nowrap;
   word-wrap: normal;
 }
@@ -102,14 +102,13 @@
 .markdown-body h1, h2 {
   text-align: center;
 }
-.markdown-body h1 {
-  color: #9c27b0;
-}
-.markdown-body h2 {
-  color: rgba(#9c27b0, .8);
-}
+
 .markdown-body h3 {
-  color: rgba(#9c27b0, .6);
+  color: #ed6c02;
+}
+.markdown-body blockquote {
+  border-color: #9c27b0;
+  background-color: rgba(225, 190, 231, 0.15);
 }
 
 

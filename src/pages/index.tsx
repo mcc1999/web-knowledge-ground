@@ -49,10 +49,10 @@ const Home: NextPage = () => {
             </a>
           </Link>
 
-          <Link href="/404" >
+          <Link href="/todo-list" >
             <a className={styles.card}>
-              <h2>404 Page &rarr;</h2>
-              <p>Page Not Found......</p>
+              <h2>TODO LIST &rarr;</h2>
+              <p>一个 TODO LIST 工具应用</p>
             </a>
           </Link>
         </div>

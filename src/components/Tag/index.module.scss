@@ -1,0 +1,150 @@
+@mixin tag-magenta {
+  color: #c41d7f;
+  background: #fff0f6;
+  border-color: #ffadd2;
+}
+@mixin tag-red {
+  color: #cf1322;
+  background: #fff1f0;
+  border-color: #ffa39e;
+}
+@mixin tag-volcano {
+  color: #d4380d;
+  background: #fff2e8;
+  border-color: #ffbb96;
+}
+@mixin tag-orange {
+  color: #d46b08;
+  background: #fff7e6;
+  border-color: #ffd591;
+}
+@mixin tag-gold {
+  color: #d48806;
+  background: #fffbe6;
+  border-color: #ffe58f;
+}
+@mixin tag-lime {
+  color: #7cb305;
+  background: #fcffe6;
+  border-color: #eaff8f;
+}
+@mixin tag-green {
+  color: #389e0d;
+  background: #f6ffed;
+  border-color: #b7eb8f;
+}
+@mixin tag-cyan {
+  color: #08979c;
+  background: #e6fffb;
+  border-color: #87e8de;
+}
+@mixin tag-blue {
+  color: #0958d9;
+  background: #e6f4ff;
+  border-color: #91caff;
+}
+@mixin tag-geekblue {
+  color: #1d39c4;
+  background: #f0f5ff;
+  border-color: #adc6ff;
+}
+@mixin tag-purple {
+  color: #531dab;
+  background: #f9f0ff;
+  border-color: #d3adf7;
+}
+@mixin tag-error {
+  color: #ff4d4f;
+  background: #fff2f0;
+  border-color: #ffccc7
+}
+@mixin tag-processing {
+  color: #1677ff;
+  background: #e6f4ff;
+  border-color: #91caff;
+}
+@mixin tag-success {
+  color: #52c41a;
+  background: #f6ffed;
+  border-color: #b7eb8f;
+}
+@mixin tag-success {
+  color: #52c41a;
+  background: #f6ffed;
+  border-color: #b7eb8f;
+}
+@mixin tag-warning {
+  color: #faad14;
+  background: #fffbe6;
+  border-color: #ffe58f;
+}
+
+.tagItem {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: fit-content;
+  height: 20px;
+  line-height: 20px;
+  font-size: 12px;
+  font-weight: 500;
+  padding: 0 6px;
+  border-radius: 4px;
+  margin-left: 4px;
+  background-color: #FF4040;
+  color: #fff;
+  @include tag-purple();
+
+  :global {
+    .tag-close-icon {
+      font-size: 1rem !important;
+      cursor: pointer;
+    }
+  }
+  
+  &[data-color="magenta"] {
+    @include tag-magenta();
+  }
+  &[data-color="red"] {
+    @include tag-red();
+  }
+  &[data-color="volcano"] {
+    @include tag-volcano();
+  }
+  &[data-color="orange"] {
+    @include tag-orange();
+  }
+  &[data-color="gold"] {
+    @include tag-gold();
+  }
+  &[data-color="lime"] {
+    @include tag-lime();
+  }
+  &[data-color="green"] {
+    @include tag-green();
+  }
+  &[data-color="cyan"] {
+    @include tag-cyan();
+  }
+  &[data-color="blue"] {
+    @include tag-blue();
+  }
+  &[data-color="geekblue"] {
+    @include tag-geekblue();
+  }
+  &[data-color="purple"] {
+    @include tag-purple();
+  }
+  &[data-color="processing"] {
+    @include tag-processing();
+  }
+  &[data-color="success"] {
+    @include tag-success();
+  }
+  &[data-color="warning"] {
+    @include tag-warning();
+  }
+  &[data-color="error"] {
+    @include tag-error();
+  }
+}

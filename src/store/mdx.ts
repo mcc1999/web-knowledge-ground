@@ -1,4 +1,5 @@
-import create, { StateCreator } from 'zustand'
+import { StateCreator } from 'zustand'
+import { persist } from 'zustand/middleware'
 
 export interface SiderDataType {
   id: string;
@@ -21,28 +22,34 @@ export interface MDXSlice {
 }
 const createMDXSlice: StateCreator<
   MDXSlice,
-  [["zustand/persist", unknown]],
   [],
+  [["zustand/persist", {siderFolded: boolean}]],
   MDXSlice
-> = (set) => ({
-  siderFolded: false,
-  selectPostId: '-1',
-  siderData: [],
-  updateSiderData: (newData) => set((state) => {
-    const { siderData: oldData } = state
-    const newState = [...oldData]
+> = persist(
+  (set) => ({
+    siderFolded: false,
+    selectPostId: '-1',
+    siderData: [],
+    updateSiderData: (newData) => set((state) => {
+      const { siderData: oldData } = state
+      const newState = [...oldData]
 
-    newData?.forEach((d, i) => {
-      if (newState.findIndex(j => j.linkTo === d.linkTo) === -1) {
-        newState.push(d)
+      newData?.forEach((d, i) => {
+        if (newState.findIndex(j => j.linkTo === d.linkTo) === -1) {
+          newState.push(d)
+        }
+      })
+      return {
+        siderData: newState,
       }
-    })
-    return {
-      siderData: newState,
-    }
+    }),
+    updateSelectPostId: (postId) => set(() => ({ selectPostId: postId })),
+    toggleSiderFolded: () => set(state => ({ siderFolded: !state.siderFolded }))
   }),
-  updateSelectPostId: (postId) => set(() => ({ selectPostId: postId })),
-  toggleSiderFolded: () => set(state => ({ siderFolded: !state.siderFolded }))
-})
+  {
+    name: 'siderState',
+    partialize: state => ({siderFolded: state.siderFolded}),
+  },
+)
 
 export default createMDXSlice;

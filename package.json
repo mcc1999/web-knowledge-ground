@@ -26,6 +26,7 @@
     "contentlayer": "^0.2.8",
     "dayjs": "^1.11.10",
     "hastscript": "^7.0.2",
+    "immer": "^10.0.3",
     "lz-string": "^1.4.4",
     "next": "12.1.6",
     "next-contentlayer": "^0.2.8",

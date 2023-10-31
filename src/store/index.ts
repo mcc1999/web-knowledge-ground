@@ -1,13 +1,11 @@
 import create from 'zustand'
 import createMDXSlice, { MDXSlice } from './mdx'
-import { persist } from 'zustand/middleware'
+import createTodoListSlice, { TodoListSlice } from './todoList'
 
 
-const useWebPlaygroundStore = create<MDXSlice>()((...a) => ({
-  ...persist(createMDXSlice, {
-    name: 'siderState',
-    partialize: state => ({siderFolded: state.siderFolded}) ,
-  })(...a),
+const useWebPlaygroundStore = create<MDXSlice & TodoListSlice>()((...a) => ({
+    ...createMDXSlice(...a), 
+    ...createTodoListSlice(...a),
 }))
 
 export default useWebPlaygroundStore;

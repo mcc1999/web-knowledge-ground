@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router';
-import React from 'react'
+import React, { useReducer } from 'react'
 import HomeIcon from '@mui/icons-material/Home';
 import GrainIcon from '@mui/icons-material/Grain';
 import WhatshotIcon from '@mui/icons-material/Whatshot';
@@ -8,25 +8,15 @@ import dayjs, { Dayjs } from 'dayjs';
 import Tag from '@/components/Tag';
 
 import styles from './index.module.scss'
-
-export interface TodoItemChild {
-  id: number;
-  title: string;
-  remark?: string;
-  deadline?: string;
-}
-
-export interface TodoItem extends TodoItemChild {
-  tags?: string[];
-  children?: TodoItemChild[];
-}
+import { TodoItem } from '@/store/todoList';
 
 const TodoDay: React.FC = () => {
   const router = useRouter()
-  
+  // const [ ] = use  
   const todoList: TodoItem[] = [
     {
       id: 1,
+      date: dayjs('2023-10-22').format('YYYY-MM-DD'),
       title: 'title1',
       remark: 'remark1',
       deadline: dayjs('2023-10-22').format('YYYY-MM-DD HH:mm:ss'),
@@ -45,8 +35,20 @@ const TodoDay: React.FC = () => {
           deadline: dayjs('2023-11-08').format('YYYY-MM-DD HH:mm:ss'),
         },
       ],
-    }
+    },
+    {
+      id: 2,
+      date: dayjs('2023-10-28').format('YYYY-MM-DD'),
+      title: 'title2',
+      remark: 'remark2',
+      deadline: dayjs('2023-10-22').format('YYYY-MM-DD HH:mm:ss'),
+      tags: ['tag1', 'tag2'],
+    },
   ]
+
+  const onCloseTag = (id: number, tag: string) => {
+
+  }
   
   const breadcrumbs = [
     {
@@ -86,7 +88,7 @@ const TodoDay: React.FC = () => {
                       key={idx} 
                       style={{ marginRight: idx === todoList.length - 1 ? 0 : 4}}
                       closable
-                      onClose={() => {console.log('close')}}
+                      onClose={() => onCloseTag(todo.id, tag)}
                     >
                       #{tag}
                     </Tag>  

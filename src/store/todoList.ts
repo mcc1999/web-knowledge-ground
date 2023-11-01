@@ -1,6 +1,7 @@
 import { StateCreator } from 'zustand'
 import { produce } from 'immer'
 import { persist } from 'zustand/middleware';
+import dayjs from 'dayjs';
 
 export interface TodoItemChild {
   id: number;
@@ -18,31 +19,33 @@ export interface TodoItem extends TodoItemChild {
   children?: TodoItemChild[];
 }
 
+export interface Tag {
+  id: number;
+  value: string;
+}
+
 export enum UpdateTagType {
   ADD = 'ADD',
   DELETE = 'DELETE',
 }
 
-export interface TodoListSlice {
+export interface TodoListState {
   todoList: TodoItem[];
-  /**
-   * 根据日期获取TodoItem列表
-   * @param date string 日期YYYY-MM-DD
-   * @returns TodoItem[ ]
-   */
-  getTodoListByDate: (date: string) => TodoItem[];
+  tags: Tag[];
+}
+export interface TodoListActions {
   /**
    * 根据tag获取TodoItem列表
    * @param tag string
    * @returns TodoItem[ ]
    */
-  getTodoListByTag: (tag: string) => TodoItem[];
+  // getTodoListByTag: (tag: string) => TodoItem[];
   /**
    * 新增Todo Item事项
    * @param todoItem 
    * @returns void
    */
-  addTodoItem: (todoItem: TodoItem) => void;
+  addTodoItem: (todoItem: Partial<TodoItem>) => void;
   /**
    * 新增Todo Item子事项
    * @param todoItem 
@@ -57,25 +60,62 @@ export interface TodoListSlice {
   updateTodoItemTags: (updateTagType: UpdateTagType, todoItemId: number, tag: string) => void;
 }
 
+export type TodoListSlice = TodoListState & TodoListActions
+
+const initTodoListStates: TodoListState  = {
+  todoList: [
+    {
+      id: 1,
+      date: dayjs('2023-10-31').format('YYYY-MM-DD'),
+      title: 'title1',
+      remark: 'remark1',
+      deadline: dayjs('2023-11-22').format('YYYY-MM-DD HH:mm:ss'),
+      tags: ['tag1', 'tag2'],
+      children: [
+        {
+          id: 11,
+          title: 'title1-1',
+          remark: 'remark1-1',
+          deadline: dayjs('2023-11-06').format('YYYY-MM-DD HH:mm:ss'),
+        },
+        {
+          id: 12,
+          title: 'title1-2',
+          remark: 'remark1-2',
+          deadline: dayjs('2023-11-08').format('YYYY-MM-DD HH:mm:ss'),
+        },
+      ],
+    },
+    {
+      id: 2,
+      date: dayjs('2023-10-28').format('YYYY-MM-DD'),
+      title: 'title2',
+      remark: 'remark2',
+      deadline: dayjs('2023-10-22').format('YYYY-MM-DD HH:mm:ss'),
+      tags: ['tag1', 'tag2'],
+    },
+  ],
+  tags: [],
+}
+
 const createTodoListSlice: StateCreator<
   TodoListSlice,
   [],
-  [["zustand/persist", {todoList: TodoItem[]}]],
+  [[ "zustand/persist", { todoList: TodoListState } ]],
   TodoListSlice
 > = persist(
   (set, get) => ({
-    todoList: [],
-    getTodoListByDate: (date: string) => {
-      const { todoList } = get();
-      return todoList.filter(todo => todo.date === date)
-    },
-    getTodoListByTag: (tag: string) => {
-      const { todoList } = get();
-      return todoList.filter(todo => todo.tags?.includes(tag))
-    },
-    addTodoItem: (todoItem: TodoItem) => set(produce((state: TodoListSlice) => {
+    ...initTodoListStates,
+    // getTodoListByTag: (tag: string) => {
+    //   const { todoList } = get();
+    //   return todoList.filter(todo => todo.tags?.includes(tag))
+    // },
+    addTodoItem: (todoItem: Partial<TodoItem>) => set(produce((state: TodoListSlice) => {
       const { todoList } = state
-      todoList.push(todoItem)
+      todoList.push({
+        ...todoItem,
+        id: todoList.length,
+      } as TodoItem)
     })),
     addTodoItemChild: (todoItemId: number, todoItemChild: TodoItemChild) => set(produce((state: TodoListSlice) => {
       const { todoList } = state
@@ -98,7 +138,8 @@ const createTodoListSlice: StateCreator<
   }),
   {
     name: 'todoListState',
-    partialize: state => ({todoList: state.todoList}),
+    skipHydration: true,
+    // partialize: state => ({todoList: state.todoList}),
   }
 )
 

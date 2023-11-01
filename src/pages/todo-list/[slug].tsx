@@ -1,53 +1,51 @@
 import { useRouter } from 'next/router';
-import React, { useReducer } from 'react'
+import React, { useEffect, useState } from 'react'
 import HomeIcon from '@mui/icons-material/Home';
 import GrainIcon from '@mui/icons-material/Grain';
 import WhatshotIcon from '@mui/icons-material/Whatshot';
+import AddIcon from '@mui/icons-material/Add';
 import BreadcrumbsThemeHeader from '@/components/BreadcrumbsThemeHeader';
 import dayjs, { Dayjs } from 'dayjs';
 import Tag from '@/components/Tag';
+import { TodoItem, UpdateTagType } from '@/store/todoList';
+import useWebPlaygroundStore from '@/store';
+import { Button, Dialog } from '@mui/material';
 
 import styles from './index.module.scss'
-import { TodoItem } from '@/store/todoList';
+import EditDialog, { DialogType } from './components/EditDialog';
 
 const TodoDay: React.FC = () => {
   const router = useRouter()
-  // const [ ] = use  
-  const todoList: TodoItem[] = [
-    {
-      id: 1,
-      date: dayjs('2023-10-22').format('YYYY-MM-DD'),
-      title: 'title1',
-      remark: 'remark1',
-      deadline: dayjs('2023-10-22').format('YYYY-MM-DD HH:mm:ss'),
-      tags: ['tag1', 'tag2'],
-      children: [
-        {
-          id: 11,
-          title: 'title1-1',
-          remark: 'remark1-1',
-          deadline: dayjs('2023-11-06').format('YYYY-MM-DD HH:mm:ss'),
-        },
-        {
-          id: 12,
-          title: 'title1-2',
-          remark: 'remark1-2',
-          deadline: dayjs('2023-11-08').format('YYYY-MM-DD HH:mm:ss'),
-        },
-      ],
-    },
-    {
-      id: 2,
-      date: dayjs('2023-10-28').format('YYYY-MM-DD'),
-      title: 'title2',
-      remark: 'remark2',
-      deadline: dayjs('2023-10-22').format('YYYY-MM-DD HH:mm:ss'),
-      tags: ['tag1', 'tag2'],
-    },
-  ]
+  const [ 
+    todoList, 
+    updateTodoItemTags,
+    addTodoItem,
+  ] = useWebPlaygroundStore((state) =>[ 
+    state.todoList, 
+    state.updateTodoItemTags,
+    state.addTodoItem,
+  ])
+  const [dialogType, setDialogType] = useState<DialogType | undefined>();
+
+  /**
+   * 根据日期获取TodoItem列表
+   * @param date string 日期YYYY-MM-DD
+   * @returns TodoItem[ ]
+   */
+  const getTodoListByDate =  (date: string) => {
+    return todoList.filter(todo => todo.date === date)
+  }
 
   const onCloseTag = (id: number, tag: string) => {
+    updateTodoItemTags(UpdateTagType.DELETE, id, tag)
+  }
 
+  const onAddTodoItem = (todoItem: Partial<TodoItem>) => {
+    addTodoItem({
+      ...todoItem,
+      date: router.query.slug!.toString(),
+    })
+    setDialogType(undefined)
   }
   
   const breadcrumbs = [
@@ -73,8 +71,18 @@ const TodoDay: React.FC = () => {
       <BreadcrumbsThemeHeader breadcrumbs={breadcrumbs} />
       <div className='todo-list-box'>
         <div className='todo-list list-box'>
-          <h2 className='list-box__header'>TODO</h2>
-          {todoList.map((todo, i) => (
+          <div className='list-box__header'>
+            <div className='header-title'>TODO</div>
+            <div>
+              <Button 
+                variant='contained' 
+                size='small' 
+                startIcon={<AddIcon />}
+                onClick={() => setDialogType(DialogType.CREATE)}
+              >新建</Button>
+            </div>
+          </div>
+          {getTodoListByDate(router.query.slug as string).map((todo, i) => (
             <div key={i} className='todo-list-item'>
               <div className='todo-list-item__title'>{todo.title}</div>
               {/* <div className='todo-list-item__remark'>{todo.remark}</div> */}
@@ -86,7 +94,7 @@ const TodoDay: React.FC = () => {
                   {todo.tags.map((tag, idx) => (
                     <Tag 
                       key={idx} 
-                      style={{ marginRight: idx === todoList.length - 1 ? 0 : 4}}
+                      style={{ marginRight: idx === getTodoListByDate(router.query.slug as string).length - 1 ? 0 : 4}}
                       closable
                       onClose={() => onCloseTag(todo.id, tag)}
                     >
@@ -103,6 +111,18 @@ const TodoDay: React.FC = () => {
 
         </div>
       </div>
+      {!!dialogType && <EditDialog 
+        open={!!dialogType}
+        type={dialogType}
+        todoItem={{
+          title: '1213',
+          remark: '123',
+          deadline: dayjs().format('YYYY-MM-DD'),
+          tags: ['tag1']
+        }}
+        onOk={onAddTodoItem}
+        onCancel={() => setDialogType(undefined)}
+      />}
     </div>
   )
 }

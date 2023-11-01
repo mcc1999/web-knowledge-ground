@@ -14,7 +14,7 @@ export interface IBreadcrumbsThemeHeader {
 
 const BreadcrumbsThemeHeader:React.FC<IBreadcrumbsThemeHeader> = (props) => {
   const { breadcrumbs } = props
-  console.log('breadcrumbs', breadcrumbs[-1])
+
   return (
     <div className={styles['breadcrumbs-theme-header']}>
       <div className='todo-list-breadcrumbs'>

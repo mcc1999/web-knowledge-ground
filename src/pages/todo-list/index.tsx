@@ -25,9 +25,9 @@ const breadcrumbs = [
 ]
 
 const TodoList:React.FC = () => {
-  const [month, setMonth] = useState<Dayjs>(() => dayjs())
-  const monthFirstWeekday = getDayOfWeek(month.format('YYYY-MM'))
-  const lastDayOfMonth = getLastDayOfMonth(month.format('YYYY-MM-DD'))
+  const [date, setDate] = useState<Dayjs>(() => dayjs())
+  const monthFirstWeekday = getDayOfWeek(date.format('YYYY-MM'))
+  const lastDayOfMonth = getLastDayOfMonth(date.format('YYYY-MM-DD'))
 
   return (
     <div className={styles['todo-list-container']}>
@@ -36,15 +36,15 @@ const TodoList:React.FC = () => {
         <div className='calender-wrap'>
           <div className='calender-header'>
             <h1 className='calender-header__title'>
-              {month.format('YYYY-MM')}
+              {date.format('YYYY-MM')}
             </h1>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <DatePicker
                 views={['year', 'month']}
                 label="Year and Month"
-                value={dayjs(month)}
+                value={dayjs(date)}
                 onChange={(newValue) => {
-                  newValue && setMonth(newValue);
+                  newValue && setDate(newValue);
                 }}
                 slotProps={{ textField: { size: 'small' } }}
               />
@@ -67,7 +67,7 @@ const TodoList:React.FC = () => {
                   content = i - monthFirstWeekday + 1
                 }
                 return (
-                  <Link key={i.toString() + content} href={`/todo-list/${month.format('YYYY-MM')}`}>
+                  <Link key={i.toString() + content} href={`/todo-list/${date.format('YYYY-MM-DD')}`}>
                     <div className='date-item'>{content}</div>
                   </Link>
                 )

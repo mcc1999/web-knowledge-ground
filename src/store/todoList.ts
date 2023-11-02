@@ -73,6 +73,7 @@ const initTodoListStates: TodoListState  = {
   todoList: [
     {
       id: 1,
+      done: false,
       date: dayjs('2023-10-31').format('YYYY-MM-DD'),
       title: 'title1',
       remark: 'remark1',
@@ -81,12 +82,14 @@ const initTodoListStates: TodoListState  = {
       children: [
         {
           id: 11,
+          done: false,
           title: 'title1-1',
           remark: 'remark1-1',
           deadline: dayjs('2023-11-06').format('YYYY-MM-DD HH:mm:ss'),
         },
         {
           id: 12,
+          done: false,
           title: 'title1-2',
           remark: 'remark1-2',
           deadline: dayjs('2023-11-08').format('YYYY-MM-DD HH:mm:ss'),
@@ -95,6 +98,7 @@ const initTodoListStates: TodoListState  = {
     },
     {
       id: 2,
+      done: false,
       date: dayjs('2023-10-28').format('YYYY-MM-DD'),
       title: 'title2',
       remark: 'remark2',

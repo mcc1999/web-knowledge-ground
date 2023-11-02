@@ -1,9 +1,9 @@
 import { TodoItem } from '@/store/todoList';
 import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, MenuItem } from '@mui/material'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Controller, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { literal, object, string, date, array, TypeOf } from 'zod';
+import { literal, object, string, date, array, TypeOf, z } from 'zod';
 import { DateTimePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import DeletableMultiSelect from '@/components/DeletableMultiSelcet';
@@ -34,7 +34,8 @@ const registerSchema = object({
   remark: string()
     .max(256, '标题长度不能超过256个字符')
     .optional(),
-  deadline: string()
+  deadline: z.instanceof(dayjs as unknown as typeof Dayjs)
+    .refine((d) => d.isAfter(dayjs()), 'Deadline需晚于当前时间')
     .optional(),
   tags: string()
     .array()
@@ -59,16 +60,14 @@ const EditDialog:React.FC<EditDialogProps> = (props) => {
     defaultValues: {
       title: todoItem?.title ?? '',
       remark: todoItem?.remark ?? undefined,
-      // @ts-ignore
       deadline: todoItem?.deadline ? dayjs(todoItem?.deadline): undefined,
+      tags: todoItem?.tags ?? [],
     },
   });
 
   const onSubmit = () => {
     const {deadline, ...formData} = watch()
-    console.log('watch',deadline, 'deadline', watch());
-    
-    handleSubmit(() => onOk({...formData,}))()
+    handleSubmit(() => onOk({deadline: deadline?.format('YYYY-MM-DD HH:mm:ss'),...formData,}))()
   }  
 
   return (
@@ -103,8 +102,9 @@ const EditDialog:React.FC<EditDialogProps> = (props) => {
                 name='deadline'
                 render={({ field: { onChange, value } }) => (
                   <DateTimePicker
-                  onChange={(e) => {onChange((e as unknown as Dayjs)!.format('YYYY-MM-DD HH:mm:ss'))}}
-                  value={value}
+                    disablePast
+                    onChange={onChange}
+                    value={value}
                     label="Deadline"
                     views={['year', 'month', 'day', 'hours', 'minutes', 'seconds']}
                     ampm={false}
@@ -116,27 +116,32 @@ const EditDialog:React.FC<EditDialogProps> = (props) => {
                       error: !!errors['deadline'],
                       helperText: errors['deadline'] ? errors['deadline'].message : '',
                     }}}
-                  />
+                />
                 )}
               />
             </LocalizationProvider>
-            <DeletableMultiSelect
-              label="Tags"
-              fullWidth
-              size='small'
-              margin='dense'
-              {...register('tags')}
-            >
-              {tags.map((tag) => (
-                <MenuItem
-                  key={tag}
-                  value={tag}
-                  // style={getStyles(name, personName, theme)}
-                >
-                  {tag}
-                </MenuItem>
-              ))}
-            </DeletableMultiSelect>
+            <Controller 
+              control={control}
+              name='tags'
+              render={({ field: { value, onChange } }) => (
+                <DeletableMultiSelect
+                  value={value}
+                  onChange={(e, newValue) => onChange(newValue)}
+                  options={tags}
+                  size='small'
+                  fullWidth
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Tags"
+                      margin='dense'
+                      disabled
+                      variant="outlined"
+                    />
+                  )}
+                />
+              )}
+            />
           </Box>
         </DialogContent>
         <DialogActions>

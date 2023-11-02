@@ -6,6 +6,7 @@ import dayjs from 'dayjs';
 export interface TodoItemChild {
   id: number;
   title: string;
+  done: boolean;
   remark?: string;
   deadline?: string;
 }
@@ -58,6 +59,12 @@ export interface TodoListActions {
    * @returns void
    */
   updateTodoItemTags: (updateTagType: UpdateTagType, todoItemId: number, tag: string) => void;
+  /**
+   * 更新Todo Item信息
+   * @param Partial<todoItem> 
+   * @returns void
+   */
+  updateTodoItem: (todoItemId: number, newInfo: Partial<TodoItem>) => void;
 }
 
 export type TodoListSlice = TodoListState & TodoListActions
@@ -132,6 +139,26 @@ const createTodoListSlice: StateCreator<
           todoList[todoItemIndex].tags = [...(todoList[todoItemIndex].tags || []), tag]
         } else if (updateTagType === UpdateTagType.DELETE) {
           todoList[todoItemIndex].tags = todoList[todoItemIndex].tags?.filter(t => t !== tag)
+        }
+      }
+    })),
+    updateTodoItem: (todoItemId: number, newInfo: Partial<TodoItem>) => set(produce((state: TodoListSlice) => {
+      const { todoList, tags } = state
+      const todoItemIndex = todoList.findIndex(todo => todo.id === todoItemId)
+      if (todoItemIndex > -1) {
+        // 更新state：tags
+        if (newInfo.tags?.length) {
+          let tagsCnt = tags.length
+          tags.push(
+            ...newInfo.tags
+              .filter(tag => !tags.map(t => t.value).includes(tag))
+              .map(tag => ({id: tagsCnt++, value: tag}))
+          )
+        }
+        // 更新相应ID的TodoItem
+        todoList[todoItemIndex] = {
+          ...todoList[todoItemIndex],
+          ...newInfo,
         }
       }
     })),

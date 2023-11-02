@@ -5,27 +5,27 @@ import GrainIcon from '@mui/icons-material/Grain';
 import WhatshotIcon from '@mui/icons-material/Whatshot';
 import AddIcon from '@mui/icons-material/Add';
 import BreadcrumbsThemeHeader from '@/components/BreadcrumbsThemeHeader';
-import dayjs, { Dayjs } from 'dayjs';
-import Tag from '@/components/Tag';
-import { TodoItem, UpdateTagType } from '@/store/todoList';
+import { TodoItem } from '@/store/todoList';
 import useWebPlaygroundStore from '@/store';
-import { Button, Dialog } from '@mui/material';
+import { Button } from '@mui/material';
+import EditDialog, { DialogType } from './components/EditDialog';
+import TodoItemComponent from './components/TodoItemComponent';
 
 import styles from './index.module.scss'
-import EditDialog, { DialogType } from './components/EditDialog';
 
 const TodoDay: React.FC = () => {
   const router = useRouter()
   const [ 
     todoList, 
-    updateTodoItemTags,
     addTodoItem,
+    updateTodoItem,
   ] = useWebPlaygroundStore((state) =>[ 
     state.todoList, 
-    state.updateTodoItemTags,
     state.addTodoItem,
+    state.updateTodoItem,
   ])
   const [dialogType, setDialogType] = useState<DialogType | undefined>();
+  const [editItem, setEditItem] = useState<TodoItem>()
 
   /**
    * 根据日期获取TodoItem列表
@@ -35,16 +35,20 @@ const TodoDay: React.FC = () => {
   const getTodoListByDate =  (date: string) => {
     return todoList.filter(todo => todo.date === date)
   }
+  
+  const onCreateOrUpdateItem = (todoItem: Partial<TodoItem>) => {
+    if (dialogType === DialogType.CREATE) {
+      addTodoItem({
+        ...todoItem,
+        done: false,
+        date: router.query.slug!.toString(),
+      })
+    } else if (dialogType === DialogType.EDIT) {
+      const todoItemId = editItem?.id
+      if (!todoItemId) return
+      updateTodoItem(todoItemId, todoItem)
+    } 
 
-  const onCloseTag = (id: number, tag: string) => {
-    updateTodoItemTags(UpdateTagType.DELETE, id, tag)
-  }
-
-  const onAddTodoItem = (todoItem: Partial<TodoItem>) => {
-    addTodoItem({
-      ...todoItem,
-      date: router.query.slug!.toString(),
-    })
     setDialogType(undefined)
   }
   
@@ -83,27 +87,11 @@ const TodoDay: React.FC = () => {
             </div>
           </div>
           {getTodoListByDate(router.query.slug as string).map((todo, i) => (
-            <div key={i} className='todo-list-item'>
-              <div className='todo-list-item__title'>{todo.title}</div>
-              {/* <div className='todo-list-item__remark'>{todo.remark}</div> */}
-              <div className='todo-list-item__info'>
-                {!!todo.deadline && <div className='todo-list-item__deadline'>
-                  <Tag color={dayjs().isBefore(dayjs(todo.deadline)) ? 'processing' : 'error'}>Deadline:{todo.deadline}</Tag>
-                </div>}
-                {!!todo.tags?.length && <div className='todo-list-item__tags'>
-                  {todo.tags.map((tag, idx) => (
-                    <Tag 
-                      key={idx} 
-                      style={{ marginRight: idx === getTodoListByDate(router.query.slug as string).length - 1 ? 0 : 4}}
-                      closable
-                      onClose={() => onCloseTag(todo.id, tag)}
-                    >
-                      #{tag}
-                    </Tag>  
-                  ))}
-                </div>}
-              </div>
-            </div>
+            <TodoItemComponent 
+              key={i} 
+              todo={todo} 
+              onEdit={() => {setEditItem(todo); setDialogType(DialogType.EDIT)}} 
+            />
           ))}
         </div>
         <div className='done-list list-box'>
@@ -114,13 +102,8 @@ const TodoDay: React.FC = () => {
       {!!dialogType && <EditDialog 
         open={!!dialogType}
         type={dialogType}
-        todoItem={{
-          title: '1213',
-          remark: '123',
-          deadline: dayjs().format('YYYY-MM-DD'),
-          tags: ['tag1']
-        }}
-        onOk={onAddTodoItem}
+        onOk={onCreateOrUpdateItem}
+        todoItem={editItem}
         onCancel={() => setDialogType(undefined)}
       />}
     </div>

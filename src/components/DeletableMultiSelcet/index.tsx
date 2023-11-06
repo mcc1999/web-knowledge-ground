@@ -2,7 +2,7 @@ import { Autocomplete, MenuItem } from '@mui/material'
 import { AutocompleteProps } from '@mui/material/Autocomplete'
 import React, { forwardRef } from 'react'
 import CheckIcon from "@mui/icons-material/Check";
-import { ChipTypeMap } from '@mui/material/Chip';
+import Chip, { ChipTypeMap } from '@mui/material/Chip';
 
 export type IDeletableMultiSelect = AutocompleteProps<string, true, false, false, ChipTypeMap['defaultComponent']> 
 
@@ -14,6 +14,10 @@ const DeletableMultiSelect = (props: IDeletableMultiSelect, ref: any) => {
       multiple
       getOptionLabel={(option) => option}
       disableCloseOnSelect
+      renderTags={(value, getTagProps) => 
+        // eslint-disable-next-line react/jsx-key
+         value.map((v, index) => <Chip size='small' { ...getTagProps({index}) } label={v.replace(/Add "(\w+)"/, '$1')} />)
+      }
       renderOption={(props, option, { selected }) => (
         <MenuItem
           {...props}

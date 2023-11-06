@@ -1,7 +1,6 @@
 import { StateCreator } from 'zustand'
 import { produce } from 'immer'
 import { persist } from 'zustand/middleware';
-import dayjs from 'dayjs';
 
 export interface TodoItemChild {
   id: number;
@@ -70,52 +69,17 @@ export interface TodoListActions {
 export type TodoListSlice = TodoListState & TodoListActions
 
 const initTodoListStates: TodoListState  = {
-  todoList: [
-    {
-      id: 1,
-      done: false,
-      date: dayjs('2023-10-31').format('YYYY-MM-DD'),
-      title: 'title1',
-      remark: 'remark1',
-      deadline: dayjs('2023-11-22').format('YYYY-MM-DD HH:mm:ss'),
-      tags: ['tag1', 'tag2'],
-      children: [
-        {
-          id: 11,
-          done: false,
-          title: 'title1-1',
-          remark: 'remark1-1',
-          deadline: dayjs('2023-11-06').format('YYYY-MM-DD HH:mm:ss'),
-        },
-        {
-          id: 12,
-          done: false,
-          title: 'title1-2',
-          remark: 'remark1-2',
-          deadline: dayjs('2023-11-08').format('YYYY-MM-DD HH:mm:ss'),
-        },
-      ],
-    },
-    {
-      id: 2,
-      done: false,
-      date: dayjs('2023-10-28').format('YYYY-MM-DD'),
-      title: 'title2',
-      remark: 'remark2',
-      deadline: dayjs('2023-10-22').format('YYYY-MM-DD HH:mm:ss'),
-      tags: ['tag1', 'tag2'],
-    },
-  ],
+  todoList: [],
   tags: [],
 }
 
 const createTodoListSlice: StateCreator<
   TodoListSlice,
   [],
-  [[ "zustand/persist", { todoList: TodoListState } ]],
+  [[ "zustand/persist", TodoListState ]],
   TodoListSlice
 > = persist(
-  (set, get) => ({
+  (set) => ({
     ...initTodoListStates,
     // getTodoListByTag: (tag: string) => {
     //   const { todoList } = get();
@@ -170,7 +134,10 @@ const createTodoListSlice: StateCreator<
   {
     name: 'todoListState',
     skipHydration: true,
-    // partialize: state => ({todoList: state.todoList}),
+    partialize: state => ({
+      todoList: state.todoList,
+      tags: state.tags,
+    }),
   }
 )
 

@@ -8,6 +8,8 @@ import { DateTimePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import DeletableMultiSelect from '@/components/DeletableMultiSelcet';
 import dayjs, { Dayjs } from 'dayjs';
+import { createFilterOptions } from '@mui/material/Autocomplete';
+import useWebPlaygroundStore from '@/store';
 
 export enum DialogType {
   'CREATE' = 'CREATE',
@@ -45,10 +47,11 @@ const registerSchema = object({
 
 type RegisterInput = TypeOf<typeof registerSchema>;
 
+const filter = createFilterOptions<string>();
 
 const EditDialog:React.FC<EditDialogProps> = (props) => {
   const { open, type, todoItem, onOk, onCancel } = props
-  const tags = [ 'tag1', 'tag2', 'tag3','tag4', 'tag5', 'tag6', 'tag7', 'tag8', 'tag9', 'tag10', 'tag11', 'tag12', 'tag13' ]
+  const [ tags ] = useWebPlaygroundStore((state) =>[ state.tags ])
   const {
     watch,
     control,
@@ -66,8 +69,12 @@ const EditDialog:React.FC<EditDialogProps> = (props) => {
   });
 
   const onSubmit = () => {
-    const {deadline, ...formData} = watch()
-    handleSubmit(() => onOk({deadline: deadline?.format('YYYY-MM-DD HH:mm:ss'),...formData,}))()
+    const {deadline, tags: tagsValue, ...formData} = watch()
+    handleSubmit(() => onOk({
+      deadline: deadline?.format('YYYY-MM-DD HH:mm:ss'), 
+      tags: tagsValue?.map(t => t.replace(/Add "(\w+)"/, '$1')),
+      ...formData,
+    }))()
   }  
 
   return (
@@ -127,15 +134,26 @@ const EditDialog:React.FC<EditDialogProps> = (props) => {
                 <DeletableMultiSelect
                   value={value}
                   onChange={(e, newValue) => onChange(newValue)}
-                  options={tags}
+                  options={tags.map(t => t.value)}
                   size='small'
                   fullWidth
+                  filterOptions={(options, params) => {
+                    const filtered = filter(options, params);
+            
+                    const { inputValue } = params;
+                    // Suggest the creation of a new value
+                    const isExisting = options.some((option) => inputValue === option);
+                    if (inputValue !== '' && !isExisting) {
+                      filtered.push(`Add "${inputValue}"`);
+                    }
+            
+                    return filtered;
+                  }}
                   renderInput={(params) => (
                     <TextField
                       {...params}
                       label="Tags"
                       margin='dense'
-                      disabled
                       variant="outlined"
                     />
                   )}

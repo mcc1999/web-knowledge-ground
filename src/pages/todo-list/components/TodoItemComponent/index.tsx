@@ -8,6 +8,7 @@ import BorderColorIcon from '@mui/icons-material/BorderColor';
 import SubjectIcon from '@mui/icons-material/Subject';
 import FactCheckIcon from '@mui/icons-material/FactCheck';
 import InfoIcon from '@mui/icons-material/Info';
+import RestorePageIcon from '@mui/icons-material/RestorePage';
 
 import styles from './index.module.scss'
 
@@ -32,13 +33,12 @@ const TodoItemComponent:React.FC<ITodoItemComponent> = ({todo, onEdit}) => {
   }
 
   return (
-    <div className={styles['todo-list-item']}>
-
+    <div className={styles['todo-list-item']} style={{ background: todo.done ? '#e0e0e0' : '#e6f4ea'}}>
       <div></div>
       <div className='todo-list-item__title'>标题：{todo.title}</div>
       <div className='todo-list-item__remark'>
         <span>内容：</span>
-        <Tooltip title={todo.remark} arrow placement='top'>
+        <Tooltip title={todo.remark} arrow placement='top-start'>
           <div className='todo-list-item__remark-content'>
             {todo.remark ? todo.remark : '无'}
           </div>
@@ -56,8 +56,6 @@ const TodoItemComponent:React.FC<ITodoItemComponent> = ({todo, onEdit}) => {
                   <Tag 
                     key={idx} 
                     style={{ marginRight: idx === todo.tags!.length - 1 ? 0 : 4}}
-                    closable
-                    onClose={() => onDeleteTag(todo.id, tag)}
                   >
                     #{tag}
                   </Tag>  
@@ -72,7 +70,7 @@ const TodoItemComponent:React.FC<ITodoItemComponent> = ({todo, onEdit}) => {
                 <Tag 
                   key={idx} 
                   style={{ marginRight: idx === todo.tags!.length - 1 ? 0 : 4}}
-                  closable
+                  closable={!todo.done}
                   onClose={() => onDeleteTag(todo.id, tag)}
                 >
                   #{tag}
@@ -87,17 +85,17 @@ const TodoItemComponent:React.FC<ITodoItemComponent> = ({todo, onEdit}) => {
         <Popover
           open={donePopoverOpen} 
           anchorOrigin={{vertical: 'top', horizontal: 'right'}}
-          anchorEl={document.getElementById('doneIconButton')}
+          anchorEl={document.getElementById(`doneIconButton${todo.id}`)}
         >
           <div style={{ padding: '12px 24px', display: 'flex', alignItems: 'center' }}>
-            <InfoIcon color='warning' sx={{ marginRight: 1 }} />确认完成吗？
+            <InfoIcon color='warning' sx={{ marginRight: 1 }} />确认标记为{todo.done ? '未完成' : '完成'}吗？
           </div>
           <div style={{ padding: '12px 24px' }}>
             <Button 
               size='small' 
               variant="contained" 
               sx={{ marginRight: 1 }} 
-              onClick={() => {updateTodoItem(todo.id, { done: true }); setDonePopoverOpen(false)}}
+              onClick={() => {updateTodoItem(todo.id, { done: !todo.done }); setDonePopoverOpen(false)}}
             >确认</Button>
             <Button 
               size='small' 
@@ -106,15 +104,22 @@ const TodoItemComponent:React.FC<ITodoItemComponent> = ({todo, onEdit}) => {
             >取消</Button>
           </div>
         </Popover>
-        <Tooltip title='完成' arrow placement='top'>
-          <IconButton onClick={() => setDonePopoverOpen(true)} id='doneIconButton'>
-            <FactCheckIcon fontSize='small' color='primary' />
+        <Tooltip title={todo.done ? '未完成' : '完成'} arrow placement='top'>
+          <IconButton onClick={() => setDonePopoverOpen(true)} id={`doneIconButton${todo.id}`}>
+            {todo.done ? 
+              <RestorePageIcon fontSize='small' color='primary' /> : 
+              <FactCheckIcon fontSize='small' color='primary' />
+            }
           </IconButton>
         </Tooltip>
-        <Divider />
-        <Tooltip title='编辑' arrow placement='top'>
-          <IconButton onClick={onEdit}><BorderColorIcon fontSize='small' /></IconButton>
-        </Tooltip>
+        {!todo.done && ( 
+          <>
+            <Divider />
+            <Tooltip title='编辑' arrow placement='top'>
+              <IconButton onClick={onEdit}><BorderColorIcon fontSize='small' /></IconButton>
+            </Tooltip>
+          </>
+        )}
         <Divider />
         <Tooltip title='子事项' arrow placement='top'>
           <IconButton><SubjectIcon fontSize='small' /></IconButton>

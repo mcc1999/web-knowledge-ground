@@ -67,7 +67,7 @@ const TodoList:React.FC = () => {
                   content = i - monthFirstWeekday + 1
                 }
                 return (
-                  <Link key={i.toString() + content} href={`/todo-list/${date.format('YYYY-MM-DD')}`}>
+                  <Link key={i.toString() + content} href={`/todo-list/${dayjs(`${date.format('YYYY-MM')}-${content}`).format('YYYY-MM-DD')}`}>
                     <div className='date-item'>{content}</div>
                   </Link>
                 )

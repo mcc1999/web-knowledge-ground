@@ -27,13 +27,18 @@ const TodoDay: React.FC = () => {
   const [dialogType, setDialogType] = useState<DialogType | undefined>();
   const [editItem, setEditItem] = useState<TodoItem>()
 
+  useEffect(() => {
+    // @ts-ignore
+    useWebPlaygroundStore?.persist.rehydrate()
+  }, [])
+  
   /**
    * 根据日期获取TodoItem列表
    * @param date string 日期YYYY-MM-DD
    * @returns TodoItem[ ]
    */
-  const getTodoListByDate =  (date: string) => {
-    return todoList.filter(todo => todo.date === date)
+  const getTodoListByDate =  (date: string, done = false) => {
+    return todoList.filter(todo => todo.date === date && todo.done === done)
   }
   
   const onCreateOrUpdateItem = (todoItem: Partial<TodoItem>) => {
@@ -45,7 +50,7 @@ const TodoDay: React.FC = () => {
       })
     } else if (dialogType === DialogType.EDIT) {
       const todoItemId = editItem?.id
-      if (!todoItemId) return
+      if (todoItemId === undefined) return
       updateTodoItem(todoItemId, todoItem)
     } 
 
@@ -95,15 +100,23 @@ const TodoDay: React.FC = () => {
           ))}
         </div>
         <div className='done-list list-box'>
-          <h2 className='list-box__header'>Done</h2>
-
+          <div className='list-box__header'>
+            <div className='header-title'>Done</div>
+          </div>
+          {getTodoListByDate(router.query.slug as string, true).map((todo, i) => (
+            <TodoItemComponent 
+              key={i} 
+              todo={todo} 
+              onEdit={() => {setEditItem(todo); setDialogType(DialogType.EDIT)}} 
+            />
+          ))}
         </div>
       </div>
       {!!dialogType && <EditDialog 
         open={!!dialogType}
         type={dialogType}
         onOk={onCreateOrUpdateItem}
-        todoItem={editItem}
+        todoItem={dialogType === DialogType.EDIT ? editItem : undefined}
         onCancel={() => setDialogType(undefined)}
       />}
     </div>

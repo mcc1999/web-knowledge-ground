@@ -1,35 +1,53 @@
 import Tag from '@/components/Tag'
 import useWebPlaygroundStore from '@/store';
-import { TodoItem, UpdateTagType } from '@/store/todoList'
+import { TodoItem, TodoItemChild, UpdateTagType } from '@/store/todoList'
 import dayjs from 'dayjs'
 import React, { useState } from 'react'
-import { Button, Divider, IconButton, Popover, Tooltip } from '@mui/material';
+import { Button, IconButton, Popover, Tooltip } from '@mui/material';
 import BorderColorIcon from '@mui/icons-material/BorderColor';
 import SubjectIcon from '@mui/icons-material/Subject';
 import FactCheckIcon from '@mui/icons-material/FactCheck';
 import InfoIcon from '@mui/icons-material/Info';
 import RestorePageIcon from '@mui/icons-material/RestorePage';
+import SubItemsDialog from '../SubItemsDialog';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 import styles from './index.module.scss'
 
+enum PopoverType {
+  DONE = 'DONE',
+  DELETE = 'DELETE',
+}
 export interface ITodoItemComponent {
-  todo: TodoItem;
+  todo: TodoItem | TodoItemChild;
+  isSubItem?: number;
   onEdit: () => void;
 }
 
-const TodoItemComponent:React.FC<ITodoItemComponent> = ({todo, onEdit}) => {
-  const [donePopoverOpen, setDonePopoverOpen] = useState<boolean>(false)
+const TodoItemComponent:React.FC<ITodoItemComponent> = ({todo, onEdit, isSubItem }) => {
+  const [popoverOpen, setPopoverOpen] = useState<PopoverType>()
+  const [subItemsDialogOpen, setSubItemsDialogOpen] = useState<boolean>(false)
 
   const [
     updateTodoItemTags,
     updateTodoItem,
+    updateSubItemTags,
+    deleteTodoItem,
   ] = useWebPlaygroundStore((state) =>[ 
     state.updateTodoItemTags,
     state.updateTodoItem,
+    state.updateSubItemTags,
+    state.deleteTodoItem,
   ])
 
   const onDeleteTag = (id: number, tag: string) => {
-    updateTodoItemTags(UpdateTagType.DELETE, id, tag)
+    console.log('onDeleteTag', isSubItem, id, tag);
+    
+    if (!!isSubItem) {
+      updateSubItemTags(UpdateTagType.DELETE, isSubItem, id, tag)
+    } else {
+      updateTodoItemTags(UpdateTagType.DELETE, id, tag)
+    }
   }
 
   return (
@@ -38,15 +56,15 @@ const TodoItemComponent:React.FC<ITodoItemComponent> = ({todo, onEdit}) => {
       <div className='todo-list-item__title'>标题：{todo.title}</div>
       <div className='todo-list-item__remark'>
         <span>内容：</span>
-        <Tooltip title={todo.remark} arrow placement='top-start'>
-          <div className='todo-list-item__remark-content'>
-            {todo.remark ? todo.remark : '无'}
-          </div>
-        </Tooltip>
+        <div className='todo-list-item__remark-content'>
+          {todo.remark ? todo.remark : '无'}
+        </div>
+        {/* <Tooltip title={todo.remark} arrow placement='top-start'>
+        </Tooltip> */}
       </div>
       <div className='todo-list-item__info'>
         <div className='todo-list-item__deadline'>
-          <Tag color={dayjs().isBefore(dayjs(todo.deadline)) ? 'processing' : 'error'}>Deadline:{todo.deadline}</Tag>
+          <Tag color={(!todo.deadline || dayjs().isBefore(dayjs(todo.deadline))) ? 'processing' : 'error'}>Deadline:{todo.deadline ? todo.deadline : '无'}</Tag>
         </div>
         <div className='todo-list-item__tags-box'>
           <Tooltip 
@@ -81,9 +99,9 @@ const TodoItemComponent:React.FC<ITodoItemComponent> = ({todo, onEdit}) => {
           </Tooltip>
         </div>
       </div>
-      <div className='todo-list-actions'>
+      <div className={styles['todo-list-actions']}>
         <Popover
-          open={donePopoverOpen} 
+          open={popoverOpen === PopoverType.DONE} 
           anchorOrigin={{vertical: 'top', horizontal: 'right'}}
           anchorEl={document.getElementById(`doneIconButton${todo.id}`)}
         >
@@ -95,36 +113,68 @@ const TodoItemComponent:React.FC<ITodoItemComponent> = ({todo, onEdit}) => {
               size='small' 
               variant="contained" 
               sx={{ marginRight: 1 }} 
-              onClick={() => {updateTodoItem(todo.id, { done: !todo.done }); setDonePopoverOpen(false)}}
+              onClick={() => {updateTodoItem(todo.id, { done: !todo.done }); setPopoverOpen(undefined)}}
             >确认</Button>
             <Button 
               size='small' 
               variant="outlined" 
-              onClick={() => setDonePopoverOpen(false)}
+              onClick={() => setPopoverOpen(undefined)}
             >取消</Button>
           </div>
         </Popover>
-        <Tooltip title={todo.done ? '未完成' : '完成'} arrow placement='top'>
-          <IconButton onClick={() => setDonePopoverOpen(true)} id={`doneIconButton${todo.id}`}>
-            {todo.done ? 
-              <RestorePageIcon fontSize='small' color='primary' /> : 
-              <FactCheckIcon fontSize='small' color='primary' />
-            }
+        <Popover
+          open={popoverOpen === PopoverType.DELETE} 
+          anchorOrigin={{vertical: 'top', horizontal: 'right'}}
+          anchorEl={document.getElementById(`deleteIconButton${todo.id}`)}
+        >
+          <div style={{ padding: '12px 24px', display: 'flex', alignItems: 'center' }}>
+            <InfoIcon color='warning' sx={{ marginRight: 1 }} />确认删除吗？
+          </div>
+          <div style={{ padding: '12px 24px' }}>
+            <Button 
+              size='small' 
+              variant="contained" 
+              sx={{ marginRight: 1 }} 
+              onClick={() => {deleteTodoItem(todo.id); setPopoverOpen(undefined)}}
+            >确认</Button>
+            <Button 
+              size='small' 
+              variant="outlined" 
+              onClick={() => setPopoverOpen(undefined)}
+            >取消</Button>
+          </div>
+        </Popover>
+        {!isSubItem && (
+          <Tooltip title={todo.done ? '未完成' : '完成'} arrow placement='top'>
+            <IconButton onClick={() => setPopoverOpen(PopoverType.DONE)} id={`doneIconButton${todo.id}`}>
+              {todo.done ? 
+                <RestorePageIcon fontSize='small' color='primary' /> : 
+                <FactCheckIcon fontSize='small' color='primary' />
+              }
+            </IconButton>
+          </Tooltip>
+        )}
+        <Tooltip title='删除' arrow placement='top'>
+          <IconButton onClick={() => setPopoverOpen(PopoverType.DELETE)} id={`deleteIconButton${todo.id}`}>
+            <DeleteIcon fontSize='small' color='primary' />
           </IconButton>
         </Tooltip>
         {!todo.done && ( 
-          <>
-            <Divider />
-            <Tooltip title='编辑' arrow placement='top'>
-              <IconButton onClick={onEdit}><BorderColorIcon fontSize='small' /></IconButton>
-            </Tooltip>
-          </>
+          <Tooltip title='编辑' arrow placement='top'>
+            <IconButton onClick={onEdit}><BorderColorIcon fontSize='small' color='primary' /></IconButton>
+          </Tooltip>
         )}
-        <Divider />
-        <Tooltip title='子事项' arrow placement='top'>
-          <IconButton><SubjectIcon fontSize='small' /></IconButton>
-        </Tooltip>
+        {!isSubItem && (
+          <Tooltip title='子事项' arrow placement='top'>
+            <IconButton onClick={() => setSubItemsDialogOpen(true)}><SubjectIcon fontSize='small' color='primary' /></IconButton>
+          </Tooltip>
+        )}
       </div>
+      <SubItemsDialog
+        open={subItemsDialogOpen}
+        todoItem={todo}
+        onClose={() => setSubItemsDialogOpen(false)}
+      />
     </div>
   )
 }

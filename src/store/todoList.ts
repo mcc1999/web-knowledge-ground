@@ -6,17 +6,17 @@ export interface TodoItemChild {
   id: number;
   title: string;
   done: boolean;
-  remark?: string;
-  deadline?: string;
-}
-
-export interface TodoItem extends TodoItemChild {
   /**
    * YYYY-MM-DD
    */
   date: string;
+  remark?: string;
+  deadline?: string;
   tags?: string[];
-  children?: TodoItemChild[];
+}
+
+export interface TodoItem extends TodoItemChild {
+  children: TodoItemChild[];
 }
 
 export interface Tag {
@@ -59,11 +59,29 @@ export interface TodoListActions {
    */
   updateTodoItemTags: (updateTagType: UpdateTagType, todoItemId: number, tag: string) => void;
   /**
-   * 更新Todo Item信息
-   * @param Partial<todoItem> 
+   * 更新TodoItem信息
+   * @param Partial<TodoItem> 
    * @returns void
    */
   updateTodoItem: (todoItemId: number, newInfo: Partial<TodoItem>) => void;
+  /**
+   * 新增/删除 SubItem的tag
+   * @param todoItem 
+   * @returns void
+   */
+  updateSubItemTags: (updateTagType: UpdateTagType, todoItemId: number, subItemId: number, tag: string) => void;
+  /**
+   * 更新SubItem信息
+   * @param Partial<TodoItemChild> 
+   * @returns void
+   */
+  updateSubItem: (todoItemId: number, subItemId: number, newInfo: Partial<TodoItem>) => void;
+  /**
+   * 删除TodoItem
+   * @param todoItemId 
+   * @returns 
+   */
+  deleteTodoItem: (todoItemId: number) => void;
 }
 
 export type TodoListSlice = TodoListState & TodoListActions
@@ -81,29 +99,34 @@ const createTodoListSlice: StateCreator<
 > = persist(
   (set) => ({
     ...initTodoListStates,
-    // getTodoListByTag: (tag: string) => {
-    //   const { todoList } = get();
-    //   return todoList.filter(todo => todo.tags?.includes(tag))
-    // },
     addTodoItem: (todoItem: Partial<TodoItem>) => set(produce((state: TodoListSlice) => {
-      const { todoList } = state
+      const { todoList, tags } = state
       todoList.push({
         ...todoItem,
         id: todoList.length,
       } as TodoItem)
+      // 更新state：tags
+      tags.push(...getUniqueTags(tags, todoItem.tags))
     })),
     addTodoItemChild: (todoItemId: number, todoItemChild: TodoItemChild) => set(produce((state: TodoListSlice) => {
-      const { todoList } = state
+      const { todoList, tags } = state
       const todoItemIndex = todoList.findIndex(todo => todo.id === todoItemId)
       if (todoItemIndex > -1) {
-        todoList[todoItemIndex].children = [...(todoList[todoItemIndex].children || []), todoItemChild]
+        tags.push(...getUniqueTags(tags, todoItemChild.tags))
+        todoList[todoItemIndex].children = [...(todoList[todoItemIndex].children || []), { ...todoItemChild, id: 1000000 + todoList[todoItemIndex].id! }]
       }
     })),
     updateTodoItemTags: (updateTagType: UpdateTagType, todoItemId: number, tag: string) => set(produce((state: TodoListSlice) => {
-      const { todoList } = state
+      const { todoList, tags } = state
       const todoItemIndex = todoList.findIndex(todo => todo.id === todoItemId)
       if (todoItemIndex > -1) {
         if (updateTagType === UpdateTagType.ADD) {
+          if (!tags.map(tag => tag.value).includes(tag)) {
+            tags.push({
+              id: tags.length,
+              value: tag
+            })
+          }
           todoList[todoItemIndex].tags = [...(todoList[todoItemIndex].tags || []), tag]
         } else if (updateTagType === UpdateTagType.DELETE) {
           todoList[todoItemIndex].tags = todoList[todoItemIndex].tags?.filter(t => t !== tag)
@@ -114,21 +137,54 @@ const createTodoListSlice: StateCreator<
       const { todoList, tags } = state
       const todoItemIndex = todoList.findIndex(todo => todo.id === todoItemId)
       if (todoItemIndex > -1) {
-        // 更新state：tags
-        if (newInfo.tags?.length) {
-          let tagsCnt = tags.length
-          tags.push(
-            ...newInfo.tags
-              .filter(tag => !tags.map(t => t.value).includes(tag))
-              .map(tag => ({id: tagsCnt++, value: tag}))
-          )
-        }
+        tags.push(...getUniqueTags(tags, newInfo.tags))
         // 更新相应ID的TodoItem
         todoList[todoItemIndex] = {
           ...todoList[todoItemIndex],
           ...newInfo,
         }
       }
+    })),
+    updateSubItemTags: (updateTagType: UpdateTagType, todoItemId: number, subItemId: number, tag: string) => set(produce((state: TodoListSlice) => {
+      const { todoList, tags } = state
+      const todoItemIndex = todoList.findIndex(todo => todo.id === todoItemId)
+    
+      if (todoItemIndex > -1) {
+        const subItemIndex = todoList[todoItemIndex].children?.findIndex(subItem => subItem.id === subItemId)
+
+        if (subItemIndex && subItemIndex > -1) {
+          if (updateTagType === UpdateTagType.ADD) {
+            if (!tags.map(tag => tag.value).includes(tag)) {
+              tags.push({
+                id: tags.length,
+                value: tag
+              })
+            }
+            todoList[todoItemIndex].children[subItemIndex].tags = [...(todoList[todoItemIndex].children[subItemIndex].tags || []), tag]
+          } else if (updateTagType === UpdateTagType.DELETE) {
+            todoList[todoItemIndex].children[subItemId].tags = todoList[todoItemIndex].children[subItemIndex].tags?.filter(t => t !== tag)
+          }
+        }
+      }
+    })),
+    updateSubItem: (todoItemId, subItemId, newInfo) => set(produce((state: TodoListSlice) => {
+      const { todoList, tags } = state
+      const todoItemIndex = todoList.findIndex(todo => todo.id === todoItemId)
+      if (todoItemIndex > -1) {
+        const subItemIndex = todoList[todoItemIndex].children?.findIndex(subItem => subItem.id === subItemId)
+        if (subItemIndex && subItemIndex > -1) {
+          tags.push(...getUniqueTags(tags, newInfo.tags))
+
+          // 更新相应ID的TodoItem
+          todoList[todoItemIndex].children[subItemIndex] = {
+            ...todoList[todoItemIndex].children[subItemIndex],
+            ...newInfo,
+          }
+        }
+      }
+    })),
+    deleteTodoItem: (todoItemId) => set(produce((state: TodoListSlice) => {
+      state.todoList = state.todoList.filter(todo => todo.id !== todoItemId)
     })),
   }),
   {
@@ -140,5 +196,14 @@ const createTodoListSlice: StateCreator<
     }),
   }
 )
+
+export function getUniqueTags (tags: Tag[], newTags: string[] | undefined) {
+  if (!newTags || newTags.length === 0) return []
+
+  let tagsCnt = tags.length
+  return newTags
+    .filter(tag => !tags.map(t => t.value).includes(tag))
+    .map(tag => ({id: tagsCnt++, value: tag}))
+}
 
 export default createTodoListSlice;

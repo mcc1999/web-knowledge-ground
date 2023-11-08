@@ -98,12 +98,12 @@
       display: flex;
       justify-content: space-around;
       align-items: center;      
-
+      
       .list-box {
         width: 40%;
         height: 90%;
         border: 1px solid;
-        border-radius: 5%;
+        border-radius: 24px;
       }
 
       .list-box__header {
@@ -115,6 +115,16 @@
 
         .header-title {
           font-size: 24px;
+        }
+      }
+
+      .todo-list-content {
+        height: 90%;
+        border-radius: 24px;
+        overflow: hidden;
+
+        &:hover {
+          overflow: auto;
         }
       }
     }

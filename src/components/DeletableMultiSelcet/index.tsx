@@ -16,7 +16,7 @@ const DeletableMultiSelect = (props: IDeletableMultiSelect, ref: any) => {
       disableCloseOnSelect
       renderTags={(value, getTagProps) => 
         // eslint-disable-next-line react/jsx-key
-         value.map((v, index) => <Chip size='small' { ...getTagProps({index}) } label={v.replace(/Add "(\w+)"/, '$1')} />)
+         value.map((v, index) => <Chip size='small' { ...getTagProps({index}) } label={v.replace(/Add "([\w\u4e00-\u9fa5\d]+)"/, '$1')} />)
       }
       renderOption={(props, option, { selected }) => (
         <MenuItem

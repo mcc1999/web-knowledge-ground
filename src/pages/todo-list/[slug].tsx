@@ -47,6 +47,7 @@ const TodoDay: React.FC = () => {
         ...todoItem,
         done: false,
         date: router.query.slug!.toString(),
+        children: []
       })
     } else if (dialogType === DialogType.EDIT) {
       const todoItemId = editItem?.id
@@ -91,13 +92,15 @@ const TodoDay: React.FC = () => {
               >新建</Button>
             </div>
           </div>
-          {getTodoListByDate(router.query.slug as string).map((todo, i) => (
-            <TodoItemComponent 
-              key={i} 
-              todo={todo} 
-              onEdit={() => {setEditItem(todo); setDialogType(DialogType.EDIT)}} 
-            />
-          ))}
+          <div className='todo-list-content'>
+            {getTodoListByDate(router.query.slug as string).map((todo, i) => (
+              <TodoItemComponent 
+                key={i} 
+                todo={todo} 
+                onEdit={() => {setEditItem(todo); setDialogType(DialogType.EDIT)}} 
+              />
+            ))}
+          </div>
         </div>
         <div className='done-list list-box'>
           <div className='list-box__header'>

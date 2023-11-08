@@ -5,6 +5,29 @@
   border-radius: 0 16px;
   background: #e6f4ea;
 
+  &:hover .todo-list-actions {
+    display: flex;
+  }
+
+  .todo-list-actions {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    display: none;
+    justify-content: space-around;
+    align-items: center;
+    padding-right: 8px;
+    background-color: rgba(0, 0, 0, 0.85);
+    font-size: 12px;
+    text-align: center;
+    top: 0;
+    left: 0;
+
+    button {
+      height: fit-content;
+    }
+  }
+  
   :global {
     .todo-list-item__remark { 
       display: flex;
@@ -37,17 +60,5 @@
       }
     }
 
-    .todo-list-actions {
-      position: absolute;
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-around;
-      padding-right: 8px;
-      font-size: 12px;
-      text-align: center;
-      top: 0;
-      right: 0;
-    }
   }
 }

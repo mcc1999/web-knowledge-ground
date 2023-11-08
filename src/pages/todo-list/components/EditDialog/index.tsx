@@ -1,9 +1,9 @@
 import { TodoItem } from '@/store/todoList';
 import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, MenuItem } from '@mui/material'
-import React, { useEffect } from 'react'
+import React from 'react'
 import { Controller, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { literal, object, string, date, array, TypeOf, z } from 'zod';
+import { object, string, TypeOf, z } from 'zod';
 import { DateTimePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import DeletableMultiSelect from '@/components/DeletableMultiSelcet';
@@ -52,6 +52,7 @@ const filter = createFilterOptions<string>();
 const EditDialog:React.FC<EditDialogProps> = (props) => {
   const { open, type, todoItem, onOk, onCancel } = props
   const [ tags ] = useWebPlaygroundStore((state) =>[ state.tags ])
+  console.log('tags', tags)
   const {
     watch,
     control,
@@ -72,7 +73,7 @@ const EditDialog:React.FC<EditDialogProps> = (props) => {
     const {deadline, tags: tagsValue, ...formData} = watch()
     handleSubmit(() => onOk({
       deadline: deadline?.format('YYYY-MM-DD HH:mm:ss'), 
-      tags: tagsValue?.map(t => t.replace(/Add "(\w+)"/, '$1')),
+      tags: tagsValue?.map(t => t.replace(/Add "([\w\u4e00-\u9fa5\d]+)"/, '$1')),
       ...formData,
     }))()
   }  

@@ -1,0 +1,47 @@
+.subItems-dialog {
+  :global {
+    .subItems-dialog__title {
+      width: 574px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-right: 24px;
+    }
+
+    .subItems-dialog__content {
+      height: 360px;
+      overflow: hidden;
+
+      .todo-item__remark { 
+        display: flex;
+        align-items: center;
+        margin-bottom: 4px;
+      }
+      .todo-item__remark-content {
+        display: inline-block;
+        width: calc(100% - 50px);
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .subItems-dialog__add-btn {
+        width: 100%;
+        text-align: center;
+        padding: 8px 0;
+        border: 1px dashed;
+        border-radius: 12px;
+        cursor: pointer;
+      }
+    }
+
+    .subItems-dialog__subItem-list {
+      height: 280px;
+      overflow: hidden;
+
+      &:hover {
+        overflow: auto;
+      }
+    }
+  }
+}

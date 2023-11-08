@@ -1,0 +1,132 @@
+.todo-list-container {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  :global {
+    .calender {
+      position: absolute;
+      top: 64px;
+      left: 0;
+      width: 100%;
+      height: calc(100% - 64px);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .calender-wrap {
+      width: 80%;
+      height: 80%;
+      min-width: 960px;
+      min-height: 540px;
+      border: 2px solid;
+      border-radius: 5%;
+
+      .calender-header {
+        height: 72px;
+        padding: 0 5% 0 5%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      
+      .calender-dates {
+        height: calc(100% - 72px);
+        .dates-header {
+          display: grid;
+          grid-template-columns: repeat(7, 1fr);
+          grid-template-rows: 1fr;
+          
+          >div {
+            line-height: 30px;
+            text-align: center;
+            border-top: 2px solid;
+            border-bottom: 1px solid;
+            
+            &:not(:last-of-type) {
+              border-right: 1px solid;
+            }
+            &:not(:first-of-type) {
+              border-left: 1px solid;
+            }
+          }
+        }
+        
+        .dates-body {
+          height: calc(100% - 32px);
+          display: grid;
+          grid-template-columns: repeat(7, 1fr);
+          grid-template-rows: repeat(6, 1fr);
+
+          .date-item {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: 1px solid;
+            cursor: pointer;
+
+            &:nth-of-type(7n) {
+              border-right: none;
+            }
+            &:nth-last-of-type(-n + 7) {
+              border-bottom: none;
+            }
+            &:nth-of-type(7n + 1) {
+              border-left: none;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+.todo-list-detail-container {
+  width: 100vw;
+  height: 100vh;
+
+  :global {
+    .todo-list-box {
+      position: absolute;
+      top: 64px;
+      left: 0;
+      width: 100%;
+      height: calc(100% - 64px);
+      display: flex;
+      justify-content: space-around;
+      align-items: center;      
+      
+      .list-box {
+        width: 40%;
+        height: 90%;
+        border: 1px solid;
+        border-radius: 24px;
+      }
+
+      .list-box__header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px 5%;
+        border-bottom: 2px solid;
+
+        .header-title {
+          font-size: 24px;
+        }
+      }
+
+      .todo-list-content {
+        height: 90%;
+        border-radius: 24px;
+        overflow: hidden;
+
+        &:hover {
+          overflow: auto;
+        }
+      }
+    }
+  }
+}

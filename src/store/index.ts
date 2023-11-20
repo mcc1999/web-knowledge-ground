@@ -1,4 +1,4 @@
-import create from 'zustand'
+import { create } from 'zustand'
 import createMDXSlice, { MDXSlice } from './mdx'
 import createTodoListSlice, { TodoListSlice } from './todoList'
 

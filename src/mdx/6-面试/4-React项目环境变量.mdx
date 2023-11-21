@@ -1,0 +1,75 @@
+---
+title: React项目环境变量
+date: 2023-11-21 22:30:00
+---
+
+# React项目环境变量
+
+> ### 1. 通过VITE创建项目
+> - 环境变量设置
+>   - 设置在根目录下`.env`和`.env.[NODE_ENV]`文件内
+>   - `.env`文件环境变量在各个环境都能获取到
+>   - 环境变量必须以`VITE_`开头
+>   - `package.json`的其他环境启动命令：`"test": "vite --mode=test"`
+> - 环境变量获取
+>   - 通过`import.meta.env.[VAR_NAME]`获取
+
+> ### 2. 通过NEXT JS创建项目
+> - 环境变量设置
+>   - 设置在根目录下`.env.$(NODE_ENV).local`、`.env.local`、`.env.[NODE_ENV]`和`.env`文件内
+>   - 优先级：环境变量按顺序在以下位置查找，一旦找到变量就停止。
+>     1. `process.env`
+>     2. `.env.$(NODE_ENV).local`
+>     3. `.env.local (Not checked when NODE_ENV is test.)`
+>     4. `.env.$(NODE_ENV)`
+>     5. `.env`
+>   - 必须在`next.config.js`中配置后才能在node之外的业务代码中获取到
+>   ```javascript
+>     /** @type {import('next').NextConfig} */
+>     const nextConfig = {
+>       reactStrictMode: true,
+>       env: {
+>         VAR_NAME: process.env.[VAR_NAME],
+>       }
+>     }
+>     module.exports = nextConfig
+>   ```
+>   - `package.json`的其他环境启动命令：`"test": "NODE_ENV=test next dev"`
+> - 环境变量获取
+>   - 通过`process.env.[VAR_NAME]`获取
+>   - 不同通过`const { VAR_NAME } = process.env`结构获取
+
+> ### 2. 通过Webpack创建项目（vite等方式的实现原理）
+> - 环境变量设置
+>   - 设置在根目录下`.env`和`.env.[NODE_ENV]`文件内
+>   - `package.json`的其他环境启动命令内设置环境：
+>     - `"test": "set NODE_ENV=test webpack"` in `win`
+>     - `"test": "export NODE_ENV=test webpack"` in `mac`
+>     - `"test": "cross-env NODE_ENV=test webpack"`
+>     - node设置环境的命令在不同系统是不同的，所以需要使用`cross-env`库
+>   - `.env`文件内的环境变量的读取，需要使用`.dotenv`库
+>     - 引入库并调用config方法：`require('dotenv').config()` 
+>   - 必须在`webpack.config.js`中配置插件暴露后才能在node之外的业务代码中获取到
+>   ```javascript
+>     require('dotenv').config();
+>     const webpack = require('webpack');
+>     // 过滤需要暴露给业务的环境变量，例：只暴露以webpack_开头的环境变量
+>     const exportVars = {}
+>     Object.keys(process.env).forEach(key => {
+>       if (key.slice(0, 8) === 'webpack_') exportVars[key] = process.env[key]
+>     })
+>     const webpackConfig = {
+>       // 打包模式，并非环境
+>       mode: process.env.NODE_ENV === 'production' ? 'production' : 'development',
+>       // ...
+>       plugins: [
+>         // 通过 DefinePlugin 暴露
+>         new webpack.DefinePlugin({
+>           'process.env': exportVars,
+>         })
+>       ]
+>     }
+>     module.exports = webpackConfig
+>   ```
+> - 环境变量获取
+>   - 通过`process.env.[VAR_NAME]`获取

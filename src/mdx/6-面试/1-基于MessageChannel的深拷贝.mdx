@@ -1,0 +1,50 @@
+---
+title: 基于MessageChannel的深拷贝
+date: 2023-11-19 13:30:00
+---
+
+# 基于MessageChannel的深拷贝
+
+<StaticSandpack 
+  files={{
+    '/index.html': {
+      code: `<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Static Template</title>
+  <head>
+  <body>
+    <div>port2.onmeaasge.data === old object: <span id='res1'></span></div>
+    <div>Clone Object: <span id='res2'></span></div>
+    <script>
+      const obj = { a: 'str', b: 123 }
+      const obj1 = {
+        a: 'str',
+        b: 123,
+        c: obj
+      }
+      let cloneObj;
+      deepClone(obj1).then(res => {
+        cloneObj = res;
+        document.getElementById('res2').innerHTML = JSON.stringify(cloneObj)
+      });
+      function deepClone(obj) {
+        return new Promise((resolve) => {
+          const { port1, port2 } = new MessageChannel();
+          port1.postMessage(obj)
+          port2.onmessage = (msg) => {
+            document.getElementById('res1').innerHTML = msg.data === obj
+            resolve(msg.data)
+          }
+        })
+      }
+    </script>
+  </body>
+</html>
+      `
+    }
+  }}
+/>

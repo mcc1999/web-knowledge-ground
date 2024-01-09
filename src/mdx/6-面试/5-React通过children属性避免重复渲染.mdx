@@ -1,0 +1,13 @@
+---
+title: React通过children属性避免重复渲染
+date: 2023-11-21 22:30:00
+---
+
+# 5-React通过children属性避免重复渲染
+
+> 对于静态子组件，为避免父组件重新渲染时一同渲染，可将子组件通过`children props`传入父组件
+
+<ChildrenAvoidRerender />
+
+- 这里借用了children 的机制，直接渲染，那么在父组件当中就没有 React.createElement(Son)  这个api的执行，因此就不会造成重复的渲染！
+- `<StaticComponent />`不是`<Counter>`的子组件, 它是App的子组件，对于`<Counter>`来说，`<StaticComponent />`是他的一个属性props.children。所以`<StaticComponent />`是否re-render取决于App，而App没有更新。

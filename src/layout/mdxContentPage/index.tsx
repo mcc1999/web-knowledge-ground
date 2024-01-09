@@ -6,6 +6,9 @@ import { useMDXComponent } from 'next-contentlayer/hooks';
 import CodeBlock from '@/components/mdxComponents/Codeblock';
 import CustomSandpack from '@/components/mdxComponents/CustomSandpack';
 import Counter from '@/components/mdxComponents/Counter';
+import ScssTheme from '@/components/mdxComponents/SandPacks/4_css-19';
+import StaticSandpack from '@/components/mdxComponents/StaticSandpack';
+import ChildrenAvoidRerender from '@/components/mdxComponents/SandPacks/5_audition-5';
 
 export interface LayoutProps {
   siderData: SiderDataType[];
@@ -17,6 +20,9 @@ const MDXcomponents = {
   code: CodeBlock,
   CustomSandpack,
   Counter,
+  ScssTheme,
+  StaticSandpack,
+  ChildrenAvoidRerender,
 };
 
 const MDXCurrentPage = (props: LayoutProps) => {

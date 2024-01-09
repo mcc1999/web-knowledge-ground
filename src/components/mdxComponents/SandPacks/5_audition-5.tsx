@@ -1,7 +1,7 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { Sandpack } from "@codesandbox/sandpack-react";
 import { aquaBlue } from "@codesandbox/sandpack-themes";
-import files from './CodeFiles/4_css-19'
+import files from './CodeFiles/5_audition-5'
 
 const ScssTheme = () => {  
   return (
@@ -27,6 +27,7 @@ const ScssTheme = () => {
         wrapContent: true, // default - false
         editorHeight: 480, // default - 300
         editorWidthPercentage: 60, // default - 50
+        showConsole: true,
       }}
       files={files}
     />

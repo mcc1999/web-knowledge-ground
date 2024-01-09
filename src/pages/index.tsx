@@ -44,8 +44,8 @@ const Home: NextPage = () => {
 
           <Link href="/mdx" >
             <a className={styles.card}>
-              <h2>框架 &rarr;</h2>
-              <p>React、Vue...</p>
+              <h2>文章 &rarr;</h2>
+              <p>MDX文章</p>
             </a>
           </Link>
 

@@ -8,9 +8,9 @@ import Link from "next/link";
 import BreadcrumbsThemeHeader from "@/components/BreadcrumbsThemeHeader";
 import HomeIcon from "@mui/icons-material/Home";
 import GrainIcon from "@mui/icons-material/Grain";
+import { Box } from "@mui/material";
 
 import styles from "./index.module.scss";
-import { Box } from "@mui/material";
 
 const breadcrumbs = [
   {
@@ -32,7 +32,7 @@ const TodoList: React.FC = () => {
 
   return (
     <div className={styles["todo-list-container"]}>
-      <BreadcrumbsThemeHeader breadcrumbs={breadcrumbs} />
+      {/* <BreadcrumbsThemeHeader breadcrumbs={breadcrumbs} /> */}
       <div className="calender">
         <Box
           className="calender-wrap"
@@ -56,13 +56,9 @@ const TodoList: React.FC = () => {
           </div>
           <div className="calender-dates">
             <div className="dates-header">
-              <div>Sun</div>
-              <div>Mon</div>
-              <div>Tue</div>
-              <div>Wed</div>
-              <div>Thu</div>
-              <div>Fri</div>
-              <div>Sat</div>
+              {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => (
+                <div key={day}>{day}</div>
+              ))}
             </div>
             <div className="dates-body">
               {new Array(42).fill(0).map((_, i) => {
@@ -73,6 +69,7 @@ const TodoList: React.FC = () => {
                 ) {
                   content = i - monthFirstWeekday + 1;
                 }
+                if (!content) return null;
                 return (
                   <Link
                     key={i.toString() + content}
@@ -81,7 +78,12 @@ const TodoList: React.FC = () => {
                     ).format("YYYY-MM-DD")}`}
                   >
                     <Box
-                      sx={{ ":hover": { backgroundColor: "actionBg.main" } }}
+                      sx={{
+                        ":hover": { backgroundColor: "actionBg.main" },
+                        border: content === date.date() ? "1px dashed" : "none",
+                        borderColor:
+                          content === date.date() ? "actionBg.main" : "default",
+                      }}
                       className="date-item"
                     >
                       {content}

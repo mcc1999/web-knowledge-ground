@@ -1,0 +1,26 @@
+.nav-bar {
+  @keyframes avatar-rotate {
+    0% {
+      transform: rotate(0);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+
+  .avatar-img > img {
+    animation: avatar-rotate 5s infinite linear;
+  }
+
+  .header-title {
+    background: linear-gradient(#fff, #999, #ddd, #888);
+    background-clip: text;
+    cursor: pointer;
+    filter: url("#filter");
+    
+    // 可hover形变
+    // &:hover {
+    //   filter: url("#filter");
+    // }
+  }
+}

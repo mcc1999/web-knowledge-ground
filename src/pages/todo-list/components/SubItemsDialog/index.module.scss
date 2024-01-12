@@ -29,6 +29,7 @@
         width: 100%;
         text-align: center;
         padding: 8px 0;
+        margin-bottom: 8px;
         border: 1px dashed;
         border-radius: 12px;
         cursor: pointer;
@@ -36,7 +37,7 @@
     }
 
     .subItems-dialog__subItem-list {
-      height: 280px;
+      height: 264px;
       overflow: hidden;
 
       &:hover {

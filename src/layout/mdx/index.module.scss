@@ -1,30 +1,11 @@
 .mdx-layout {
   width: 100vw;
-  height: 100vh;
+  height: 100%;
   overflow-x: hidden;
-
-  @keyframes avatar-rotate {
-    0% { transform: rotate(0); }
-    100% { transform: rotate(360deg); }
-  }
-
-  .avatar-img:hover > img {
-    animation: avatar-rotate 1s infinite linear;
-  }
-
-  .header-title {
-    background: linear-gradient(#fff, #999, #ddd, #888);
-    background-clip: text;
-    cursor: pointer;
-
-    &:hover {
-      filter: url("#filter");
-    }
-  }
 
   .content {
     overflow: hidden;
-    
+
     &:hover {
       overflow: auto;
     }
@@ -51,6 +32,6 @@
     border-top-right-radius: 8px;
     border-bottom-right-radius: 8px;
     cursor: pointer;
-    transition: left .5s;
+    transition: left 0.5s;
   }
 }

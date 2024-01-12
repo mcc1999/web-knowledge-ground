@@ -52,7 +52,6 @@ const filter = createFilterOptions<string>();
 const EditDialog:React.FC<EditDialogProps> = (props) => {
   const { open, type, todoItem, onOk, onCancel } = props
   const [ tags ] = useWebPlaygroundStore((state) =>[ state.tags ])
-  console.log('tags', tags)
   const {
     watch,
     control,

@@ -32,9 +32,6 @@ const MDXCurrentPage = (props: LayoutProps) => {
   );
   const MDXContent = useMDXComponent(MDXComponentCode);
 
-  const router = useRouter();
-  console.log("MDXCurrentPage", router);
-
   useEffect(() => {
     updateSiderData(siderData);
   }, []);

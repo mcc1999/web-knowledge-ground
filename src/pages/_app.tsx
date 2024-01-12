@@ -17,6 +17,7 @@ import { useMediaQuery } from "@mui/material";
 import { getThemeTokens } from "@/utils/getThemeTokens";
 import "../styles/globals.scss";
 import "../styles/markdown.scss";
+import NavBar from "@/layout/navBar";
 
 type NextPageWithLayout = NextPage & {
   getLayout?: (page: ReactElement) => ReactNode;
@@ -88,7 +89,10 @@ export default function MyApp({ Component, pageProps }: AppPropsWithLayout) {
     <ColorModeContext.Provider value={colorMode}>
       <ThemeProvider theme={theme}>
         <CssBaseline />
-        {getLayout(<Component {...pageProps} />)}
+        <NavBar />
+        <div style={{ height: "calc(100vh - 64px)", overflow: 'auto' }}>
+          {getLayout(<Component {...pageProps} />)}
+        </div>
       </ThemeProvider>
     </ColorModeContext.Provider>
   );

@@ -1,7 +1,7 @@
 .todo-list-container {
   position: relative;
   width: 100vw;
-  height: 100vh;
+  height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -12,7 +12,7 @@
     background-size: cover;
     opacity: 0.5; //透明度设置
     width: 100vw;
-    height: 100vh;
+    height: 100%;
     z-index: -1;
     position: absolute;
     top: 0;
@@ -78,7 +78,7 @@
 
 .todo-list-detail-container {
   width: 100vw;
-  height: 100vh;
+  height: 100%;
 
   &::before {
     content: "";
@@ -86,7 +86,7 @@
     background-size: cover;
     opacity: 0.5;
     width: 100vw;
-    height: 100vh;
+    height: 100%;
     z-index: -1;
     position: absolute;
     top: 0;

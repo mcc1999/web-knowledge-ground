@@ -20,7 +20,7 @@ enum PopoverType {
 }
 export interface ITodoItemComponent {
   todo: TodoItem | TodoItemChild;
-  isSubItem?: number;
+  isSubItem?: number; // 如果是子事项，该值为父事项id
   onEdit: () => void;
 }
 
@@ -37,20 +37,27 @@ const TodoItemComponent: React.FC<ITodoItemComponent> = ({
     updateTodoItem,
     updateSubItemTags,
     deleteTodoItem,
+    updateSubItem,
   ] = useWebPlaygroundStore((state) => [
     state.updateTodoItemTags,
     state.updateTodoItem,
     state.updateSubItemTags,
     state.deleteTodoItem,
+    state.updateSubItem,
   ]);
 
   const onDeleteTag = (id: number, tag: string) => {
-    console.log("onDeleteTag", isSubItem, id, tag);
-
-    if (!!isSubItem) {
+    if (isSubItem !== undefined) {
       updateSubItemTags(UpdateTagType.DELETE, isSubItem, id, tag);
     } else {
       updateTodoItemTags(UpdateTagType.DELETE, id, tag);
+    }
+  };
+  const onUpdateItem = (id: number, newInfo: Partial<TodoItem>) => {
+    if (isSubItem !== undefined) {
+      updateSubItem(isSubItem, id, newInfo);
+    } else {
+      updateTodoItem(id, newInfo);
     }
   };
 
@@ -62,7 +69,7 @@ const TodoItemComponent: React.FC<ITodoItemComponent> = ({
         <div className="todo-list-item__remark-content">
           {/* {todo.remark ? todo.remark : "无"} */}
           {todo.remark ? (
-            <Tooltip title={todo.remark}>
+            <Tooltip title={todo.remark} arrow>
               <div className="todo-list-item__remark-content--overflow">
                 {todo.remark}
               </div>
@@ -109,7 +116,9 @@ const TodoItemComponent: React.FC<ITodoItemComponent> = ({
               {todo.tags?.slice(0, 4).map((tag, idx) => (
                 <Tag
                   key={idx}
-                  style={{ marginRight: idx === todo.tags!.length - 1 ? 0 : 4 }}
+                  style={{
+                    marginRight: idx === todo.tags!.length - 1 ? 0 : 4,
+                  }}
                   closable={!todo.done}
                   onClose={() => onDeleteTag(todo.id, tag)}
                 >
@@ -146,7 +155,7 @@ const TodoItemComponent: React.FC<ITodoItemComponent> = ({
               variant="contained"
               sx={{ marginRight: 1 }}
               onClick={() => {
-                updateTodoItem(todo.id, { done: !todo.done });
+                onUpdateItem(todo.id, { done: !todo.done });
                 setPopoverOpen(undefined);
               }}
             >
@@ -197,20 +206,18 @@ const TodoItemComponent: React.FC<ITodoItemComponent> = ({
             </Button>
           </div>
         </Popover>
-        {!isSubItem && (
-          <Tooltip title={todo.done ? "未完成" : "完成"} arrow placement="top">
-            <IconButton
-              onClick={() => setPopoverOpen(PopoverType.DONE)}
-              id={`doneIconButton${todo.id}`}
-            >
-              {todo.done ? (
-                <RestorePageIcon fontSize="small" color="primary" />
-              ) : (
-                <FactCheckIcon fontSize="small" color="primary" />
-              )}
-            </IconButton>
-          </Tooltip>
-        )}
+        <Tooltip title={todo.done ? "未完成" : "完成"} arrow placement="top">
+          <IconButton
+            onClick={() => setPopoverOpen(PopoverType.DONE)}
+            id={`doneIconButton${todo.id}`}
+          >
+            {todo.done ? (
+              <RestorePageIcon fontSize="small" color="primary" />
+            ) : (
+              <FactCheckIcon fontSize="small" color="primary" />
+            )}
+          </IconButton>
+        </Tooltip>
         <Tooltip title="删除" arrow placement="top">
           <IconButton
             onClick={() => setPopoverOpen(PopoverType.DELETE)}
@@ -226,7 +233,7 @@ const TodoItemComponent: React.FC<ITodoItemComponent> = ({
             </IconButton>
           </Tooltip>
         )}
-        {!isSubItem && (
+        {isSubItem === undefined && (
           <Tooltip title="子事项" arrow placement="top">
             <IconButton onClick={() => setSubItemsDialogOpen(true)}>
               <SubjectIcon fontSize="small" color="primary" />

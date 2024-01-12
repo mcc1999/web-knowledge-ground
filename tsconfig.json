@@ -30,7 +30,7 @@
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
-    "src/pages/router/index.tsx",
+    "src/pages/goodies/index.tsx",
     ".contentlayer/generated",
     "src/assets/svg/SunIcon.jsts/ssrc/assets/svg/SunIcon.js"
   ],

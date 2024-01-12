@@ -33,7 +33,7 @@ const TodoDay: React.FC = () => {
    * @returns TodoItem[ ]
    */
   const getTodoListByDate = (date: string, done = false) => {
-    return todoList.filter((todo) => todo.date === date && todo.done === done);
+    return Object.values(todoList).filter((todo) => todo.date === date && todo.done === done);
   };
 
   const onCreateOrUpdateItem = (todoItem: Partial<TodoItem>) => {
@@ -42,7 +42,7 @@ const TodoDay: React.FC = () => {
         ...todoItem,
         done: false,
         date: router.query.slug!.toString(),
-        children: [],
+        children: {},
       });
     } else if (dialogType === DialogType.EDIT) {
       const todoItemId = editItem?.id;
@@ -77,7 +77,7 @@ const TodoDay: React.FC = () => {
       <div className="todo-list-box">
         <Box className="todo-list list-box" sx={{ bgcolor: "cardBg.main" }}>
           <div className="list-box__header">
-            <div className="header-title">TODO</div>
+            <div className="header-title">Todo</div>
             <div>
               <Button
                 variant="contained"

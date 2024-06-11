@@ -1,0 +1,643 @@
+---
+title: Relearn React 08-React Fiber架构
+date: 2024-02-20 22:00:00
+---
+
+# React Fiber 架构
+
+### Fiber 架构的迭代动机
+
+- React15 中的栈调和(Stack Reconciler)基于虚拟 DOM 树的深度遍历 Diff，是一个同步不可打断的过程。
+- 虽然通过分层对比、只比较同类节点和通过 key 属性复用同层次节点等方式将复杂度降低，
+  但当页面过于复杂时 Javascript 线程超时占用主线程，导致渲染进程和事件进程等都会被挂起，
+  界面长时间不更新，带给用户“卡顿”的体验。
+
+### Fiber 架构的设计思想
+
+- 从架构角度来看，Fiber 是对 React 核心算法的重写；
+- 从编码角度来看，Fiber 是 React 内部所定义的一种数据结构(虚拟 DOM 树变成 Fiber 树)；
+- 从工作流角度来看，Fiber 节点保存了组件需要更新的状态和副作用，一个 Fiber 对应一个工作单元；
+
+### 从架构角度看 Fiber
+
+- Fiber 架构的目的：实现`增量渲染`；
+
+增量渲染将一个渲染任务分解成多个更细粒度的渲染任务，而后将其分散到多个帧里面，
+从而实现渲染任务的可中断、可恢复，并给不同的任务赋予不同的优先级，最终达成更加顺滑的用户体验。
+
+- Fiber 架构如何实现：“可中断”、“可恢复”和“优先级”
+
+Fiber 中的 Scheduler 层根据更新任务的优先级，传入、中断、恢复至 Reconciler 层中。
+![Fiber中新增scheduler层](/images/MDX/relearn-react--08-fiber__01.jpg)
+
+### 从代码角度看 Fiber
+
+- React Fiber 架构有三种启动方式：
+
+  1. legacy 模式(同步)：`ReactDOM.render(<App />, rootNode)`
+  2. blocking 模式(过渡态)：`ReactDOM.createBlockingRoot(rootNode).render(<App />)`
+  3. concurrent 模式(异步)：`ReactDOM.createRoot(rootNode).render(<App />)`
+
+- 双缓冲模式—— current 树和 workInprogress 树
+  - fiberRoot 的 current 属性在组件挂载阶段会指向 rootFiber 节点，然后复制 rootFiber 作为根节点生成 workInProgress 树
+  - 两个节点各自用 alternate 属性指向对方，commit 阶段结束后，fiberRoot 的 current 指向 workInProgress 树的根节点
+  - 组件第一次更新时，查看 fiberRoot.current.alternate 是否存在以复用作为新的 workInProgress 树的根节点，再次生成 workInProgress 树
+  - 再次生成的 workInProgress 树的每个 fiber 节点和 current 树中 fiber 节点都用 alternate 互指，后续更新均可复用
+  - 再次 commit 阶段之后，fiberRoot 的 current 指向新 workInProgress 树的根节点
+  - 后续更新如此往复，fiberRoot 的 current 指向谁，页面展示就是用的哪棵树中的数据
+
+#### Legacy 模式
+
+- ReactDOM.render()的调用链路——首屏渲染，分为三个阶段——初始化、render、commit
+  - render 阶段完成了 Fiber 树的构建
+    ![构建fiber tree](/images/MDX/relearn-react--08-fiber__create-fiber-tree.jpg)
+    ![构建fiber tree](/images/MDX/relearn-react--08-fiber__node-connection.jpg)
+  - commit 阶段
+    - 代码工作流：commitRoot -> performSyncWorkOnRoot
+    - 工作阶段
+      - before mutation 阶段: DOM 还未被渲染到屏幕，会执行 getSnapshotBeforeUpdate / useEffect 相关逻辑
+      - mutation 阶段: 遍历 EffectList 渲染 DOM 节点
+      - layout 阶段: 处理 DOM 渲染完毕后的收尾逻辑，执行 componentDidMount / componentDidUpdate / useLayoutEffect,并将 fiberRoot 的 current 指针指向 workInProgress Fiber 树
+
+#### Concurrent 模式
+
+- 时间切片
+  - workLoopConcurrent 循环时，除了判断 workInprogress，新增判断 shouldYield()
+  - shouldYield 函数判断当前时间是否超出当前时间切片的 deadline，时间切片间隔根据浏览器帧率计算所得
+  - 切片时间到期，则让出主线程
+- 优先级调度
+  - scheduleUpdateOnFiber，调用 unstable_scheduleCallback，以 performConcurrentWorkOnRoot 为入参， 结合优先级信息执行调度逻辑
+    ![unstable_scheduleCallback逻辑](/images/MDX/relearn-react--08-fiber__priority-schedule.jpg)
+
+#### 两者通用代码调用链路
+
+- 创建 update 对象，enquequeUpdate 入队，scheduleUpdateOnFiber 调度进入 render 阶段
+- performSyncWorkOnRoot/performConcurrentWorkOnRoot 循环，构建 fiber 树，收集副作用
+- commitRoot 进入 commit 阶段
+
+### 源码参考(Reference)
+
+```javascript
+/**
+ * ReactDOM.render()调用链路如下：
+ * 1.初始化阶段目的：创建基本实体
+ * ReactDOM.render()中主要调用了legacyRenderSubtreeIntoContainer函数
+ * - 创建fiberRoot
+ * - unbatchedUpdates()进行分批量更新
+ *  - updateContainer()
+ *    - 计算优先级lane
+ *    - 根据lane创建update，一个update表示一次更新
+ *    - enqueueUpdate()将update更新入队
+ *    - scheduleUpdateOnFiber()调度fiberRoot
+ *
+ */
+
+function legacyRenderSubtreeIntoContainer(parentComponent, children, container, forceHydrate, callback) {
+  // container对应的是传入的真实DOM对象
+  var root = container._reactRootContainer;
+  // 初始化fiberRoot
+  // fiberRoot是一个的FiberRootNode实例对象，代表真实DOM的容器节点
+  // 包含current属性，其值是一个FiberNode(Fiber节点对应的对象类型)实例对象，也称rootFiber代表虚拟DOM的根节点
+  var fiberRoot；
+
+
+  if (!root) { // 初始化组件时，DOM对象本身不存在_reactRootContainer属性，root此时为空
+    // 若root为空，则初始化_reactRootContainer，并赋值给root
+    root = container._reactRootContainer = legacyCreateRootFromDOMContainer(container, forceHydrate);
+    // legacyCreateRootFromDOMContainer创建出的对象有一个_internalRoot属性，赋值给fiberRoot
+    fiberRoot = root._internalRoot;
+
+    // 这里处理ReactDom.render入参中的回调函数
+    if (typeof callback === 'function') {
+      var originalCallback = callback;
+      callback = function() {
+        var instance = getPublicRootInstance(fiberRoot);
+        originalCallback.call(instance);
+      }
+    }
+
+    // 初始化挂在不需要批量更新，进入unbatchedUpdates
+    unbatchedUpdates(function() {
+      updateContainer(children, fiberRoot, parentComponent, callback);
+    })
+  } else { // else逻辑处理组件更新的情况，除了跳过初始化工作，与if中基本一致
+    fiberRoot = root._internalRoot;
+
+    if (typeof callback === 'function') {
+      var _originalCallback = callback;
+      callback = function() {
+        var instance = getPublicRootInstance(fiberRoot);
+        _originalCallback.call(instance);
+      }
+    }
+
+    updateContainer(children, fiberRoot, parentComponent, callback);
+  }
+}
+
+function unbatchedUpdates(fn, a) {
+  // 处理上下文
+  var prevExcutionContext = excutionContext;
+  excutionContext &= ~BatchedContext;
+  excutionContext |= LegacyUnbatchedContext;
+
+  try {
+    // 重点在这，直接调用了传入的回调函数fn，
+    return fn(a);
+  } finally {
+    // finally逻辑是对回调队列的处理
+    excutionContext = prevExcutionContext;
+
+    if (excutionContext === NoContext) {
+      // 刷新此次批处理调度的immediate callback
+      resetRenderTimer();
+      flushSyncCallbackQueue();
+    }
+  }
+}
+
+function updateContainer(element, container, parentComponent, callback) {
+  ...
+
+  // 一个event相关入参
+  var eventTime = requestEventTime();
+
+  ...
+
+  // lane表示优先级
+  var lane = requestUpdateLane(current$1);
+
+  // 结合lane优先级，创建update对象，一个update对象意味着一个更新
+  var update = createUpdate(eventTime, lance);
+
+  update.payload = {
+    element: element
+  };
+
+  callback = callback === undefined ? null : callback;
+
+  if (callback !== null) {
+    update.callback = callback
+  }
+
+  // 将update入队
+  enqueueUpdate(current$1, update)；
+  // 调度fiberRoot
+  scheduleUpdateOnFiber(current$1, lane, eventTime);
+  // 返回当前节点fiberRoot的优先级
+  return lane;
+}
+
+// 获取fiber优先级
+function requestUpdateLane(fiber) {
+  // 获取mode属性
+  var mode = fiber.mode;
+
+  // 结合mode属性判断当前
+  if ((mode & BlockingMode) === NoMode) {
+    return SyncLane;
+  } else if ((node & CurrentMode) === NoMode) {
+    return getCurrentPriorityLevel() === ImmediatePriority$1 ? SyncLane : SyncBatchedLane;
+  }
+  // ...
+
+  return lane;
+}
+
+
+/**
+ * 2.render阶段
+ * 主要函数为scheduleUpdateOnFiber中的performSyncWorkOnRoot()函数
+ * - createWorkInProgress()创建 workInProgress 根节点
+ * - workLoopSync() 创建 fiber Tree
+ *  - performUnitOfWork()
+ *   - beginWork() 根据tag类型，调用updateXXX()，最终调用reconcileChildren()返回子节点Fiber
+ *    - renconcileChildren() 将ChildReconciler返回的FiberNode与workInProgress.child属性关联
+ *      - ChildReconciler(shouldTrackEffects) 创建相关FiberNode
+ *   - (next = beginWork()) === null: completeUnitOfWork()
+ *    - completeWork()
+ *    - 开启收集EffectList的“大循环”
+ *   - (next = beginWork()) !== null: 更新workInProgress继续循环创建Fiber tree
+ */
+
+// 入参中的current是现有树结构中的rootFiber对象
+function createWorkInProgress(current, pendingProps) {
+  var workInProgress = current.alternate;
+
+  // ReactDom.render触发的首屏渲染将进入 if 的逻辑
+  if (workInProgress === null) {
+    // 关注点1：workInProgress是createFiber()的返回值，类型为 FiberNode
+    workInProgress = createFiber(current.tag, pendingProps, current.key, current.mode);
+    workInProgress.elementType = current.elementType;
+    workInProgress.type = current.type;
+    workInProgress.stateNode = current.stateNode;
+    // 关注点2：workInProgress的alternate属性指向current
+    workInProgress.alternate = current;
+    // 关注点3：将current的alternate属性反过来指向workInProgress
+    current.alternate = workInProgress;
+  } else {
+    // else内是后续更新逻辑
+  }
+
+  // ... 省略大量workInProgress对象的属性处理逻辑
+
+  return workInProgress;
+}
+
+function workLoopSync() {
+  // 若workInProgress不为空，不断创建fiber节点最终构成fiber树
+  while (workInProgress) {
+    performUnitOfWork(workInProgress);
+  }
+}
+
+function performUnitOfWork(unitOfWork) {
+  // ...
+  var current = unitOfWork.alternate;
+
+  var next;
+
+  if (xxx) {
+    // ...
+    // 创建当前节点的子节点
+    next = beginWork$1(current, unitOfWork, subtreeRenderLanes);
+    // ...
+  } else {
+    // 创建当前节点的子节点
+    next = beginWork$1(current, unitOfWork, subtreeRenderLanes);
+  }
+
+  if (next === null) {
+    completeUnitOfWork();
+  } else {
+    workInProgress = next;
+  }
+}
+
+function beginWork(current, workInProgress, renderLanes) {
+  // ...
+
+  // current节点不为空的情况会加一道辨识，看看是否有更新逻辑要处理
+  if (current !== null) {
+    // 获取新旧props
+    var oldProps = current.memoizedProps;
+    var newProps = workInProgress.pendingProps;
+
+    // 若props更新或者上下文改变，则认为需要“接受更新”
+    if (oldProps !== newProps || hasContextChanged() || (workInProgress.type !== current.type)) {
+      // 打个更新标
+      didReceiveUpdate = true;
+    } else if (xxx) {
+      // 不需要更新的情况A
+      return A;
+    } else {
+      if (需要更新的情况B) {
+        didReceiveUpdate = true;
+      } else {
+        // 不需要更新的其他情况，首次渲染将会执行到这一行逻辑
+        didReceiveUpdate = false;
+      }
+    }
+  } else  {
+    didReceiveUpdate = false;
+  }
+
+  // ...
+
+  // 这一连串switch是beginWork中的核心逻辑
+  switch(workInProgress.tag) {
+    // ...省略大量case
+
+    // 根节点
+    case HostRoot:
+      return updateHostRoot(current, workInProgress, renderLanes);
+
+    // dom标签对应的节点
+    case HostComponent:
+      return updateHostCompoenent(current, workInProgress, renderLanes);
+
+    // 文本节点
+    case HostText:
+      return updateHostText(current, workInProgress, renderLanes);
+  }
+
+  // 错误兜底，处理switch匹配不上的情况
+  {
+    {
+      throw Error(
+        "Unkown unit of work tag(" + workInProgress.tag +
+        "). This error is likely caused by a bug in React. Please file an issue"
+      );
+    }
+  }
+}
+
+// beginWork()中的updateXXX函数最终都会调用reconcileChildren(), 生成当前节点的子节点
+function reconcileChildren(current, workInProgress, nextChildren, renderLanes) {
+  if (current === null) {
+    // 实际上 mountChildFibers = ChildReconciler(false);
+    workInProgress.child = mountChildFibers(workInProgress, null, nextChildren, renderLanes);
+  } else {
+    // 实际上 reconcileChildFibers = ChildReconciler(true);
+    workInProgress.child = reconcileChildFibers(workInProgress, null, nextChildren, renderLanes);
+  }
+}
+
+/**
+ * - reconcileChildFibers和 mountChildFibers的不同，在于对副作用的处理不同
+ * - ChildReconciler 中定义了大量如 placeXXX、deleteXXX、updateXXX、reconcileXXX 等这 样的函数，这些函数覆盖了对Fiber节点的创建、增加、删除、修改等动作，将直接或间接地被reconcileChildFibers 所调用
+ * - ChildReconciler 的返回值是一个名为 reconcileChildFibers的函数，这个函数是一个逻辑分 发器，它将根据入参的不同，执行不同的Fiber节点操作，最终返回不同的目标Fiber节点
+ */
+function ChildReconciler(shouldTrackEffects) {
+  // 删除节点
+  function deleteChild(returnFiber, childToDelete) {
+    if (!shouldTrackEffects) return;
+
+    // 删除逻辑
+    // ...
+  }
+
+  // 单个节点插入
+  function placeSingleChild(newFiber) {
+    if (shouldTrackEffects && newFiber.alternate === null) {
+      // 重点：处理副作用
+      newFiber.flags = Placement;
+    }
+
+    return newFiber;
+  }
+
+  // 插入节点逻辑
+  function placeChild(newFiber, lastPlacedIndex, newIndex) {
+    newFiber.index = newIndex;
+
+    if (!shouldTrackEffects) return lastPlacedIndex;
+
+    // 插入逻辑
+    // ...
+  }
+
+  // ...此处省略一系列updateXXX用于处理Fiber节点更新的函数
+
+  // 处理不止一个子节点的情况
+  function reconcileChildrenArray(returnFiber, currentFirstChild, newChildren, lanes) {
+    // ....
+  }
+
+  // ...此处省略一系列reconcileXXX用于处理具体recincile逻辑的函数
+
+  // 这是一个逻辑分发器，读入入参后，经过一系列条件判断，调用上方定义的负责节点操作的函数
+  function reconcileChildFibers(returnFiber, currentFirstChild, newChild, lanes) {
+    // ....
+  }
+
+  // 最后将总的reconcileChildFibers返回
+  return reconcileChildFibers;
+}
+
+/**
+ * 负责处理Fiber节点到DOM节点的映射逻辑
+ * - 创建DOM节点（Createlnstance），创建好的DOM节点会被赋值给 workInProgress节点的stateNode 属性
+ * - 将DOM节点插入到DOM树中（AppendAllChildren）：实际上是将子Fiber节点对应的DOM节点挂载到父Fiber对应的DOM节点中去
+ * - 为DOM节点设置属性（FinalizelnitialChildren）
+ */
+function completeWork(current, workInProgress, renderLanes) {
+  // 取出Fiber节点的属性值，存在newProps中
+  var newProps = workInProgress.pendingProps;
+
+  // 根据workInProgress节点的tag属性，决定处理逻辑
+  switch (workInProgress.tag) {
+    case ...:
+      return null;
+    case ClassComponent:
+    {
+      // ...
+    }
+    case HostRoot:
+    {
+      // ...
+    }
+    case HostComponent:
+    {
+      // h1属于HostComponent
+      popHostContext(workInProgress);
+      var rootContainerInstance = getRootHostContainer();
+      var type = workInProgress.type;
+
+      // 判断current节点是否存在，挂载阶段时current节点不存在
+      if (current !== null && workInProgress.stateNode != null) {
+        updateHostCompoenent$1(current, workInProgress, type, newProps, rootContainerInstance);
+
+        if (current.ref != workInProgress.ref) {
+          markRef$1(workInProgress);
+        }
+      } else {
+        // 这里首先针对异常情况return
+        if (!newProps) {
+          if(!(workInProgress.stateNode !== null)) {
+            {
+              throw Error("We must have new props for new mounts. This error is likely caused by a bug in React. Please file an issue.")
+            }
+          }
+          return null;
+        }
+
+        // 接下来就为DOM节点创建做准备
+        var currentHostContext = getHostContext();
+
+        // _wasHydrated是一个与服务端渲染有关的值
+        var _wasHydrated = popHydrationState(workInProgress);
+
+        // 判断是否是服务端渲染
+        if (_wasHydrated) {
+          // ....
+        } else {
+          // createInstance创建DOM节点
+          var instance = createInstance(type, newProps, rootContainerInstance, currentHostContext, workInProgress);
+          // appendAllChildren将上一步创建好的DOM节点挂载到DOM树上
+          appendAllChildren(instance, workInProgress, false, false);
+          // stateNode用于存储当前Fiber节点对应的DOM节点
+          workInProgress.stateNode = instance;
+
+          // finalizeInitialChildren用来为DOM节点设置属性
+          if (finalizeInitialChildren(instance, type, newProps, rootContainerInstance)) {
+            markUpdate(workInProgress);
+          }
+        }
+
+        // ...
+      }
+
+      return null;
+    }
+    case HostText:
+    {
+      // ...
+    }
+
+    // ...省略一系列case
+
+    {
+      {
+        throw Error(
+          "Unkown unit of work tag(" + workInProgress.tag +
+          "). This error is likely caused by a bug in React. Please file an issue"
+        )
+      }
+    }
+  }
+}
+
+/**
+ * 步骤1.针对传入的当前节点，调用completeWork
+ * 步骤2.将当前节点的副作用链插入其父节点对应的副作用链中
+ * 步骤3.以当前节点为起点，循环遍历其兄弟节点及其父节点
+ */
+function completeUnitOfWork(unitOfWork) {
+  var completedWork: Fiber = unitOfWork;
+
+  do {
+    // returnFiber是当前节点的父节点
+    var returnFiber = completedWork.return;
+    // ...
+    /**
+     * 副作用链EffectList作用及原理（副作用：数据获取、订阅或修改DOM等动作）
+     * 作用: commit阶段只需从render阶段获取需要更新的结果，副作用链(EffectList)可以理解为render阶段的“工作成果”的一个集合
+     * 原理：
+     * - 在completeUnitOfWork中，将当前节点的副作用链EffectList插入到其父节点的副作用链EffectList中
+     * - 每个Fiber节点的都要执行completeWork，且先处理兄弟节点再处理父节点，所有所有Fiber节点的completeWork是自底向上执行的
+     * - 当所有completeWork执行完后，最终fiber tree的根节点的EffectList将会收集了整棵树所有需更新的Fiber节点
+     * - 整个过程被称为“收集副作用”
+     * 代码实现：
+     * - 副作用链(EffectList)是一个节点类型为Fiber的链表，Fiber节点有两个共性：都是当前节点的后代节点，都有带处理的副作用
+     * - 每个Fiber节点的FiberNode对象上会有两个属性firstEffect和lastEffect，来形成一个链表
+     * - 只有大于PerformedWork的副作用才会被收集
+     */
+    // 步骤2:将当前节点的副作用链EffectList插入到其父节点的副作用链EffectList中
+    if (flags > PerformedWork) {
+      if (returnFiber.lastEffect !== null) {
+        // 若父节点的effectList不为空，则将当前节点追加到effectList的末尾
+        returnFiber.lastEffect.nextEffect = completedWork;
+      } else {
+        // 若父节点的effectList为空，则将当前节点就是effectList的firstEffect
+        returnFiber.firstEffect = completedWork
+      }
+
+      // 将effectList的lastEffect指针后移一位
+      returnFiber.lastEffect = completedWork;
+    }
+
+    // 获取当前节点的兄弟节点
+    var siblingFiber = completedWork.sibling;
+    // 若兄弟节点存在
+    if (siblingFiber !== null) {
+      // 将workInProgress赋值为当前节点的兄弟节点
+      workInProgress = siblingFiber;
+      return;
+    }
+
+    // 若兄弟节点不存在，completedWork会被赋值为returnFiber，也就是当前节点的父节点
+    completedWork = returnFiber;
+    // 这一步是和上一步相辅相成的，上下文中要求workInProgress与completedWork保持一致
+    workInProgress = completedWork
+  } while (completedWork !== null);
+}
+
+/**
+ * Concurrent中优先级调度逻辑主函数
+ * 核心算法：
+ * - startTime：任务开始时间
+ * - expirationTime：值越小，任务优先级越高
+ * - timerQueue：一个以startTime为依据的小顶堆，存储着startTime大于当前时间的任务（待执行任务）
+ * - taskQueue：一个以expirationTime为依据的小顶堆，存储着startTime大于当前时间的任务（已过期任务）
+ */
+function unstable_scheduleCallback(priorityLevel, callback, options) {
+  // 获取当前时间
+  var currentTime = exports.unstable_now();
+  // 声明startTime，是任务的预期开始时间
+  var startTime;
+
+  // 一下是对options入参处理
+  if (typeof options === 'object' && options !== null) {
+    var delay = options.delay;
+
+    // 若入参规定了延迟时间，则累加延迟时间
+    if (typeof delay === 'number' && delay > 0) {
+      startTime = currentTime + delay;
+    } else {
+      startTime = currentTime;
+    }
+  } else {
+    startTime = currentTime;
+  }
+
+  // timeout是expirationTime的计算依据
+  var timeout;
+
+  // 根据priorityLevel，缺点timeout值
+  switch(priorityLevel) {
+    case ImmediatePriority:
+      timeout = IMMEDIATE_PRIORITY_TIMEOUT;
+      break;
+    case UserBlockingPriority:
+      timeout = USER_BLOCKING_PRIORITY_TIMEOUT;
+      break;
+    case IdlePriority:
+      timeout = IDLE_PRIORITY_TIMEOUT;
+      break;
+    case LowPriority:
+      timeout = LOW_PRIORITY_TIMEOUT;
+      break;
+    case NormalPriority:
+      timeout = NORMAL_PRIORITY_TIMEOUT;
+      break;
+  }
+
+  // 优先级越高，timeout越小，expirationTime越小
+  var expirationTime = startTime + timeout;
+
+  // 创建task对象
+  var newTask = {
+    id: taskIdCounter++,
+    callback: callback,
+    priorityLevel: priorityLevel,
+    startTime: startTime,
+    expirationTime: expirationTime,
+    sortIndex: -1
+  };
+
+  {
+    newTask.isQueued = false;
+  }
+
+  // 若当前时间小于开始时间，说明该任务可延时执行
+  if (startTime > currentTime) {
+    // 将未过期任务推入“timerQueue”
+    newTask.sortIndex = startTime;
+    // push为小顶堆加入元素操作，并使其所在节点符合小顶堆规则
+    push(timerQueue, newTask);
+
+    // 若taskQueue中没有可执行的任务，而当前任务又是timerQueue中的第一个任务
+    // peek为取出小顶堆堆顶元素(最小元素)，并调整小顶堆使其成为新的符合规则的小顶堆
+    if (peek(taskQueue) === null && newTask === peek(timerQueue)) {
+      // ...
+
+      // 派发一个延时任务，这个任务用于检查当前任务是否过期，到期后将timerQueue堆顶任务加入taskQueue执行
+      requestHostTimeout(handleTimeout, startTime - currentTime);
+    }
+  } else {
+    // else里处理的是当前时间大于startTime的情况，说明这个任务已经过期
+    newTask.sortIndex = expirationTime;
+    // 过期任务会被推入taskQueue
+    push(taskQueue, newTask);
+
+    // ...
+
+    // 执行taskQueue中的任务，requestHostCallback发起的是“即时任务”，但并不意味着是同步任务，最早也要等到下一次事件循环才能够执行
+    // flushWork中将调度workLoop，逐一执行taskQueue中的任务，直至调度被暂停(时间片耗尽)或任务队列被清空
+    requestHostCallback(flushWork);
+  }
+
+  return newTask;
+}
+```

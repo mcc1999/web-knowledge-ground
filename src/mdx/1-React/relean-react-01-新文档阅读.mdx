@@ -1,0 +1,228 @@
+---
+title: Relearn React 01-新文档阅读
+date: 2024-01-30 23:30:00
+---
+
+# Relearn React 01-新文档阅读
+
+> 新文档阅读分为两个大块： GET START 和 LEARN REACT
+
+## Part2 LEARN REACT
+
+### state 如同一张快照
+
+- React 将 state 存储在组件外
+- 每次 setState 出发一次 re-render
+- 每次 render 中 state 的值始终是触发这次 render 时的 state 快照
+- 每次 render 都有自己的事件处理函数，函数中的 state 值是快照的值
+
+```javascript
+const [state, setState] = useState(0);
+function handleClick() {
+  // setState无论放在alert之前还是之后，alert的值都是触发re-render时的state快照值: 0
+  setState(state + 1);
+  // 相当于 alert(0);
+  alert(state);
+  // 相当于 setTimeout(() => alert(0), 1000);
+  setTimeout(() => alert(state), 1000);
+}
+```
+
+### 把一系列 state 更新加入队列
+
+- React 会在事件处理函数执行完成后处理 state 更新，这被称为批处理
+- 一个事件处理函数中，多次更新同一个 state 时，每次 newValue 或者 updater function 会被加入一个队列
+- re-render 时会依次处理队列中的 state 更新
+
+```typescript
+const [state, setState] = useState(0);
+function handleClick() {
+  // queue = []
+  setState(state + 1);
+  // queue = [0+1]
+  setState(state + 1);
+  // queue = [0+1, 0+1]
+  setState((s) => s + 1);
+  // queue = [0+1, 0+1, s=>s+1]
+}
+
+// React 用来处理批处理state更新queue计算最终 state 的算法
+function getFinalState(baseState, queue) {
+  let finalState = baseState;
+
+  for (let update of queue) {
+    if (typeof update === "function") {
+      // 调用更新函数
+      finalState = update(finalState);
+    } else {
+      // 替换下一个 state
+      finalState = update;
+    }
+  }
+
+  return finalState;
+}
+```
+
+### 对 state 进行保留和重置
+
+- 保留：在渲染树同一位置的组件会保留 state 状态。原理：通常情况下，React 使用子组件父组件内的顺序来区分子组件。
+- 重置：给子组件自己的 key 可重置 state 状态
+
+```typescript
+const [isA, setIsA] = useState(true);
+
+return (
+  <div>
+    // person='A'的Counter在++后toggle isA；
+    // 此时出现person='B'的Counter，其内state：count值会是为A内++后的值；
+    // 因为A和B的Counter都是div下的第一个组件，且是相同组件：Counter。
+    // state并不是存储在Counter组件内，实际是React在单独存储的，故被视为同一Counter的state：count会被保留
+    {isA ? <Counter person='A'> : <Counter person="B">}
+    // 给A和B的Counter不同的key，React就不会认为是同一个div下的Counter组件，会给两个Counter分配的不同state内存空间
+    <button onClick={() => setIsA(!isA)}>toggle isA</button>
+    {isA ? <Counter key='A' person='A'> : <Counter key='B' person="B">}
+  </div>
+);
+
+```
+
+### 使用 ref 引用值
+
+- 当一个值仅被 event handlers 需要并且改变时不需要 re-render，使用 ref 而不是 state，例：setInterval 返回的 id
+
+```typescript
+// React 内部 useRef 可以被视为如下实现
+function useRef(initialValue) {
+  const [ref] = useState(initialValue);
+  return ref;
+}
+```
+
+### 使用 ref 操作 DOM
+
+- 当 DOM 数量未知但每个 DOM 需要绑定 ref 时，可以将回调函数传给 DOM 的 ref 属性，并用 useRef 以 Map 的方式管理所有 DOM 引用
+- 该元素被添加到屏幕上时，React 将使用该节点作为参数调用 ref 的回调函数
+
+```typescript
+import { useRef } from "react";
+
+export default function CatFriends() {
+  const itemsRef = useRef(null);
+
+  function scrollToId(itemId) {
+    const map = getMap();
+    const node = map.get(itemId);
+    node.scrollIntoView({
+      behavior: "smooth",
+      block: "nearest",
+      inline: "center",
+    });
+  }
+
+  function getMap() {
+    if (!itemsRef.current) {
+      // 首次运行时初始化 Map。
+      itemsRef.current = new Map();
+    }
+    return itemsRef.current;
+  }
+
+  return (
+    <>
+      <nav>
+        <button onClick={() => scrollToId(0)}>Tom</button>
+        <button onClick={() => scrollToId(5)}>Maru</button>
+        <button onClick={() => scrollToId(9)}>Jellylorum</button>
+      </nav>
+      <div>
+        <ul>
+          {catList.map((cat) => (
+            <li
+              key={cat.id}
+              ref={(node) => {
+                const map = getMap();
+                if (node) {
+                  map.set(cat.id, node);
+                } else {
+                  map.delete(cat.id);
+                }
+              }}
+            >
+              <img src={cat.imageUrl} alt={"Cat #" + cat.id} />
+            </li>
+          ))}
+        </ul>
+      </div>
+    </>
+  );
+}
+
+const catList = [];
+for (let i = 0; i < 10; i++) {
+  catList.push({
+    id: i,
+    imageUrl: "https://placekitten.com/250/200?image=" + i,
+  });
+}
+```
+
+### 使用 useEffect 同步
+
+- useEffect 内的代码会在渲染后执行，即在 render、commit 两个阶段后执行
+- 开发模式 useEffect 被执行两次是因为 React 挂载了两次组件
+- 在 useEffect 中发送请求，防止条件竞争(race condition)的方法。
+  - 终止已卸载组件的请求
+  - 设置标识位，不处理已卸载组件的请求数据
+
+```typescript
+export default function Page() {
+  const [person, setPerson] = useState("Alice");
+  const [bio, setBio] = useState(null);
+
+  // 如下错误代码，选择Blob后，迅速选择Taylor。
+  // 若Taylor的请求返回的快，Blob的请求返回的慢。页面会先显示Taylor的bio，最终显示Blob的bio。
+  // 这被称为条件竞争race condition
+  // useEffect(() => {
+  //   setBio(null);
+  //   fetchBio(person).then((result) => {
+  //     setBio(result);
+  //   });
+  // }, [person]);
+
+  useEffect(() => {
+    let ignore = false;
+    setBio(null);
+    fetchBio(person).then((result) => {
+      if (!ignore) setBio(result);
+    });
+
+    // 解决方案一
+    // 设置igonre位true，等Blob的bio返回后不处理
+    // 解决方案二
+    // 在清理函数中终止Blob请求
+    return () => {
+      ignore = true;
+    };
+  }, [person]);
+
+  return (
+    <>
+      <select
+        value={person}
+        onChange={(e) => {
+          setPerson(e.target.value);
+        }}
+      >
+        <option value="Alice">Alice</option>
+        <option value="Bob">Bob</option>
+        <option value="Taylor">Taylor</option>
+      </select>
+      <hr />
+      <p>
+        <i>{bio ?? "加载中……"}</i>
+      </p>
+    </>
+  );
+}
+```

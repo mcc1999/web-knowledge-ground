@@ -1,0 +1,104 @@
+---
+title: Relearn React 11-React设计模式
+date: 2024-02-27 15:30:00
+---
+
+# React 设计模式
+
+本讲主要讲述 3 种设计模式：HOC 高阶组件、Render Prop、自定义 Hook
+
+### HOC 高阶组件
+
+高阶组件指的是参数是组件，返回值是新组件的函数，本质上就是一个函数。
+
+```javascript
+/**
+ * HOC代码模版
+ */
+const withProps = (WrappedComponent) => {
+  const targetComponent = (props) => (
+    <div className="wrapper-container">
+      <WrappedComponent {...props} />
+    </div>
+  );
+  return targetComponent;
+};
+
+/**
+ * 以下是以checkUserAccess为例，HOC组件写法
+ */
+// 假设 checkUserAccess 已经在其他文件封装为独立逻辑
+import { checkUserAccess } from "./utils";
+
+const withCheckAccess = (WrappedComponent) => {
+  const isAccessible = checkUserAccess();
+
+  const targetComponent = (props) => (
+    <div className="wrapper-container">
+      <WrappedComponent {...props} isAccessible={isAccessible} />
+    </div>
+  );
+  return targetComponent;
+};
+
+// 已有组件调用HOC的方式
+const EnhancedComponentA = withCheckAccess(ComponentA);
+const EnhancedComponentB = withCheckAccess(ComponentB);
+// ... 已有组件内可单独处理isAccessible属性，不必重复引入checkUserAccess方法来获取该属性
+```
+
+### Render Prop
+
+Render Prop 是指一种在 React 组件之间使用一个值为函数的 props 共享代码的技术；与 HOC 的函数包裹组件理念相反，Render Prop 是以组件包裹函数
+
+```javascript
+/**
+ * Render Prop模版代码
+ */
+const RenderChildren = (props) => {
+  return <>{props.children(props)}</>;
+};
+
+/**
+ * RenderChildren的使用
+ */
+<RenderChildren>
+  {(props) => {
+    // ...处理从RenderChildren获取的props
+    return <Component />;
+  }}
+</RenderChildren>;
+
+/**
+ * 以下是以checkUserAccess为例，Render Prop写法
+ */
+const CheckAccess = (props) => {
+  const isAccessible = checkUserAccess();
+
+  return <>{props.children({ ...props, isAccessible })}</>;
+};
+
+// 已有组件调用HOC的方式
+<CheckAccess>
+  {(props) => {
+    const { isAccessible } = props;
+    // const { isAccessible } = props;
+
+    // Render Prop方式相比HOC更灵活，isAccessible属性可被重命名
+    // return <ComponentA {...props} isValid={isAccessible}>
+    return <ComponentA {...props} isAccessible={isAccessible}>
+  }}
+</CheckAccess>;
+```
+
+### 自定义 Hook
+
+```javascript
+import useCheckAccess from "./useCheckAccess";
+
+const ComponentA = (props) => {
+  const isAccessible = useCheckAccess();
+
+  return <>{/** xxx */}</>;
+};
+```

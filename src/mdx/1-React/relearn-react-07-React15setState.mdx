@@ -1,0 +1,168 @@
+---
+title: Relearn React 07-React15中的setSate
+date: 2024-02-20 15:00:00
+---
+
+# React15 中的 setState 工作流
+
+> React15 中 setState 等工作流受批量更新策略控制。
+
+- batchingStrategy 是一个事务，在批量更新前开启锁，处理完 state 队列后才会把锁打开，从而导致 setState 表现为异步。
+
+```javascript
+onIncreasement() {
+   // 加锁 isBatchingUpdates = true
+   console.log('Before increase setState', this.state.count); // 0
+   this.setState({
+      count: this.state.count + 1,
+   })
+   console.log('After increase setState', this.state.count); // 0
+   // 解锁 isBatchingUpdates = true
+}
+onTriple() {
+   // 加锁 isBatchingUpdates = true
+   console.log('Before triple setState', this.state.count); // 0
+   this.setState({ count: this.state.count + 1 });
+   this.setState({ count: this.state.count + 1 });
+   this.setState({ count: this.state.count + 1 });
+   console.log('After triple setState', this.state.count); // 0
+   // 解锁 isBatchingUpdates = true
+}
+```
+
+- setTimeout 等会打破工作流，其内部代码是在解锁后执行的，表现为同步执行
+
+```javascript
+onReduce() {
+   // 加锁 isBatchingUpdates = true
+   console.log('Before triple setState', this.state.count); // 0
+   setTimeout(() => {
+      // 锁对setTimeout内代码执行没有约束力，执行时锁以解开
+      this.setState({ count: this.state.count + 1 });
+      console.log('After triple setState', this.state.count); // 1
+   }, 0);
+   // 解锁 isBatchingUpdates = true
+}
+```
+
+![React15 setState工作流](/images/MDX/relearn-react--06-react15-setState__workflow.jpg)
+
+### 总结
+
+setState 的(同步/异步)表现会因调用场景的不同而不同：
+
+- 在 React 钩子函数及合成事件中，它表现为异步的；
+- 在 setTimeout、setInterval 等函数中，baokDOM 原生事件中，它表现为同步；
+
+### 源码参考(Reference)
+
+```javascript
+ReactComponent.prototype.setState = function (partialState, callback) {
+  this.updater.enqueueSetState(this, partialState);
+  if (callback) {
+    this.updater.enqueueCallback(this, callback, "setState");
+  }
+};
+
+enqueueSetState: function (publicInstance, partialState) {
+   // 根据this拿到对应的组件实例
+   var internalInstance = getInternalInstanceReadyForUpdate(publicInstance, 'setState');
+
+   // 这个queue对应的就是一个组件实例的state数组
+   var queue = internalInstance._pendingStateQueue || (internalInstance._pendingStateQueue = []);
+   queue.push(partialState);
+
+   // enqueueUpdate用来处理当前的组件实例
+   enqueueUpdate(internalInstance);
+}
+
+function enqueueUpdate (component) {
+   ensureInjected();
+   // isBatchingUpdates标识着当前是否处于批量创建/更行组件的阶段
+   if (!batchingStrategy.isBatchingUpdates) {
+      // 若当前处于批量创建/更行组件的阶段，则立即更新组件
+      batchingStrategy.batchedUpdates(enqueueUpdate, component);
+      return;
+   }
+   // 否则，先把组件添加到dirtyComponents队列里，让它“再等等“
+   dirtyComponents.push(component);
+   if (component._updateBatchNumber == null) {
+      component._updateBatchNumber = updateBatchNumber + 1
+   }
+}
+
+/**
+ * batchingStrategy源码
+ */
+var ReactDefaultBatchingStrategy = {
+   // 全局唯一的锁标识
+   isBatchingUpdates: false,
+
+   // 发起更新动作的方法
+   batchUpdates: function (callback, a, b, c, d, e) {
+      // 缓存锁变量
+      var alreadyBatchingStrategy = ReactDefaultBatchingStrategy.isBatchingUpdates;
+      // 把锁”锁上“
+      ReactDefaultBatchingStrategy.isBatchingUpdates = true;
+
+      if (alreadyBatchingStrategy) {
+         callback(a, b, c, d, e);
+      } else {
+         // 启动事务， 将callback 放进事务里执行
+         transaction.perform(callback, null, a, b, c, d, e);
+      }
+   }
+}
+
+/**
+ * React中的Trasaction
+ *
+ *                       wrappers (injected at creation time)
+ *                                      +        +
+ *                                      |        |
+ *                    +-----------------|--------|--------------+
+ *                    |                 v        |              |
+ *                    |      +---------------+   |              |
+ *                    |   +--|    wrapper1   |---|----+         |
+ *                    |   |  +---------------+   v    |         |
+ *                    |   |          +-------------+  |         |
+ *                    |   |     +----|   wrapper2  |--------+   |
+ *                    |   |     |    +-------------+  |     |   |
+ *                    |   |     |                     |     |   |
+ *                    |   v     v                     v     v   | wrapper
+ *                    | +---+ +---+   +---------+   +---+ +---+ | invariants
+ * perform(anyMethod) | |   | |   |   |         |   |   | |   | | maintained
+ * +----------------->|-|---|-|---|-->|anyMethod|---|---|-|---|-|-------->
+ *                    | |   | |   |   |         |   |   | |   | |
+ *                    | |   | |   |   |         |   |   | |   | |
+ *                    | |   | |   |   |         |   |   | |   | |
+ *                    | +---+ +---+   +---------+   +---+ +---+ |
+ *                    |  initialize                    close    |
+ *                    +-----------------------------------------+
+ * 1.react 中用事务执行方法，就是用 wrapper把方法包裹起来，
+ * 然后每个 wapper 中都提供一个 initialize 方法和一个 close 方法；
+ * 2.当需要使用事务调用一个方法，例如上图中的 anyMethod 时，使用事务提供的 perform 方法，将需要执行的方法传入，
+ * 3.这个时候就会按顺序执行wrapper.initalize,  anyMethod,  wrapper.close
+ * 4.事务还支持多个事务的嵌套，当执行方法被多个 wapper 包裹时，
+ * 事务会先按顺序执行所有的 initalize 方法，再执行 anyMethod ，最后按顺序执行所有的 close 函数
+ **/
+
+// wrapper1: RESET_BATCHED_UPDATES
+var RESET_BATCHED_UPDATES = {
+   initalize: emptyFunction,
+   close: function () {
+      ReactDefaultBatchingStrategy.isBatchingUpdates = false;
+   }
+}
+
+// wrapper2: FLUSH_BATCHED_UPDATES
+var FLUSH_BATCHED_UPDATES = {
+   initalize: emptyFunction,
+   close: function () {
+      ReactUpdates.flushBatchedUpdates.bind(ReactUpdates);
+   }
+}
+
+// ReactDefaultBatchingStrategy实际上是一个包裹里两个wrapper的事物
+var TRANSACTION_WRAPPERS = [FLUSH_BATCHED_UPDATES, RESET_BATCHED_UPDATES];
+```

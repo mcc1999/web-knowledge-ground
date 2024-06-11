@@ -1,11 +1,7 @@
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
-import HomeIcon from "@mui/icons-material/Home";
-import GrainIcon from "@mui/icons-material/Grain";
 import HourglassEmpty from "@mui/icons-material/HourglassEmpty";
-import WhatshotIcon from "@mui/icons-material/Whatshot";
 import AddIcon from "@mui/icons-material/Add";
-import BreadcrumbsThemeHeader from "@/components/BreadcrumbsThemeHeader";
 import { TodoItem } from "@/store/todoList";
 import useWebPlaygroundStore from "@/store";
 import { Button, Box } from "@mui/material";
@@ -53,27 +49,8 @@ const TodoDay: React.FC = () => {
     setDialogType(undefined);
   };
 
-  const breadcrumbs = [
-    {
-      name: "Font Page",
-      path: "/",
-      icon: <HomeIcon sx={{ mr: 0.5 }} fontSize="inherit" />,
-    },
-    {
-      name: "Todo List",
-      path: "/todo-list",
-      icon: <GrainIcon sx={{ mr: 0.5 }} fontSize="inherit" />,
-    },
-    {
-      name: router.query.slug?.toString() || "",
-      path: `/todo-list/${router.query.slug}`,
-      icon: <WhatshotIcon sx={{ mr: 0.5 }} fontSize="inherit" />,
-    },
-  ];
-
   return (
     <div className={styles["todo-list-detail-container"]}>
-      <BreadcrumbsThemeHeader breadcrumbs={breadcrumbs} />
       <div className="todo-list-box">
         <Box className="todo-list list-box" sx={{ bgcolor: "cardBg.main" }}>
           <div className="list-box__header">

@@ -1,0 +1,127 @@
+---
+title: Relearn React 02-JSX
+date: 2024-02-18 16:30:00
+---
+
+# 关于 JSX 的 3 个“大问题”
+
+### 1.JSX 的本质是什么，它和 JS 之间到底是什么关系？
+
+- JSX 是 JS 的一种语法扩展。
+- JSX 是一种语法糖。本质上，它会被 Babel 转换为 React.createElement()调用。
+  ![React.createElement()主要用于格式化数据，最终生成ReacElement对象实例，即虚拟DOM](/images/MDX/relearn-react--02-JSX__creactElementFn.jpg)
+
+### 2.为什么要用 JSX？不用的后果是什么？
+
+- JSX 语法糖使得开发者可以使用类似 HTML 的标签语法来创建虚拟 DOM，降低学习成本，提高开发效率和体验。
+
+### 3.JSX 背后的功能模块是什么，这个功能模块都做了什么事情？
+
+- JSX 通过 React.createElement()调用生成 ReactElement 对象(虚拟 DOM)，最终通过 ReactDOM.render()渲染成真实 DOM。
+
+### 4.总结
+
+![React.createElement()主要用于格式化数据，最终生成ReacElement对象实例，即虚拟DOM](/images/MDX/relearn-react--02-JSX__summary.jpg)
+
+### 参考 Reference
+
+- React.creatElement()源码
+
+```javascript
+export function createElement(type, config, children) {
+  // propName 变量用于储存后面需要用到的元素属性
+  let propName;
+  // props 变量用于储存元素属性的键值对集合
+  let props = {};
+  // key、ref、self、source均为 ReactElement 的属性
+  let key = null;
+  let ref = null;
+  let self = null;
+  let source = null;
+
+  // config对象中存储的是元素的属性
+  if (config != null) {
+    // 首先依次给key、ref、self、source属性赋值
+    if (hasValidRef(config)) {
+      ref = config.ref;
+    }
+    if (hasValidKey(config)) {
+      // 此处将 key 值字符串化
+      key = "" + config.key;
+    }
+    self = config.__self === undefined ? null : config.__self;
+    self = config.__source === undefined ? null : config.__source;
+
+    // 接着将config中的属性挪到props对象中
+    for (propName in config) {
+      if (
+        hasOwnProperty.call(config, propName) && /
+        !RESERVED_PROPS.hasOwnProperty(propName)
+      ) {
+        props[propName] = config[propName];
+      }
+    }
+
+    // childrenLength 指的是当前元素的子元素个数，argument.length减去的2是type，config两个参数占用的长度
+    const childrenLength = arguments.length - 2;
+    if (childrenLength === 1) {
+      props.children = children;
+    } else if (childrenLength > 1) {
+      // 创建子元素数组
+      const childArray = Array(childrenLength);
+      for (let i=0; i<childrenLength; i++) {
+        childArray[i] = arguments[i+2];
+      }
+      props.children = childArray;
+    }
+
+    // 处理defaultProps
+    if (type && type.defaultProps) {
+      const defaultProps = type.defaultProps;
+      for (propName in defaultProps) {
+        if (props[propName] === undefined) {
+          props[propName] = defaultProps[propName];
+        }
+      }
+    }
+
+    // 最后返回ReactElement执行方法调用，并传入刚才处理过的参数
+    return  ReactElement(
+      type,
+      key,
+      ref,
+      self,
+      source,
+      ReactCurrentOwner.current,
+      props
+    )
+  }
+}
+```
+
+- ReactElement()源码
+
+```javascript
+cosnt ReactElement = function(type, key, ref, self, source, owner, props) {
+  const element = {
+    // REACT_ELEMENT_TYPE是一个常量，用于表示该对象是一个ReactElement对象
+    $$typeof: REACT_ELEMENT_TYPE,
+
+    // 内置属性赋值
+    type: type,
+    key: key,
+    ref: ref,
+    props: props,
+
+    // 记录创造该元素的组件
+    owner: owner,
+  }
+
+  //
+  if (__DEV__) {
+    // 一些针对__DEV__环境下的一些处理
+  }
+
+  return element;
+}
+```

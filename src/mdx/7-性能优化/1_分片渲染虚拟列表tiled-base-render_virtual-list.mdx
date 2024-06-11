@@ -1,0 +1,179 @@
+---
+title: Tiled-Base Rendering && Virtual List
+date: 2022-11-11 10:30:00
+---
+
+# 长列表渲染
+
+> > JS 操作远比 DOM 操作块，大量 JS 操作导致的 DOM 更新会引起页面卡顿、奔溃
+
+## 分片渲染——懒加载的一种
+
+分片渲染采用定时器，在一段时间内只渲染每一分片大小的列表数据
+
+<CustomSandpack template='react-ts' files={{
+  'App.tsx': `import {useState, useEffect} from 'react'
+    import {useMemoizedFn} from 'ahooks'
+
+    export default function App(): JSX.Element {
+      const size = 20;
+      const [startIndex, setStartIndex] = useState<number>(0)
+      const [data, setData] = useState<string[]>([])
+      const [renderList, setRenderList] = useState<string[]>([])
+
+      useEffect(() => {
+        setData(Array.from(Array(10000), (_, i) => 'I am data: ' + i))
+      }, [])
+
+      const TiledBaseRendering = useMemoizedFn(function (){
+        const tmpList = data.slice(startIndex, startIndex+size)
+        if(tmpList && tmpList.length){
+          setTimeout(() => {
+            setRenderList(s => [...s, ...tmpList])
+            setStartIndex(s => s+size)
+            TiledBaseRendering()
+          }, 100)
+        }
+      })
+      return <div>
+        <div><button onClick={TiledBaseRendering}>render</button></div>
+        {renderList.map(item => <div>{item}</div>)}
+      </div>
+    }
+
+`,
+}}
+customSetup={{
+    dependencies: {
+      "ahooks": "^3.7.2",
+    },
+  }}
+/>
+
+## 虚拟列表
+
+可视区域内 Item 数量固定，滚动时计算展示的内容
+
+<CustomSandpack template='react-ts' files={{
+  'App.tsx': `import { useState, useEffect, useRef } from "react";
+import "./index.css";
+
+export default function App(): JSX.Element {
+  const itemHeight = 100;
+  const bufferSize = 5;
+  const [data, setData] = useState<string[]>([]);
+  const [maxCount, setMaxCount] = useState(0);
+  const [renderList, setRenderList] = useState<string[]>([]);
+  const [inited, setInited] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const listRef = useRef<HTMLDivElement>(null);
+
+  const loadData = () => {
+    console.log("loadData", data);
+    let newData = [];
+    for (let i = 0; i < 10; i++) {
+      const len = data.length;
+      newData.push(len + i);
+    }
+    setData(data.concat(newData));
+  };
+
+  useEffect(() => {
+    loadData();
+    const containerHeight = Number(
+      getComputedStyle(containerRef.current).height.slice(0, -2)
+    );
+    setMaxCount(Math.ceil(containerHeight / itemHeight) + 1);
+    setInited(true);
+  }, []);
+
+  useEffect(() => {
+    if (inited) {
+      updateVisiualList();
+    }
+  }, [inited]);
+
+  console.log("render", renderList);
+
+  const updateVisiualList = () => {
+    if (!listRef.current) return;
+    const scrollTop = containerRef.current!.scrollTop;
+    const startIndex = Math.floor(scrollTop / itemHeight);
+    const endIndex =
+      startIndex + maxCount < data.length ? startIndex + maxCount : data.length;
+    if (endIndex === data.length) loadData();
+    const newList = data.slice(startIndex, endIndex);
+    setRenderList(newList);
+    listRef.current!.style.transform =
+      "translate3d(0," + startIndex * itemHeight + "px, 0)";
+    listRef.current!.style.height =
+      (data.length - startIndex) * itemHeight + "px";
+  };
+
+  const throttle = (fn, delay = 200) => {
+    let start = 0;
+    return function (...args) {
+      const now = Date.now();
+      if (now - start >= delay) {
+        fn.apply(this, args);
+        start = now;
+      }
+    };
+  };
+
+  const rafThrottle = (fn) => {
+    let lock = false;
+    return function (...args) {
+      if (lock) return;
+      lock = true;
+      fn.apply(this, args);
+      lock = false;
+    };
+  };
+
+  return (
+    <div className="container">
+      <div
+        className="virtual-list-container"
+        ref={containerRef}
+        // onScroll={rafThrottle(updateVisiualList)}
+        onScroll={updateVisiualList}
+      >
+        <div className="virtual-list-box" ref={listRef}>
+          {renderList.map((item, i) => (
+            <div key={i} className="virtual-list-item">
+              item: {item}
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+`,
+'index.css': `.container {
+  width: 500px;
+  height: 500px;
+  border: 1px solid;
+}
+.virtual-list-container {
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+}
+.virtual-list-item {
+  width: 100%;
+  height: 100px;
+  line-height: 100px;
+  text-align: center;
+  border: 1px solid;
+  box-sizing: border-box;
+}
+`,
+}}
+customSetup={{
+    dependencies: {
+      "ahooks": "^3.7.2",
+    },
+  }}
+/>

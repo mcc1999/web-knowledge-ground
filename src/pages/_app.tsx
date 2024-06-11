@@ -90,7 +90,7 @@ export default function MyApp({ Component, pageProps }: AppPropsWithLayout) {
       <ThemeProvider theme={theme}>
         <CssBaseline />
         <NavBar />
-        <div style={{ height: "calc(100vh - 64px)", overflow: 'auto' }}>
+        <div style={{ height: "calc(100vh - 64px)", overflow: "auto" }}>
           {getLayout(<Component {...pageProps} />)}
         </div>
       </ThemeProvider>

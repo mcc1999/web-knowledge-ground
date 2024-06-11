@@ -1,0 +1,88 @@
+---
+title: Relearn React 09-React事件
+date: 2024-02-20 22:00:00
+---
+
+# React 事件与原生 DOM 事件
+
+### 原生 DOM 下的事件流
+
+- 事件流：一个页面会绑定很多事件，而页面接受事件的顺序就是时间流。
+- W3C 事件传播阶段：事件捕获阶段->目标阶段->事件冒泡阶段<br />
+  {/* ![W3C 事件传播阶段](/images/MDX/relearn-react--09-react-event__event-stream.jpg) */}
+  <img
+    src="/images/MDX/relearn-react--09-react-event__event-stream.jpg"
+    alt="W3C 事件传播阶段"
+    width="50%"
+  />
+
+### DOM 事件流下的性能优化思路：事件委托
+
+事件委托：将多个子元素同一类型的事件监听绑定到它们共同的父元素上(原理：事件会冒泡到父元素)，并通过事件对象中的 target(e.target)属性获取实际触发元素。
+
+### React 为什么要实现自己的事件系统
+
+- 在底层磨平了不同浏览器的差异，在上层向开发者暴露统一、稳定、与 DOM 原生事件相同的事件接口，通过`e.nativaEvent`可访问到原生事件
+- 帮助了 React 实现了对所有事件的中心化管控
+
+### React 事件系统是如何工作的
+
+当事件在具体的 DOM 节点上被触发后，最终都会冒泡到 ducument 上，document 上所绑定的统一事件处理程序会将事件分发到具体的组件实例上
+
+#### 事件的绑定
+
+- 绑定时机：`completeWork`函数中的`finalizeInitialChildren`一步中
+
+  <img
+    src="/images/MDX/relearn-react--09-react-event__event-binding.jpg"
+    alt="React事件的绑定时机"
+    width="50%"
+  />
+
+- 针对同一类型事件即时存在不同 DOM 节点上有多个回调，document 也只需要注册一次监听。
+  因为 React 最终注册到 document 上的不是 DOM 节点上具体的回调逻辑，而是一个统一的事件分发函数。
+
+#### 事件触发
+
+事件触发的本质是对 dispatchEvent 函数的调用
+
+<img
+  src="/images/MDX/relearn-react--09-react-event__event-dispatching.jpg"
+  alt="React事件的触发"
+  width="50%"
+/>
+
+### 源码参考(Reference)
+
+```javascript
+/**
+ * 事件触发的第四步：收集事件在捕获阶段所波及的回调函数和对应的节点实例
+ * - 循环收集符合条件的父节点，存入path数组
+ * - 模拟事件在捕获阶段的传播顺序，收集捕获阶段相关的节点实例与回调函数
+ * - 模拟事件在冒泡阶段的传播顺序，收集冒泡阶段相关的节点实例与回调函数
+ * - 节点实例收集到SyntheticEvent._dispatchInstances，回调函数收集到SyntheticEvent._dispatchListeners中
+ */
+function traverseTwoPhase(inst, fn, arg) {
+  // 定义一个path数组
+  var path = [];
+
+  while (inst) {
+    // 将当前节点收集进path数组
+    path.push(inst);
+    // 向上收集tag === HostComponent的父节点， HostComponent是DOM元素对应的Fiber节点类型
+    inst = getParent(inst);
+  }
+
+  var i;
+
+  // 从后往前，收集path数组中会参与捕获的节点与对应回调函数
+  for (i = path.length; i--; i > 0) {
+    fn(path[i], 'captured', arg);
+  }
+
+  // 从前往后，收集path数组中会参与冒泡的节点与对应回调函数
+  for (i = 0; i < path.length; i++;) {
+    fn(path[i], 'bubbled', arg);
+  }
+}
+```

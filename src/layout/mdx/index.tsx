@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 import {
   Box,
   Card,
@@ -9,6 +9,9 @@ import {
   TextField,
   Paper,
   Popper,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
 } from "@mui/material";
 import useWebPlaygroundStore from "@/store";
 import Link from "next/link";
@@ -17,6 +20,8 @@ import { styled, alpha, useTheme } from "@mui/material/styles";
 import { useRouter } from "next/router";
 import ThemeSwitch from "@/components/ThemeSwitch";
 import { AiOutlineCaretLeft, AiOutlineCaretRight } from "react-icons/ai";
+import ArrowForwardIosSharpIcon from "@mui/icons-material/ArrowForwardIosSharp";
+
 import styles from "./index.module.scss";
 
 const SearchAutocomplete = styled(Autocomplete)(({ theme }) => ({
@@ -67,6 +72,22 @@ const MDXLayout = (props: any) => {
   const handelAutocompleteChange = (event: any, value: any) => {
     router.push(value.value);
   };
+
+  const formatSiderDate = useCallback(() => {
+    if (!siderData.length) return {};
+    const siderDataMap: Record<string, any[]> = {};
+    siderData.forEach((data) => {
+      const category: string = data.id.split("/")[0];
+      if (siderDataMap[category]) {
+        siderDataMap[category].push(data);
+      } else {
+        siderDataMap[category] = [data];
+      }
+    });
+    return siderDataMap;
+  }, [siderData]);
+  console.log("side date", formatSiderDate());
+
   return (
     <Box className={styles["mdx-layout"]}>
       {/* <AppBar position='sticky'>
@@ -190,35 +211,55 @@ const MDXLayout = (props: any) => {
           />
         </div>
         <div>
-          {siderData.map((item, i) => (
-            <Typography
-              key={item.title + i}
-              noWrap
-              onClick={() => updateSelectPostId(item.id)}
-              sx={{
-                "&:hover": {
-                  color: "purple.main",
-                  backgroundColor: alpha(theme.palette.purple.light, 0.15),
-                },
-                color:
-                  decodeURIComponent(router.asPath) === item.linkTo
-                    ? "purple.main"
-                    : "inherit",
-                backgroundColor:
-                  decodeURIComponent(router.asPath) === item.linkTo
-                    ? alpha(theme.palette.purple.light, 0.15)
-                    : "",
-                marginBottom: "4px",
-                padding: "4px  0 4px 16px",
-              }}
-            >
-              <Link href={item.linkTo}>
-                <span title={item.title} className={styles["content-item"]}>
-                  {`${i + 1}. ${item.title}`}
-                </span>
-              </Link>
-            </Typography>
-          ))}
+          {!!siderData.length &&
+            Object.keys(formatSiderDate()).map((key) => (
+              <Accordion key={key} disableGutters>
+                <AccordionSummary
+                  expandIcon={
+                    <ArrowForwardIosSharpIcon sx={{ fontSize: "0.9rem" }} />
+                  }
+                >
+                  {key}
+                </AccordionSummary>
+                <AccordionDetails sx={{ padding: 0 }}>
+                  {formatSiderDate()[key].map((item, i) => (
+                    <Typography
+                      key={item.title + i}
+                      noWrap
+                      onClick={() => updateSelectPostId(item.id)}
+                      sx={{
+                        "&:hover": {
+                          color: "purple.main",
+                          backgroundColor: alpha(
+                            theme.palette.purple.light,
+                            0.15
+                          ),
+                        },
+                        color:
+                          decodeURIComponent(router.asPath) === item.linkTo
+                            ? "purple.main"
+                            : "inherit",
+                        backgroundColor:
+                          decodeURIComponent(router.asPath) === item.linkTo
+                            ? alpha(theme.palette.purple.light, 0.15)
+                            : "",
+                        marginBottom: "4px",
+                        padding: "4px  0 4px 16px",
+                      }}
+                    >
+                      <Link href={item.linkTo}>
+                        <span
+                          title={item.title}
+                          className={styles["content-item"]}
+                        >
+                          {`${i + 1}. ${item.title}`}
+                        </span>
+                      </Link>
+                    </Typography>
+                  ))}
+                </AccordionDetails>
+              </Accordion>
+            ))}
         </div>
       </Paper>
       <Card

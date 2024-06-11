@@ -1,0 +1,55 @@
+---
+title: 浏览器缓存——强缓存/协商缓存
+date: 2024-03-13 22:00:00
+---
+
+# 浏览器缓存——强缓存/协商缓存
+
+Http 缓存机制主要在 http 响应头中设置，响应头中相关字段为`Expires`、`Cache-control`、`Etag`、`Last-Modified`；<br />
+强缓存优先于协商缓存，强缓存有效直接获取缓存；
+
+### 强缓存
+
+> 强缓存: 浏览器不会向服务器发送任何请求，直接从本地缓存中读取文件并返回`Status Code：200`
+
+#### 如何设置强缓存
+
+1. Expires
+
+- 响应头的 Expires 字段设置过期时间，若下次访问时间小于这个过期时间，则直接读取缓存，不再请求，返回`Status Code：200`。
+
+2. Cache-control
+
+- 响应头的 Cache-control 字段设置`max-age=300`，则下次请求和这次请求间隔小于 300s，则直接读取缓存，不再请求，返回`Status Code：200`；
+- Cache-control 的其他常用值
+  - s-maxage：作用同 max-age，一般用在 cache 服务器上(比如 cache CDN)，并只对 public 缓存有效
+  - public：响应可以被任何对象（包括：发送请求的客户端，代理服务器，等等）缓存
+  - private：表明响应只能被单个用户缓存，不能作为共享缓存（即代理服务器不能缓存它）
+  - no-cache：在发布缓存副本之前，强制要求缓存把请求提交给原始服务器进行验证，若有效，实际用的还是缓存
+  - no-store：禁止一切缓存
+
+3. Expires 和 Cache-control 同时存在时，cache-control 会覆盖 Expires；
+
+4. 缓存必定会保存在磁盘，读取时会先尝试读取浏览器内存缓存，不存在会读取磁盘缓存；
+   第一次打开浏览器获取缓存时会从磁盘获取，`Status Code：200`会有`from disk`标识；
+   后续会读取浏览器内存缓存中，因为已经加载至内存缓存，关闭浏览器内存缓存会清空；
+
+### 协商缓存
+
+> 协商缓存: 浏览器会向服务器发送请求验证缓存有效性，若返回`Status Code：304`，则缓存有效，从本地缓存中读取文件。
+
+#### 如何协商缓存
+
+1. Etag & if-None-Match
+
+- 前端请求头中，添加 if-None-Match 字段，值为 Etag 值(一个 hash 值)
+- 服务器在第一次响应时返回 Etag 值，前端存储后加入后续请求的请求头中
+- 后续请求，服务器会验证 if-None-Match 里的 Etag 值，若无变化返回 304，有变化返回 200 和新资源
+
+2. Last-Modified & if-Modified-Since
+
+- 前端请求头中，添加 if-Modified-Since 字段，值为 Last-Modified 时间(精确到秒)
+- 服务器在第一次响应时返回 Last-Modified 时间，前端存储后加入后续请求的请求头中
+- 后续请求，服务器会验证 if-Modified-Since 里的 Last-Modified，若最新修改时间小于等于 Last-Modified 时间，则说明缓存有效，返回 304
+
+3. Etag 优先级高于 Last-Modified，服务器会先验证 Etag

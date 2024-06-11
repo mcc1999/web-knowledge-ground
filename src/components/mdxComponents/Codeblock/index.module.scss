@@ -49,18 +49,10 @@
 
     .codeBody {
       pre {
-        background-color: #fff !important;
-        border-bottom-left-radius: 6px;
-        border-bottom-right-radius: 6px;
         margin: 0;
       }
 
       :global {
-        .simplebar-content-wrapper {
-          border-bottom-left-radius: 6px;
-          border-bottom-right-radius: 6px;
-        }
-
         .simplebar-content::after {
           content: none;
         }
@@ -68,6 +60,20 @@
         .simplebar-content::before {
           content: none;
         }
+      }
+    }
+
+    .foldCode {
+      height: 27px;
+      padding: 0 8px;
+      border-bottom-left-radius: 6px;
+      border-bottom-right-radius: 6px;
+      background-color: rgb(238, 239, 241);
+
+      .foldCodeBtn {
+        display: flex;
+        align-items: center;
+        cursor: pointer;
       }
     }
   }

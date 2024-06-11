@@ -1,0 +1,48 @@
+---
+title: Relearn React 03-生命周期
+date: 2024-02-18 19:30:00
+---
+
+# React 生命周期
+
+### 虚拟 DOM 和组件化
+
+- 虚拟 Dom：核心算法的基石
+  ![虚拟DOM在react渲染中的作用](/images/MDX/relearn-react--03-lifecircle__virtualDOM.jpg)
+
+- 组件化：React 中几乎所有可见和不可兼得内容都可以被抽象成各种各样的组件
+
+  - 组件既是”封闭“的：在组件`自身的渲染工作流`中，每个组件都只处理它内部的逻辑；
+
+  - 组件也是“开放”的：React 允许开发者基于“单向数据流”的原则进行`组件间通信`,组件间通信将改变双方/某一方内部的数据而对渲染结果构成影响；
+
+  - 开放又封闭的特性使得 React 即专注又灵活，具备高度可重用性和可维护性；
+
+### 生命周期方法的本质：组件的”灵魂“和”躯干“
+
+> render 方法是 React 组件的“灵魂”
+
+```javascript
+class LifeCircle extends React.Component {
+  render() {
+    console.log("component render");
+
+    return <div className="box">this is JSX content</div>;
+  }
+}
+```
+
+> render 之外的生命周期方法可以理解为是组件的躯干
+
+躯干未必总是会做具体的事情，倘若躯干做了点什么，往往会直接或间接的影响到灵魂。
+
+### React15 组件中的生命周期
+
+- componentWillReceiveProps()会在父组件触发的更新事被调用，即使传递给自组件的 props 未改变，故通常会比较改方法两个参数 prevProps 和 nextProps；
+  ![React15中的生命周期](/images/MDX/relearn-react--03-lifecircle__lifecircleIn15.jpg)
+
+### React16 组件中的生命周期
+
+- getDerivedStateFromprops()会在父组件/setState 引发的更新中都触发，并且是一个 static 方法，在内部无法访问 this；
+- getDerivedStateFromprops()的出现是为了配合 Fiber 架构的异步渲染，可防止 componentWillXXX 等方法在异步渲染 render 阶段重复执行带来的 bug；
+  ![React16中的生命周期](/images/MDX/relearn-react--03-lifecircle__lifecircleIn16.jpg)

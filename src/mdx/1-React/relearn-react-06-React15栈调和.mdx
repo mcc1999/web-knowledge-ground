@@ -1,0 +1,35 @@
+---
+title: Relearn React 06-React15中的“栈调和(Stack Reconciler)”
+date: 2024-02-19 21:30:00
+---
+
+# React15 中的“栈调和(Stack Reconciler)”
+
+### 调和和 Diff 算法的区别
+
+- 调和指的是一个过程，虚拟 DOM 通过 ReactDOM 等类库使之与“真实的”DOM 同步的过程。
+- Diff 算法只是调和的一部分，调和还包含在 Diff 完获取差别后更新至真实 DOM 的步骤。
+
+### React15 的 Diff 算法
+
+1. Diff 算法的设计思想：循环递归进行虚拟 DOM 树节点的一一比对，复杂度为 `O(n^3)`。
+2. React15 为了降低递归的复杂度到`O(n)`，总结了以下两条规则+一条实践规律：
+
+- 若两个组件属于同一个类型，它们将拥有相同的 DOM 树形结构；
+- 处于同一层记得一组子节点，可用通过设置 key 作为标识符，从而维持各个节点在不同渲染过程中的稳定性；
+- 还有一条与实践结合比较紧密的规律：DOM 节点之间的跨层级操作并不多，同层级操作是主流；
+
+3. Diff 算法逻辑
+
+- Diff 算法性能突破的关键点在于`“分层对比”`;
+- 类型一致的节点才有继续 Diff 的必要性；
+- key 属性的设置，可以帮助 React 尽可能重用同一层级内的节点；
+
+### 图示 Diff 逻辑
+
+1. 分层对比: 相同节点的仅层级发生改变，会删除旧节点，并重新创建新节点。
+   ![React15 Diff算法的分层对比](/images/MDX/relearn-react--06-react15-diff__01.jpg)
+2. 类型一致的节点才有继续 Diff 的必要性：只有节点类型一致，才会向节点树的更深层次节点 Diff，否则直接替换整个节点。
+   ![React15 Diff算法的节点类型比较](/images/MDX/relearn-react--06-react15-diff__02.jpg)
+3. key 属性帮助 React 记住节点：key 属性为同一层级的节点添加了一个标识，从而在后续更新中实现对节点的跟踪重用。
+   ![React15 Diff算法的key属性](/images/MDX/relearn-react--06-react15-diff__03.jpg)

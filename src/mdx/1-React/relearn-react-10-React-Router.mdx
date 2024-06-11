@@ -1,0 +1,59 @@
+---
+title: Relearn React 10-React Router
+date: 2024-02-20 22:00:00
+---
+
+# React Router
+
+### 路由器(BrowserRouter/HashRouter)
+
+路由器根据路由(Route:负责定义路径和组件之间的映射关系)为新的路径匹配他对应的逻辑
+
+|              | BrowserRouter                                                                      | HashRouter                                       |
+| ------------ | ---------------------------------------------------------------------------------- | ------------------------------------------------ |
+| 定义         | protocol://hostname:port/xxx/xxx                                                   | 通过改变 URL 后面的“#”分隔的字符串让页面感知路由 |
+| URL 举例     | HTML5 中的 history API 跳转                                                        | protocol://hostname:port/#xxx                    |
+| 原理机制     | HTML5 中的 history API 跳转                                                        | URL 的 hash 属性跳转                             |
+| 感知路由变化 | popState 事件(pushState、replaceState 不会触发该事件，需通过 window.dispatch 添加) | hashchange 事件                                  |
+
+### window.history API
+
+| API                                               | 含义                               |
+| ------------------------------------------------- | ---------------------------------- |
+| window.history.forward()                          | 前进到下一页                       |
+| window.history.back()                             | 后退到上一页                       |
+| window.history.go(2)                              | 前进 2 页                          |
+| window.history.go(-2)                             | 后退 2 页                          |
+| window.history.go(-2)                             | 后退 2 页                          |
+| window.history.pushState(data, [,title][,url])    | 向浏览历史中追加一条记录           |
+| window.history.replaceState(data, [,title][,url]) | 修改(替换)当前页在浏览历史中的信息 |
+
+### 源码参考(Reference)
+
+```javascript
+import { Router } from "Router";
+import { createHashHistory, createBrowserHistory } from 'history';
+
+// BrowserRouter
+class HashRouter extend React.Component {
+  /*
+   * createBrowserHistory使用了HTML5中的history API，including pushState、replaceState、popState
+   */
+  history = createBrowserHistory(this.props);
+
+  render() {
+    return <Router history={this.history} children={this.props.children} />
+  }
+}
+// HashRouter
+class HashRouter extend React.Component {
+  /**
+   * createHashHistory通过URL的hash属性来控制路由跳转控制
+  */
+  history = createHashHistory(this.props);
+
+  render() {
+    return <Router history={this.history} children={this.props.children} />
+  }
+}
+```

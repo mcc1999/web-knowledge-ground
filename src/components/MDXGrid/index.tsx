@@ -19,19 +19,19 @@ const MDXGrid: React.FC<MDXGridProps> = ({ category, mdxs }) => {
       <div className="content">
         {mdxs.map((mdx, idx) => (
           <Box key={idx} className="mdx-item" sx={{ bgcolor: "cardBg.main" }}>
-            <article>
-              <Link href={mdx.linkTo}>
+            <Link href={mdx.linkTo}>
+              <article>
                 <h3>{mdx.title}</h3>
-              </Link>
-              <p>{mdx.overview}</p>
-              <div className="read-more">
-                <span>Read More</span>
-                <ArrowForwardIcon
-                  className="read-more__icon"
-                  fontSize="small"
-                />
-              </div>
-            </article>
+                <p>{mdx.overview}</p>
+                <div className="read-more">
+                  <span>Read More</span>
+                  <ArrowForwardIcon
+                    className="read-more__icon"
+                    fontSize="small"
+                  />
+                </div>
+              </article>
+            </Link>
           </Box>
         ))}
       </div>

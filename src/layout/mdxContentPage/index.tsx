@@ -8,7 +8,6 @@ import Counter from "@/components/mdxComponents/Counter";
 import ScssTheme from "@/components/mdxComponents/SandPacks/4_css-19";
 import StaticSandpack from "@/components/mdxComponents/StaticSandpack";
 import ChildrenAvoidRerender from "@/components/mdxComponents/SandPacks/5_audition-5";
-import { useRouter } from "next/router";
 
 export interface LayoutProps {
   siderData: SiderDataType[];

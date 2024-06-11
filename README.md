@@ -5,7 +5,7 @@
 
 ToDo
 1. Summary of Mdx文件导入用contentlayer/mdx-bundler替换
-2. Summary of主题切换
+2. Summary of 主题切换
 3. sass/scss和less区别，及其引入
 4. mdx中的date pre-commit hook 更新
 5. mdx实现： 
@@ -15,6 +15,7 @@ ToDo
   - Kent C Dodds' mdx-bundler
   - contentLayer
 6. Combine @next/mdx with contentLayer
+7. sandpack 高度过高自动折叠并添加show more按钮（同时研究文件内代码折叠）
 
 
 注意：

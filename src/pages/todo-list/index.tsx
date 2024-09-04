@@ -136,7 +136,7 @@ const TodoList: React.FC = () => {
             </div>
             <div className="dates-body">
               {new Array(42).fill(0).map((_, i) => {
-                let content;
+                let content: number | undefined;
                 const { monthFirstWeekday, lastDayOfMonth } = monthWeekDay;
                 if (
                   i >= monthFirstWeekday &&

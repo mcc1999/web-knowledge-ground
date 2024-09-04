@@ -1,0 +1,146 @@
+---
+title: js模块化规范
+date: 2024-06-17 20:30:00
+---
+
+# JS 模块化规范
+
+> Node: CommonJS;  
+> 浏览器: AMD/CMD/ES module;
+
+### CommonJS
+
+- 四个环境变量为模块化实现提供支持：module、exports、require、global；
+- module.exports 和 exports 的区别：
+  - module.exports 默认为空对象{}，当模块要导出内容是直接给它赋值；
+  - exports 是对 module.exports 的引用，只能通过`.`来获得/赋值导出内容，直接对 exports 赋值，会断开 module.exports 和 exports 的引用关系；
+- CommonJS 采用同步加载模块，遇到 require()语句就会立马加载并执行相应模块；
+- CommonJS 模块是运行时加载，输出的是值的拷贝，模块内部的变化影响不到已导出的对象；
+
+### AMD(Asynchronous Module Definition)
+
+- AMD 采用异步加载模块，代表性实现是 RequireJS，故使用时需先加载 RequireJS；
+- require.config()定义模块的引用路径、define()用于模块定义、require()用于引用模块；
+- require()和 define()的一个参数都为一个数组[]，在其中声明依赖的模块；第二个参数是一个回调函数，函数参数依次为依赖模块导出的对象；
+  \br 也就是说只有获取到所有依赖模块的导出对象，才会执行相应回到函数；
+- 优缺点：
+  - 优：依赖模块数组[]中声明的模块，都会并行加载，加载完成直接执行；
+  - 缺：一、并行加载，异步处理，模块加载顺序不一定；二、声明的依赖模块没有用到也会被加载并执行；
+
+```javascript
+// 通过 <script> 标签引入 require.js 并指定 data-main 属性为 main.js，即入口文件
+// <script src="js/require.js" data-main="js/main" />
+
+// 主模块main.js
+require.config({
+  baseUrl: "js/lib",
+  path: {
+    jquery: "jquery.min", // 实际路径 js/lib/jquery.min.js
+    underscore: "underscore.min",
+    math: "math",
+  },
+});
+
+require(["jquery", "math"], function ($, math) {
+  // ...
+});
+
+// math.js模块文件
+define(["underscore"], function (_) {
+  var classify = function(list) {
+    _.countBy(list, function(num){
+      return num > 30 > 'old' : 'young';
+    })
+  }
+
+  var basicSum = 0;
+  var add = function(a, b) {
+    return a+ b;
+  }
+  // 其他模块引用basicSum时始终为0，因为CommonJS导出的是值的拷贝
+  setTimeout(() => {
+    basicSum = 1;
+  }, 1000);
+
+  return {
+    basicSum: basicSum,
+    add: add,
+    classify: classify
+  }
+});
+```
+
+### CMD(Common Module Definition)
+
+- CMD 采用异步加载模块，主要由国内的 SeaJS 推广，使用前需引入 SeaJS 并通过 seajs 对象使用
+-
+
+```javascript
+// 定义有依赖的模块math.js
+define(function (require, exports, module) {
+  // 引入依赖模块（同步）
+  var A = require("./moduleA");
+  var write = require("./moduleB").write;
+  // 引入依赖模块（异步）
+  require.async("./moduleC", function (C) {
+    C.reading();
+  });
+
+  if (false) {
+    // b模块永远都不会加载
+    var b = require("./b");
+    b.doSomething();
+  }
+
+  function add(a, b) {
+    A.toString();
+    write();
+    return a + b;
+  }
+  exports.add = add;
+});
+
+// 加载主模块
+seajs.use(["math.js"], function (math) {
+  var sum = math.add(1, 2);
+});
+```
+
+### ES Module
+
+- 模块化功能由两个命令构成：export 和 import；
+- 编译时加载：import 命令会被 JavaScript 引擎静态分析，在编译时就引入模块代码，而不是在代码运行时加载；
+- ES 模块导出的是值的引用，模块内部的变化会反映在外部；
+
+### UMD(Universal Module Definition)
+
+- 旨在兼容多种 JavaScript 模块规范，使模块能够在不同的环境（如浏览器、Node.js、AMD、CommonJS）中运行。UMD 结合了 AMD 和 CommonJS 的优点，解决了在不同环境下加载模块的兼容性问题。
+- UMD 模块通常被包裹在一个立即执行函数表达式（IIFE）中，IIFE 的两个参数分别是 root 和 factory。
+
+```javascript
+(function (root, factory) {
+  if (typeof define === "function" && define.amd) {
+    // AMD
+    define(["jquery"], factory);
+  } else if (typeof module === "object" && module.exports) {
+    // Node, CommonJS-like
+    module.exports = factory(require("jquery"));
+  } else {
+    // Browser globals (root is window)
+    root.myModule = factory(root.jQuery);
+  }
+})(this, function ($) {
+  // 模块代码
+  var myModule = {
+    sayHello: function () {
+      console.log("Hello, world!");
+    },
+  };
+
+  return myModule;
+});
+```
+
+### Referrence
+
+[前端模块化——彻底搞懂 AMD、CMD、ESM 和 CommonJS](https://www.cnblogs.com/chenwenhao/p/12153332.html)

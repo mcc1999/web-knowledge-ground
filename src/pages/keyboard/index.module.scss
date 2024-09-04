@@ -1,0 +1,54 @@
+.keyboardPage {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 85vw;
+  min-width: 1280px;
+  height: 100%;
+  margin: 0 auto;
+  position: relative;
+
+  :global {
+    .keyboard-control {
+      position: absolute;
+      right: 0;
+      top: 0;
+    }
+    .keyboard {
+      display: grid;
+      width: 100%;
+      height: 45vh;
+      min-height: 400px;
+      grid-template-columns: repeat(60, 1fr);
+      grid-template-rows: repeat(5, 1fr);
+      grid-gap: 4px;
+    }
+    .key-base {
+      grid-column: span 4;
+    }
+    .key-tab {
+      grid-column: span 6;
+    }
+    .key-caps {
+      grid-column: span 8;
+    }
+    .key-shift {
+      grid-column: span 10;
+    }
+    .key-ctrl {
+      grid-column: span 5;
+    }
+    .key-space-win {
+      grid-column: span 25;
+    }
+    .key-space {
+      grid-column: span 22;
+    }
+    .key-command {
+      grid-column: span 5;
+    }
+    .key-arrow {
+      grid-column: span 3;
+    }
+  }
+}

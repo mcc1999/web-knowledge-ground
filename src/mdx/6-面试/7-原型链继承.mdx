@@ -1,0 +1,64 @@
+---
+title: 原型链继承
+date: 2024-03-13 22:00:00
+---
+
+# 原型链继承
+
+### 原型
+
+1. 每个对象都有属性：原型[[Prototype]]，指向另一个对象或者 null。
+2. 上述的链式指向叫做原型链，继承就是：当访问对象上的属性/方法时，若当前对象不存在，会沿着原型链向上，查找原型对象上是否存在，直至原型链指向 null。
+3. 对象的原型可通过`__proto__`这样的历史遗留方式访问/修改，更正式的 getter/setter 为`Object.getPrototypeOf(obj)`/`Object.setPrototypeOf(obj, 新原型)`
+
+### 属性 **prototype**
+
+4. 每个构造函数 Fn 都有一个 prototype 属性，默认为下列这样一个对象
+
+```javascript
+{
+  construtor: Fn, // constructor属性指向自身
+  [[Prototype]]: Object.prototype, // 原型链指向Object对象
+}
+
+// 构造函数Fn
+function Fn() { }
+Fn.prototype.construtor === Fn // true
+Fn.prototype.__proto__ === Object.prototype // true
+```
+
+5. 原型可以想象成竖直方向上的原型链指向，prototype 可以看成水平方向上的属性指向。
+6. 构造函数在声明实例时，创建了一个空对象，并将空对象的原型指向了构造函数的 prototype 属性。
+
+### class
+
+7. class 是用于创建对象的基于原型的继承的语法糖。
+8. class 类对象声明相当于在幕后创建了一个构造函数，并在其 prototype 上定义了方法。
+
+```javascript
+class Person {
+  constructor(name, age) {
+    this.name = name;
+    this.age = age;
+  }
+  talk() {
+    console.log("talk");
+  }
+}
+class Studuent extends Person {
+  constructor(name, age, grade) {
+    super(name, age); // 调用父类的构造函数
+    this.grade = grade;
+  }
+
+  read() {
+    super.talk(); // 调用父类的构造函数
+  }
+}
+const per1 = new Person("ale", 20);
+const stu1 = new Studuent("buty", 8, 2);
+
+Person.prototype.constructor === Person; // true
+stu1.__proto__ === Studuent.prototype; // true
+stu1.__proto__.__proto__ === Person.prototype; // true
+```

@@ -76,14 +76,14 @@ const TodoList: React.FC = () => {
               Done:{todoListArray.filter((item) => item.done).length}
             </div>
             <div className="todo-list-data__percentage">
-              {Number(
-                (
-                  todoListArray.filter((item) => item.done).length /
-                  todoListArray.length
-                ).toFixed(2)
-              ) *
-                100 +
-                "%"}
+              {todoListArray.length
+                ? Number(
+                    (
+                      todoListArray.filter((item) => item.done).length /
+                      todoListArray.length
+                    ).toFixed(2)
+                  )
+                : 0 * 100 + "%"}
             </div>
           </div>
           <Divider flexItem orientation="vertical" />
@@ -93,14 +93,14 @@ const TodoList: React.FC = () => {
               Undo:{todoListArray.filter((item) => !item.done).length}
             </div>
             <div className="todo-list-data__percentage">
-              {Number(
-                (
-                  todoListArray.filter((item) => !item.done).length /
-                  todoListArray.length
-                ).toFixed(2)
-              ) *
-                100 +
-                "%"}
+              {todoListArray.length
+                ? Number(
+                    (
+                      todoListArray.filter((item) => !item.done).length /
+                      todoListArray.length
+                    ).toFixed(2)
+                  )
+                : 0 * 100 + "%"}
             </div>
           </div>
         </Box>

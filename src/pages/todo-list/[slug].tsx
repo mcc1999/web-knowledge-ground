@@ -7,6 +7,8 @@ import useWebPlaygroundStore from "@/store";
 import { Button, Box } from "@mui/material";
 import EditDialog, { DialogType } from "./components/EditDialog";
 import TodoItemComponent from "./components/TodoItemComponent";
+import Link from "next/link";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 
 import styles from "./index.module.scss";
 
@@ -29,7 +31,9 @@ const TodoDay: React.FC = () => {
    * @returns TodoItem[ ]
    */
   const getTodoListByDate = (date: string, done = false) => {
-    return Object.values(todoList).filter((todo) => todo.date === date && todo.done === done);
+    return Object.values(todoList).filter(
+      (todo) => todo.date === date && todo.done === done
+    );
   };
 
   const onCreateOrUpdateItem = (todoItem: Partial<TodoItem>) => {
@@ -38,7 +42,7 @@ const TodoDay: React.FC = () => {
         ...todoItem,
         done: false,
         date: router.query.slug!.toString(),
-        children: {},
+        children: [],
       });
     } else if (dialogType === DialogType.EDIT) {
       const todoItemId = editItem?.id;
@@ -51,6 +55,12 @@ const TodoDay: React.FC = () => {
 
   return (
     <div className={styles["todo-list-detail-container"]}>
+      <Link href="/todo-list">
+        <div className="breadcrumbs-back">
+          <ArrowBackIcon />
+          Back Calender
+        </div>
+      </Link>
       <div className="todo-list-box">
         <Box className="todo-list list-box" sx={{ bgcolor: "cardBg.main" }}>
           <div className="list-box__header">

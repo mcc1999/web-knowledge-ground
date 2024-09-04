@@ -20,44 +20,52 @@ enum PopoverType {
 }
 export interface ITodoItemComponent {
   todo: TodoItem | TodoItemChild;
-  isSubItem?: number; // 如果是子事项，该值为父事项id
+  parentItem?: TodoItem;
   onEdit: () => void;
 }
 
 const TodoItemComponent: React.FC<ITodoItemComponent> = ({
   todo,
   onEdit,
-  isSubItem,
+  parentItem,
 }) => {
   const [popoverOpen, setPopoverOpen] = useState<PopoverType>();
   const [subItemsDialogOpen, setSubItemsDialogOpen] = useState<boolean>(false);
 
   const [
     updateTodoItemTags,
-    updateTodoItem,
     updateSubItemTags,
     deleteTodoItem,
-    updateSubItem,
+    deleteSubItem,
+    toggleItemCompleteStatus,
   ] = useWebPlaygroundStore((state) => [
     state.updateTodoItemTags,
-    state.updateTodoItem,
     state.updateSubItemTags,
     state.deleteTodoItem,
-    state.updateSubItem,
+    state.deleteSubItem,
+    state.toggleItemCompleteStatus,
   ]);
 
   const onDeleteTag = (id: number, tag: string) => {
-    if (isSubItem !== undefined) {
-      updateSubItemTags(UpdateTagType.DELETE, isSubItem, id, tag);
+    if (parentItem !== undefined) {
+      updateSubItemTags(UpdateTagType.DELETE, parentItem.id, id, tag);
     } else {
       updateTodoItemTags(UpdateTagType.DELETE, id, tag);
     }
   };
-  const onUpdateItem = (id: number, newInfo: Partial<TodoItem>) => {
-    if (isSubItem !== undefined) {
-      updateSubItem(isSubItem, id, newInfo);
+  const onDeleteItem = (id: number) => {
+    if (parentItem !== undefined) {
+      deleteSubItem(parentItem.id, id);
     } else {
-      updateTodoItem(id, newInfo);
+      deleteTodoItem(id);
+    }
+  };
+
+  const onToggleItemCompleteStatus = (id: number) => {
+    if (parentItem !== undefined) {
+      toggleItemCompleteStatus(parentItem.id, id);
+    } else {
+      toggleItemCompleteStatus(id);
     }
   };
 
@@ -65,70 +73,40 @@ const TodoItemComponent: React.FC<ITodoItemComponent> = ({
     <Box className={styles["todo-list-item"]} sx={{ bgcolor: "itemBg.main" }}>
       <div className="todo-list-item__title">标题：{todo.title}</div>
       <div className="todo-list-item__remark">
-        <span>内容：</span>
+        <div className="todo-list-item__remark-title">备注：</div>
         <div className="todo-list-item__remark-content">
-          {/* {todo.remark ? todo.remark : "无"} */}
-          {todo.remark ? (
-            <Tooltip title={todo.remark} arrow>
-              <div className="todo-list-item__remark-content--overflow">
-                {todo.remark}
-              </div>
-            </Tooltip>
-          ) : (
-            "无"
-          )}
+          {todo.remark ? todo.remark : "无"}
         </div>
       </div>
       <div className="todo-list-item__info">
-        <div className="todo-list-item__deadline">
-          <Tag
-            color={
-              !todo.deadline || dayjs().isBefore(dayjs(todo.deadline))
-                ? "processing"
-                : "error"
-            }
-          >
-            Deadline:{todo.deadline ? todo.deadline : "无"}
-          </Tag>
-        </div>
-        <div className="todo-list-item__tags-box">
-          <Tooltip
-            title={
-              (todo.tags?.length || 0) > 4 ? (
-                <div style={{ width: 320, display: "flex", flexWrap: "wrap" }}>
-                  {todo.tags!.map((tag, idx) => (
-                    <Tag
-                      key={idx}
-                      style={{
-                        marginRight: idx === todo.tags!.length - 1 ? 0 : 4,
-                      }}
-                    >
-                      #{tag}
-                    </Tag>
-                  ))}
-                </div>
-              ) : null
-            }
-            arrow
-            placement="top"
-          >
-            <div className="todo-list-item__tags">
-              {todo.tags?.slice(0, 4).map((tag, idx) => (
-                <Tag
-                  key={idx}
-                  style={{
-                    marginRight: idx === todo.tags!.length - 1 ? 0 : 4,
-                  }}
-                  closable={!todo.done}
-                  onClose={() => onDeleteTag(todo.id, tag)}
-                >
-                  #{tag}
-                </Tag>
-              ))}
-              {(todo.tags?.length || 0) > 4 ? "..." : null}
-            </div>
-          </Tooltip>
-        </div>
+        {todo.deadline && (
+          <div className="todo-list-item__deadline">
+            <Tag
+              color={
+                !todo.deadline || dayjs().isBefore(dayjs(todo.deadline))
+                  ? "processing"
+                  : "error"
+              }
+            >
+              {todo.deadline}
+            </Tag>
+          </div>
+        )}
+        <>
+          {todo.tags?.map((tag, idx) => (
+            <Tag
+              key={idx}
+              style={{
+                marginRight: 4,
+                marginBottom: 4,
+              }}
+              closable={!todo.done}
+              onClose={() => onDeleteTag(todo.id, tag)}
+            >
+              #{tag}
+            </Tag>
+          ))}
+        </>
       </div>
       <Box
         className={styles["todo-list-actions"]}
@@ -155,7 +133,7 @@ const TodoItemComponent: React.FC<ITodoItemComponent> = ({
               variant="contained"
               sx={{ marginRight: 1 }}
               onClick={() => {
-                onUpdateItem(todo.id, { done: !todo.done });
+                onToggleItemCompleteStatus(todo.id);
                 setPopoverOpen(undefined);
               }}
             >
@@ -191,7 +169,7 @@ const TodoItemComponent: React.FC<ITodoItemComponent> = ({
               variant="contained"
               sx={{ marginRight: 1 }}
               onClick={() => {
-                deleteTodoItem(todo.id);
+                onDeleteItem(todo.id);
                 setPopoverOpen(undefined);
               }}
             >
@@ -233,7 +211,7 @@ const TodoItemComponent: React.FC<ITodoItemComponent> = ({
             </IconButton>
           </Tooltip>
         )}
-        {isSubItem === undefined && (
+        {parentItem === undefined && (
           <Tooltip title="子事项" arrow placement="top">
             <IconButton onClick={() => setSubItemsDialogOpen(true)}>
               <SubjectIcon fontSize="small" color="primary" />

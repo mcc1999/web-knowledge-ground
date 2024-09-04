@@ -3,6 +3,7 @@
 @import "@fontsource/roboto/400.css";
 @import "@fontsource/roboto/500.css";
 @import "@fontsource/roboto/700.css";
+@import "./mixins.scss";
 
 html,
 body {
@@ -33,4 +34,8 @@ a {
 ::-webkit-scrollbar-thumb {
   background-color: gray;
   border-radius: 8px;
+}
+
+.page-layout {
+  @include scrollbar-hover-visible;
 }

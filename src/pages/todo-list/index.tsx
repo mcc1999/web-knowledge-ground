@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { getDayOfWeek, getLastDayOfMonth } from "@/utils/todoList";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
@@ -7,7 +7,11 @@ import dayjs, { Dayjs } from "dayjs";
 import Link from "next/link";
 import HomeIcon from "@mui/icons-material/Home";
 import GrainIcon from "@mui/icons-material/Grain";
-import { Box } from "@mui/material";
+import { Box, Divider } from "@mui/material";
+import useWebPlaygroundStore from "@/store";
+import CheckBoxIcon from "@mui/icons-material/CheckBox";
+import CancelIcon from "@mui/icons-material/Cancel";
+import ListAltIcon from "@mui/icons-material/ListAlt";
 
 import styles from "./index.module.scss";
 
@@ -26,11 +30,81 @@ const breadcrumbs = [
 
 const TodoList: React.FC = () => {
   const [date, setDate] = useState<Dayjs>(() => dayjs());
-  const monthFirstWeekday = getDayOfWeek(date.format("YYYY-MM"));
-  const lastDayOfMonth = getLastDayOfMonth(date.format("YYYY-MM-DD"));
+  const [monthWeekDay, setMonthWeekDay] = useState({
+    monthFirstWeekday: 0,
+    lastDayOfMonth: 0,
+  });
+  const todoList = useWebPlaygroundStore((state) => state.todoList);
+  const todoListArray = Object.values(todoList);
+
+  useEffect(() => {
+    // @ts-ignore
+    useWebPlaygroundStore?.persist.rehydrate();
+  }, []);
+
+  useEffect(() => {
+    setMonthWeekDay({
+      monthFirstWeekday: getDayOfWeek(date.format("YYYY-MM")),
+      lastDayOfMonth: getLastDayOfMonth(date.format("YYYY-MM")),
+    });
+  }, [date]);
+
+  console.log("render", date);
 
   return (
     <div className={styles["todo-list-container"]}>
+      <div className="todo-list-data">
+        <Box
+          className="todo-list-data__wrap"
+          sx={{
+            bgcolor: "cardBg.main",
+          }}
+        >
+          <div className="todo-list-data__item">
+            <div className="todo-list-data__title">
+              <ListAltIcon color="primary" />
+              Total:
+            </div>
+            <div className="todo-list-data__value">
+              {Object.keys(todoList).length}
+            </div>
+          </div>
+          <Divider flexItem orientation="vertical" />
+          <div className="todo-list-data__item">
+            <div className="todo-list-data__title">
+              <CheckBoxIcon color="success" />
+              Done:{todoListArray.filter((item) => item.done).length}
+            </div>
+            <div className="todo-list-data__percentage">
+              {Number(
+                (
+                  todoListArray.filter((item) => item.done).length /
+                  todoListArray.length
+                ).toFixed(2)
+              ) *
+                100 +
+                "%"}
+            </div>
+          </div>
+          <Divider flexItem orientation="vertical" />
+          <div className="todo-list-data__item">
+            <div className="todo-list-data__title">
+              <CancelIcon color="error" />
+              Undo:{todoListArray.filter((item) => !item.done).length}
+            </div>
+            <div className="todo-list-data__percentage">
+              {Number(
+                (
+                  todoListArray.filter((item) => !item.done).length /
+                  todoListArray.length
+                ).toFixed(2)
+              ) *
+                100 +
+                "%"}
+            </div>
+          </div>
+        </Box>
+      </div>
       <div className="calender">
         <Box
           className="calender-wrap"
@@ -39,7 +113,9 @@ const TodoList: React.FC = () => {
           }}
         >
           <div className="calender-header">
-            <h1 className="calender-header__title">{date.format("YYYY-MM")}</h1>
+            <div className="calender-header__title">
+              {date.format("YYYY-MM")}
+            </div>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <DatePicker
                 views={["year", "month"]}
@@ -61,13 +137,22 @@ const TodoList: React.FC = () => {
             <div className="dates-body">
               {new Array(42).fill(0).map((_, i) => {
                 let content;
+                const { monthFirstWeekday, lastDayOfMonth } = monthWeekDay;
                 if (
                   i >= monthFirstWeekday &&
                   i - monthFirstWeekday + 1 <= lastDayOfMonth
                 ) {
                   content = i - monthFirstWeekday + 1;
                 }
-                if (!content) return null;
+                if (!content) return <div />;
+
+                const todoListInToday = todoListArray.filter(
+                  (item) =>
+                    item.date ===
+                    dayjs(`${date.format("YYYY-MM")}-${content}`).format(
+                      "YYYY-MM-DD"
+                    )
+                );
                 return (
                   <Link
                     key={i.toString() + content}
@@ -78,13 +163,31 @@ const TodoList: React.FC = () => {
                     <Box
                       sx={{
                         ":hover": { backgroundColor: "actionBg.main" },
-                        border: content === date.date() ? "1px dashed" : "none",
-                        borderColor:
-                          content === date.date() ? "actionBg.main" : "default",
+                        backgroundColor:
+                          date.format("YYYY-MM") ===
+                            dayjs().format("YYYY-MM") && content === date.date()
+                            ? "actionBg.main"
+                            : "default",
                       }}
                       className="date-item"
                     >
-                      {content}
+                      <div className="date-item__date">{content}日</div>
+                      {!!todoListInToday.length && (
+                        <div className="date-item__date-info">
+                          <div className="date-item__date-todo-status">
+                            {todoListInToday.filter((item) => item.done).length}
+                            {/* * <CheckBoxIcon color="success" fontSize="small" /> */}
+                          </div>
+                          <Divider orientation="vertical" flexItem />
+                          <div className="date-item__date-todo-status">
+                            {
+                              todoListInToday.filter((item) => !item.done)
+                                .length
+                            }
+                            {/* * <CancelIcon color="error" fontSize="small" /> */}
+                          </div>
+                        </div>
+                      )}
                     </Box>
                   </Link>
                 );

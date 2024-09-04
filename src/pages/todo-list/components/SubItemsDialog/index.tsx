@@ -54,7 +54,7 @@ const SubItemsDialog: React.FC<ISubItemsDialog> = (props) => {
     <Dialog open={open} className={styles["subItems-dialog"]}>
       <DialogTitle>
         <div className="subItems-dialog__title">
-          <div>{todoItem?.title}</div>
+          <div>主事项：{todoItem?.title}</div>
           <IconButton onClick={onClose}>
             <CloseIcon />
           </IconButton>
@@ -66,12 +66,10 @@ const SubItemsDialog: React.FC<ISubItemsDialog> = (props) => {
       >
         <Box>
           <div className="todo-item__remark">
-            <span>内容：</span>
-            <Tooltip title={todoItem.remark} arrow placement="top-start">
-              <div className="todo-item__remark-content">
-                {todoItem.remark ? todoItem.remark : "无"}
-              </div>
-            </Tooltip>
+            <div className="todo-item__remark-title">主事项备注：</div>
+            <div className="todo-item__remark-content">
+              {todoItem.remark ? todoItem.remark : "无"}
+            </div>
           </div>
           <div
             className="subItems-dialog__add-btn"
@@ -81,10 +79,10 @@ const SubItemsDialog: React.FC<ISubItemsDialog> = (props) => {
           </div>
           <div className="subItems-dialog__subItem-list">
             {todoItem?.children &&
-              Object.values(todoItem?.children).map((todo, i) => (
+              todoItem.children.map((todo, i) => (
                 <TodoItemComponent
                   key={i}
-                  isSubItem={todoItem.id}
+                  parentItem={todoItem as TodoItem}
                   todo={todo}
                   onEdit={() => {
                     setEditItem(todo);

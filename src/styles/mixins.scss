@@ -1,0 +1,27 @@
+/*
+ * 滚动条hover展示，仅针对支持Webkit伪元素的浏览器中有效
+ */
+@mixin scrollbar-hover-visible {
+  &::-webkit-scrollbar-track {
+    background: transparent; /* 轨道背景透明 */
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: transparent; /* 滚动条拇指部分透明 */
+  }
+
+  /* 当鼠标悬停时显示滚动条 */
+  &:hover::-webkit-scrollbar-thumb {
+    background: #888; /* 改变滚动条颜色 */
+  }
+
+  /* 可以添加更多样式，比如滚动条在悬停时的圆角等 */
+  &:hover::-webkit-scrollbar-thumb {
+    border-radius: 5px;
+  }
+
+  /* 当鼠标悬停时，滚动条滑块滑过时的样式 */
+  &:hover::-webkit-scrollbar-thumb:hover {
+    background: #555; /* 改变滚动条颜色 */
+  }
+}

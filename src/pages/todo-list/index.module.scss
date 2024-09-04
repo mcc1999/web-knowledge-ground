@@ -1,8 +1,11 @@
+@import "@/styles/mixins.scss";
 .todo-list-container {
   position: relative;
   width: 100vw;
   height: 100%;
+  min-height: 710px;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
 
@@ -20,12 +23,42 @@
   }
 
   :global {
-    .calender {
-      position: absolute;
-      top: 64px;
-      left: 0;
+    .todo-list-data {
       width: 100%;
-      height: calc(100% - 64px);
+      height: 72px;
+      margin: 32px 0;
+      display: flex;
+      justify-content: center;
+      font-size: 18px;
+      font-weight: bolder;
+
+      .todo-list-data__wrap {
+        width: 80%;
+        display: flex;
+        border-radius: 20px;
+
+        .todo-list-data__item {
+          flex: 1;
+          align-self: center;
+          display: flex;
+          justify-content: space-between;
+          flex-wrap: wrap;
+          padding: 8px;
+
+          .todo-list-data__title {
+            display: flex;
+            align-items: center;
+          }
+          .todo-list-data__percentage {
+            font-size: small;
+            color: gray;
+            align-self: flex-end;
+          }
+        }
+      }
+    }
+    .calender {
+      width: 100%;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -33,7 +66,6 @@
     .calender-wrap {
       width: 80%;
       height: 80%;
-      min-width: 960px;
       min-height: 540px;
       border-radius: 20px;
 
@@ -43,6 +75,11 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
+
+        .calender-header__title {
+          font-size: 24px;
+          font-weight: bolder;
+        }
       }
 
       .calender-dates {
@@ -66,9 +103,27 @@
 
           .date-item {
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
             cursor: pointer;
+
+            & > div {
+              width: 50%;
+              text-align: center;
+              display: flex;
+              justify-content: center;
+            }
+
+            .date-item__date-todo-status {
+              padding: 0 2px;
+              &:first-of-type {
+                color: #3c6f32;
+              }
+              &:last-of-type {
+                color: #bb3b2f;
+              }
+            }
           }
         }
       }
@@ -79,6 +134,7 @@
 .todo-list-detail-container {
   width: 100vw;
   height: 100%;
+  position: relative;
 
   &::before {
     content: "";
@@ -94,6 +150,14 @@
   }
 
   :global {
+    .breadcrumbs-back {
+      display: flex;
+      align-items: center;
+      position: absolute;
+      top: 24px;
+      left: 24px;
+      cursor: pointer;
+    }
     .todo-list-box {
       position: absolute;
       top: 64px;
@@ -103,11 +167,14 @@
       display: flex;
       justify-content: space-around;
       align-items: center;
+      flex-wrap: wrap;
 
       .list-box {
+        min-width: 350px;
         width: 40%;
         height: 90%;
         border-radius: 24px;
+        margin-bottom: 24px;
       }
 
       .list-box__header {
@@ -124,11 +191,9 @@
       .todo-list-content {
         height: 90%;
         border-radius: 24px;
-        overflow: hidden;
-
-        &:hover {
-          overflow: auto;
-        }
+        padding: 0 20px;
+        overflow-y: scroll;
+        @include scrollbar-hover-visible;
       }
 
       .todo-list-content--empty {

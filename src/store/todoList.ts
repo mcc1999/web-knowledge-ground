@@ -16,7 +16,7 @@ export interface TodoItemChild {
 }
 
 export interface TodoItem extends TodoItemChild {
-  children: Record<string, TodoItemChild>;
+  children: TodoItemChild[];
 }
 
 export interface Tag {
@@ -24,6 +24,9 @@ export interface Tag {
   value: string;
 }
 
+/**
+ * ADD || DELETE
+ */
 export enum UpdateTagType {
   ADD = "ADD",
   DELETE = "DELETE",
@@ -95,6 +98,18 @@ export interface TodoListActions {
    * @returns
    */
   deleteTodoItem: (todoItemId: number) => void;
+  /**
+   * 删除TodoItem
+   * @param todoItemId
+   * @returns
+   */
+  deleteSubItem: (todoItemId: number, subItemId: number) => void;
+  /**
+   * 删除TodoItem
+   * @param todoItemId
+   * @returns
+   */
+  toggleItemCompleteStatus: (todoItemId: number, subItemId?: number) => void;
 }
 
 export type TodoListSlice = TodoListState & TodoListActions;
@@ -131,11 +146,17 @@ const createTodoListSlice: StateCreator<
           const { todoList, tags } = state;
           if (todoList[todoItemId]) {
             tags.push(...getUniqueTags(tags, todoItemChild.tags));
-            const childId = 1000000 + todoList[todoItemId].id!;
-            todoList[todoItemId].children[childId] = {
-              ...todoItemChild,
-              id: 1000000 + todoList[todoItemId].id!,
-            };
+            const childId =
+              1000000 +
+              todoList[todoItemId].id! +
+              todoList[todoItemId].children.length;
+            todoList[todoItemId].children = [
+              ...todoList[todoItemId].children,
+              {
+                ...todoItemChild,
+                id: childId,
+              },
+            ];
           }
         })
       ),
@@ -190,10 +211,14 @@ const createTodoListSlice: StateCreator<
       set(
         produce((state: TodoListSlice) => {
           const { todoList, tags } = state;
-          if (
-            todoList[todoItemId] &&
-            todoList[todoItemId].children[subItemId]
-          ) {
+          const subItemIndex = todoList[todoItemId].children.findIndex(
+            (child) => child.id === subItemId
+          );
+          if (todoList[todoItemId] && subItemIndex !== -1) {
+            const otherSubItem = todoList[todoItemId].children.filter(
+              (child) => child.id !== subItemId
+            );
+            const subItem = todoList[todoItemId].children[subItemIndex];
             if (updateTagType === UpdateTagType.ADD) {
               if (!tags.map((tag) => tag.value).includes(tag)) {
                 tags.push({
@@ -201,15 +226,15 @@ const createTodoListSlice: StateCreator<
                   value: tag,
                 });
               }
-              todoList[todoItemId].children[subItemId].tags = [
-                ...(todoList[todoItemId].children[subItemId].tags || []),
-                tag,
-              ];
+              subItem.tags = [...(subItem.tags || []), tag];
             } else if (updateTagType === UpdateTagType.DELETE) {
-              todoList[todoItemId].children[subItemId].tags = todoList[
-                todoItemId
-              ].children[subItemId].tags?.filter((t) => t !== tag);
+              subItem.tags = subItem.tags?.filter((t) => t !== tag);
             }
+            console.log("before", JSON.stringify(otherSubItem));
+            otherSubItem.splice(subItemIndex, 0, subItem);
+            console.log("after", JSON.stringify(otherSubItem));
+
+            todoList[todoItemId].children = otherSubItem;
           }
         })
       ),
@@ -217,16 +242,22 @@ const createTodoListSlice: StateCreator<
       set(
         produce((state: TodoListSlice) => {
           const { todoList, tags } = state;
-          if (
-            todoList[todoItemId] &&
-            todoList[todoItemId].children[subItemId]
-          ) {
+          const subItem = todoList[todoItemId].children.filter(
+            (child) => child.id === subItemId
+          )[0];
+          if (todoList[todoItemId] && subItem) {
+            const otherSubItem = todoList[todoItemId].children.filter(
+              (child) => child.id !== subItemId
+            );
             tags.push(...getUniqueTags(tags, newInfo.tags));
             // 更新相应ID的TodoItem
-            todoList[todoItemId].children[subItemId] = {
-              ...todoList[todoItemId].children[subItemId],
-              ...newInfo,
-            };
+            todoList[todoItemId].children = [
+              ...otherSubItem,
+              {
+                ...subItem,
+                ...newInfo,
+              },
+            ];
           }
         })
       ),
@@ -234,6 +265,39 @@ const createTodoListSlice: StateCreator<
       set(
         produce((state: TodoListSlice) => {
           delete state.todoList[todoItemId];
+        })
+      ),
+    deleteSubItem: (todoItemId, subItemId) =>
+      set(
+        produce((state: TodoListSlice) => {
+          state.todoList[todoItemId].children = state.todoList[
+            todoItemId
+          ].children.filter((child) => child.id !== subItemId);
+        })
+      ),
+    toggleItemCompleteStatus: (todoItemId, subItemId) =>
+      set(
+        produce((state: TodoListSlice) => {
+          const subItemIndex = state.todoList[todoItemId].children.findIndex(
+            (child) => child.id === subItemId
+          );
+          if (subItemId && subItemIndex !== -1) {
+            const subItem = state.todoList[todoItemId].children[subItemIndex];
+            const otherSubItem = state.todoList[todoItemId].children.filter(
+              (child) => child.id !== subItemId
+            );
+            subItem.done = !subItem.done;
+            otherSubItem.splice(subItemIndex, 0, subItem);
+            state.todoList[todoItemId].children = otherSubItem;
+          } else {
+            state.todoList[todoItemId].done = !state.todoList[todoItemId].done;
+            state.todoList[todoItemId].children = state.todoList[
+              todoItemId
+            ].children.map((child) => {
+              child.done = !child.done;
+              return child;
+            });
+          }
         })
       ),
   }),

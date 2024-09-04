@@ -1,28 +1,34 @@
+@import "@/styles/mixins.scss";
+
 .subItems-dialog {
   :global {
     .subItems-dialog__title {
-      width: 574px;
+      width: max(40vw, 263px);
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding-right: 24px;
     }
 
     .subItems-dialog__content {
-      height: 360px;
+      height: 384px;
       overflow: hidden;
 
-      .todo-item__remark { 
+      .todo-item__remark {
         display: flex;
         align-items: center;
-        margin-bottom: 4px;
+        margin: 12px 0;
+        font-size: smaller;
+        color: gray;
+      }
+      .todo-item__remark-title {
+        align-self: start;
       }
       .todo-item__remark-content {
         display: inline-block;
-        width: calc(100% - 50px);
+        width: calc(100% - 100px);
         overflow: hidden;
-        text-overflow: ellipsis;
         white-space: nowrap;
+        text-overflow: ellipsis;
       }
 
       .subItems-dialog__add-btn {
@@ -33,16 +39,18 @@
         border: 1px dashed;
         border-radius: 12px;
         cursor: pointer;
+
+        &:hover {
+          box-shadow: rgba(50, 50, 93, 0.25) 0px 30px 60px -12px inset,
+            rgba(0, 0, 0, 0.3) 0px 18px 36px -18px inset;
+        }
       }
     }
 
     .subItems-dialog__subItem-list {
       height: 264px;
-      overflow: hidden;
-
-      &:hover {
-        overflow: auto;
-      }
+      overflow-y: scroll;
+      @include scrollbar-hover-visible;
     }
   }
 }

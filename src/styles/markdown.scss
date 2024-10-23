@@ -13,7 +13,7 @@
 .markdown-body .anchor:hover::after,
 .markdown-body .anchor:hover::after,
 .markdown-body .anchor:hover::after {
-  content: '#';
+  content: "#";
   color: #c0c0c0;
 }
 
@@ -30,14 +30,34 @@
   position: relative;
   border-left: 4px solid #42b983;
   padding: 10px 15px;
-  color: #777;
-  background-color: #dbf2e6;
+  border-color: #9c27b0;
+  background-color: rgba(225, 190, 231, 0.15);
 }
 
-.markdown-body .note { padding: 0.1rem 1.5rem; border-left-width: 4px; border-left-style: solid; border-radius: 4px; }
-.markdown-body .note.tip { background-color: #f3f5f7; border-color: #42b983; color: #2c3e50 }
-.markdown-body .note.warning { background-color: #fff7d3; border-color: #fabc38; color: #6b5900; }
-.markdown-body .note.danger { background-color: #ffe6e6; border-color: #e8443c; color: #4d0000; }
+.markdown-body .note {
+  padding: 0.1rem 1.5rem;
+  border-left-width: 4px;
+  border-left-style: solid;
+  border-radius: 4px;
+}
+
+.markdown-body .note.tip {
+  background-color: #f3f5f7;
+  border-color: #42b983;
+  color: #2c3e50;
+}
+
+.markdown-body .note.warning {
+  background-color: #fff7d3;
+  border-color: #fabc38;
+  color: #6b5900;
+}
+
+.markdown-body .note.danger {
+  background-color: #ffe6e6;
+  border-color: #e8443c;
+  color: #4d0000;
+}
 
 .markdown-body code {
   color: #f98c4d;
@@ -45,7 +65,7 @@
   border-radius: 2px;
   padding: 2px 5px;
   font-weight: 500;
-  font-family: 'Fira code', monospace;
+  font-family: "Fira code", monospace;
   font-weight: 400;
   font-size: 13px;
 }
@@ -61,7 +81,11 @@
   vertical-align: middle;
 }
 
-.markdown-body hr { border: 0; margin: 2em 0; border-top: 1px solid #9c27b0; }
+.markdown-body hr {
+  border: 0;
+  margin: 2em 0;
+  border-top: 1px solid #9c27b0;
+}
 
 .markdown-body a {
   color: #9c27b0;
@@ -83,6 +107,7 @@
   line-height: 1.5;
   border-collapse: collapse;
 }
+
 .markdown-body table th {
   padding: 10px;
   text-align: left;
@@ -90,25 +115,50 @@
   white-space: nowrap;
   word-wrap: normal;
 }
+
 .markdown-body table td {
   padding: 10px;
   border-bottom: 1px solid #f1f4f8;
   line-height: 1.8;
 }
 
-.markdown-body ul, .markdown-body ol { padding-left: 1em; }
-.markdown-body ul { list-style-type: circle; }
+.markdown-body ul,
+.markdown-body ol {
+  padding-left: 1em;
+}
 
-.markdown-body h1, h2 {
+// 有序列表的数字颜色
+.markdown-body ol li::marker {
+  color: #9c27b0;
+}
+.markdown-body ul {
+  list-style-type: circle;
+}
+
+.markdown-body h1 {
   text-align: center;
 }
 
-.markdown-body h3 {
+.markdown-body h3,
+h2 {
   color: #ed6c02;
 }
-.markdown-body blockquote {
-  border-color: #9c27b0;
-  background-color: rgba(225, 190, 231, 0.15);
+
+// h2、h3的上下间距
+.markdown-body h2 {
+  margin-block: 48px 32px;
+}
+.markdown-body h3 {
+  margin-block: 36px 12px;
 }
 
+// 行内代码块背景色
+.markdown-body code {
+  color: inherit;
+  background-color: rgba(225, 190, 231, 0.25);
+}
 
+// 无序列表缩进
+.markdown-body ul {
+  margin-inline-start: 32px;
+}

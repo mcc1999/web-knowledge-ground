@@ -2,8 +2,7 @@
   width: 90%;
   margin: 0 auto;
   border-radius: 6px;
-  border-radius: 6px;
-  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+  outline: 1px solid;
 
   :global {
     .codeHeader {
@@ -13,7 +12,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      background-color: rgb(238, 239, 241);
+      // background-color: rgb(238, 239, 241);
       border-top-left-radius: 6px;
       border-top-right-radius: 6px;
 
@@ -44,6 +43,7 @@
       .copyBtn {
         display: flex;
         align-items: center;
+        cursor: pointer;
       }
     }
 
@@ -60,19 +60,23 @@
         .simplebar-content::before {
           content: none;
         }
+
+        .simplebar-content > pre {
+          background-color: inherit !important;
+        }
       }
     }
 
     .foldCode {
-      height: 27px;
-      padding: 0 8px;
       border-bottom-left-radius: 6px;
       border-bottom-right-radius: 6px;
-      background-color: rgb(238, 239, 241);
+      background-color: rgba(225, 190, 231, 0.15);
 
       .foldCodeBtn {
         display: flex;
         align-items: center;
+        padding: 8px;
+        font-size: 15px;
         cursor: pointer;
       }
     }

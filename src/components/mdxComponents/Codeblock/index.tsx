@@ -4,14 +4,14 @@ import React, { useEffect, useRef, useState } from "react";
 import styles from "./index.module.scss";
 import Highlight, { defaultProps, Language } from "prism-react-renderer";
 import defaultTheme from "prism-react-renderer/themes/vsLight";
-import darkTheme from "prism-react-renderer/themes/vsDark";
+import darkTheme from "prism-react-renderer/themes/duotoneDark";
 import { useTheme } from "@mui/material/styles";
 import SimpleBar from "simplebar-react";
 import { copyToClipboard } from "src/utils/clipboard";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
-import { Box } from "@mui/material";
+
 
 interface CodeBlockProps {
   children: string;
@@ -86,25 +86,12 @@ const CodeBlock: React.FC<CodeBlockProps> = (props) => {
             setCopied(true);
           }}
         >
-          {!copied ? (
-            <ContentCopyIcon sx={{ color: "#1e1e1e" }} fontSize="small" />
-          ) : (
-            "✅"
-          )}
+          {!copied ? <ContentCopyIcon fontSize="small" /> : "✅"}
         </div>
       </div>
       <div className="codeBody" ref={codeRef}>
         <SimpleBar
-          style={
-            codeFolded.isFold
-              ? {
-                  maxHeight: 360,
-                  background: mode === "dark" ? "rgb(30, 30, 30)" : "#fff",
-                }
-              : {
-                  background: mode === "dark" ? "rgb(30, 30, 30)" : "#fff",
-                }
-          }
+          style={{ maxHeight: codeFolded.isFold ? 360 : "none" }}
           autoHide
         >
           {HighlightCode}
@@ -113,7 +100,6 @@ const CodeBlock: React.FC<CodeBlockProps> = (props) => {
       <div className="foldCode">
         {codeFolded.needFold && (
           <div
-            style={{ color: mode === "dark" ? "#000" : "inherit" }}
             className="foldCodeBtn"
             onClick={() =>
               setCodeFolded({ ...codeFolded, isFold: !codeFolded.isFold })

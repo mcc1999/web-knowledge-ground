@@ -1,0 +1,23 @@
+---
+title: 手写bind
+date: 2024-10-08 22:00:00
+---
+
+# 手写 bind
+
+```javascript
+Function.prototype.mybind = function (ctx, ...args) {
+  // 调用方式为fn.mybind()，此时this通过隐式绑定为fn，所以通过this获取原函数fn
+  const fn = this;
+  return function (...subArgs) {
+    const allArgs = [...args, ...subArgs];
+    let result;
+    if (new.target) {
+      result = new fn(...allArgs);
+    } else {
+      result = fn.apply(ctx, allArgs);
+    }
+    return result;
+  };
+};
+```

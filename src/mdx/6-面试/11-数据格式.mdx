@@ -12,9 +12,9 @@ date: 2024-10-23 16:30:00
 `ArrayBuffer`：对<u>固定长度</u>的<u>连续</u>内存空间引用，单位为字节（Byte）。
 
 ```javascript
-// ArrayBuffer
 const buffer = new ArrayBuffer(16);
-console.log(buffer.byteLength); // 16，表示arrayBuffer占几个字节的内存空间
+// byteLength表示arrayBuffer占几个字节的内存空间
+console.log(buffer.byteLength); // 16
 ```
 
 ### Buffer 内字节的访问
@@ -43,9 +43,10 @@ console.log(buffer.byteLength); // 16，表示arrayBuffer占几个字节的内�
  * new TypedArray(length);
  * new TypedArray();
  */
+const buffer = new ArrayBuffer(16);
 const uint8View = new Uint8Array(buffer);
 console.log(Uint8Array.BYTES_PER_ELEMENT); // 1，每个整数1个字节
-console.log(uint8View.length); // 4，存储了4个整数
+console.log(uint8View.length); // 16，存储了16个整数
 console.log(uint8View.byteLength); // 16，存储了16个字节
 ```
 
@@ -78,7 +79,8 @@ uint8View[0] = 12;
  */
 ```
 
-7. DataView构造器及获取响应格式元素的方式
+7. DataView 构造器及获取响应格式元素的方式
+
 ```javascript
 // new DataView(buffer, [byteOffset, 默认0], [byteLength，默认buffer整个长度]);
 const myUin8View = new Uint8Array([255, 255, 255, 255]);
@@ -92,4 +94,136 @@ console.log(dataView.getUint8(0)); // 0
 console.log(dataView.getUint8(1)); // 255
 ```
 
+## Blob
 
+### 定义
+
+`Blob` 是带有类型的二进制数据
+
+### Blob 的构造函数
+
+```javascript
+/**
+ * new Blob(BlobParts, options)
+ * - BlobParts是Blob、BufferSource或String类型的数组
+ * - options：type(通常是MIME类型)
+ *  和endings(是否转换换行符，换行符——>\r\n或\n， transparent/native)
+ */
+
+const blob = new Blob(['text'], { type: 'text/plain' })
+```
+
+### Blob 格式转换
+
+- Blob 用作 URL
+
+```javascript
+const url = URL.createObjectURL(blob);
+```
+
+- Blob -> base64(格式：data:[mediaType][;base64],&lt;data&gt;)
+
+```javascript
+const fileReader = new FileReader();
+fileReader.readAsDataURL(blob);
+
+fileReader.onload = () => {
+  const base64Str = fileReader.result;
+};
+```
+
+- Blob -> Stream
+
+```javascript
+const stream = blob.stream();
+const reader = stream.getReader();
+
+while (true) {
+  const { value, done } = reader.read();
+  if (done) {
+    break;
+  }
+  // 处理blob分片数据
+}
+```
+
+- Blob -> ArrayBuffer
+
+```javascript
+const buffer = await blob.arrayBuffer();
+```
+
+- Image -> Blob
+
+```javascript
+let img = document.getElementById("img");
+const canvas = document.createElement("canvas");
+canvas.width = img.width;
+canvas.height = img.height;
+
+const ctx = canvas.getContext("2d");
+ctx.drawImage(img, 0, 0);
+
+const blob = await new Promise((resolve) =>
+  canvas.toBlob(resolve, "image/png")
+);
+```
+
+## File
+
+### 定义
+
+`File` 继承自`Blob`。
+
+### File 对象获取——构造函数和 input 标签获取
+
+```javascript
+/**
+ * new File(fileParts, filename. [options])
+ * options-lastModified,最后修改时间，整数格式日期
+ */
+const file = new File(["text", text.txt]);
+
+// <input type="file" onchange="showFile(this)">
+function showFile(input) {
+  const file = input.files[0];
+  console.log(file.name);
+  console.log(file.lastModified);
+}
+```
+
+### FileReader
+
+### 定义
+
+`FileReader` 是一个对象，用于从`Blob`（File 继承自 Blob 因此也能读取）中读取数据。
+
+### FileReader 上的方法
+
+- readAsArrayBuffer()
+- readAsText()
+- readAsDataURL()
+- abort()
+
+### FileReader 上的事件
+
+- loadStart
+- loadEnd
+- progress
+- load
+- abort
+- error
+
+```javascript
+function readFile(input) {
+  const file = input.files[0];
+
+  const fileReader = new FileReader();
+  fileReader.readAsArrayBuffer(file);
+
+  return new Promise((resolve, reject) => {
+    fileReader.onload = () => resolve(fileReader.result);
+    fileReader.onerror = () => reject(fileReader.error);
+  });
+}
+```

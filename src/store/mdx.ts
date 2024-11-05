@@ -13,12 +13,14 @@ export interface SiderDataTreeItem {
 }
 
 export interface MDXSlice {
+  mdxTOCFolded: boolean;
   siderFolded: boolean;
   selectPostId: string,
   siderData: SiderDataType[];
   updateSiderData: (newData: SiderDataType[]) => void;
   updateSelectPostId: (postId: string) => void;
   toggleSiderFolded: () => void;
+  toggleMdxTOCFolded: () => void;
 }
 const createMDXSlice: StateCreator<
   MDXSlice,
@@ -27,6 +29,7 @@ const createMDXSlice: StateCreator<
   MDXSlice
 > = persist(
   (set) => ({
+    mdxTOCFolded: true,
     siderFolded: false,
     selectPostId: '-1',
     siderData: [],
@@ -44,11 +47,12 @@ const createMDXSlice: StateCreator<
       }
     }),
     updateSelectPostId: (postId) => set(() => ({ selectPostId: postId })),
-    toggleSiderFolded: () => set(state => ({ siderFolded: !state.siderFolded }))
+    toggleSiderFolded: () => set(state => ({ siderFolded: !state.siderFolded })),
+    toggleMdxTOCFolded: () => set(state => ({ mdxTOCFolded: !state.mdxTOCFolded })),
   }),
   {
     name: 'siderState',
-    partialize: state => ({siderFolded: state.siderFolded}),
+    partialize: state => ({siderFolded: state.siderFolded, mdxTOCFolded: state.mdxTOCFolded}),
   },
 )
 

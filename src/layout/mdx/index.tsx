@@ -12,6 +12,9 @@ import {
   Accordion,
   AccordionSummary,
   AccordionDetails,
+  Tooltip,
+  Switch,
+  IconButton,
 } from "@mui/material";
 import useWebPlaygroundStore from "@/store";
 import Link from "next/link";
@@ -21,13 +24,13 @@ import { useRouter } from "next/router";
 import ThemeSwitch from "@/components/ThemeSwitch";
 import { AiOutlineCaretLeft, AiOutlineCaretRight } from "react-icons/ai";
 import ArrowForwardIosSharpIcon from "@mui/icons-material/ArrowForwardIosSharp";
-
+import SettingsIcon from "@mui/icons-material/Settings";
 import styles from "./index.module.scss";
 
 const SearchAutocomplete = styled(Autocomplete)(({ theme }) => ({
   position: "relative",
   width: "100%",
-  padding: "0px 16px 16px",
+  padding: "16px",
   marginBottom: 16,
   borderBottom: `1px solid ${theme.palette.purple.main}`,
   [theme.breakpoints.up("sm")]: {
@@ -61,13 +64,21 @@ const StyledTextField = styled(TextField)(({ theme }) => ({
 const MDXLayout = (props: any) => {
   const router = useRouter();
   const theme = useTheme();
-  const [siderData, updateSelectPostId, siderFolded, toggleSiderFolded] =
-    useWebPlaygroundStore((state) => [
-      state.siderData,
-      state.updateSelectPostId,
-      state.siderFolded,
-      state.toggleSiderFolded,
-    ]);
+  const [
+    siderData,
+    updateSelectPostId,
+    siderFolded,
+    toggleSiderFolded,
+    mdxTOCFolded,
+    toggleMdxTOCFolded,
+  ] = useWebPlaygroundStore((state) => [
+    state.siderData,
+    state.updateSelectPostId,
+    state.siderFolded,
+    state.toggleSiderFolded,
+    state.mdxTOCFolded,
+    state.toggleMdxTOCFolded,
+  ]);
 
   const handelAutocompleteChange = (event: any, value: any) => {
     router.push(value.value);
@@ -86,71 +97,15 @@ const MDXLayout = (props: any) => {
     });
     return siderDataMap;
   }, [siderData]);
-  console.log("side date", formatSiderDate());
 
   return (
     <Box className={styles["mdx-layout"]}>
-      {/* <AppBar position='sticky'>
-        <Toolbar>
-          <Link href='/'>
-            <Avatar src="/images/icon.JPG" className={styles['avatar-img']} alt="ICON" sx={{ marginRight: '16px', cursor: 'pointer' }} />
-          </Link>
-          <Typography
-            variant="h4"
-            noWrap
-            component="div"
-            sx={{ flexGrow: 1, display: { xs: 'none', sm: 'block' } }}
-          >
-            <Link href='/mdx'>
-              <span className={styles['header-title']}>Web-Playground</span> 
-            </Link>
-            <svg width="0" height="0">
-              <filter id="filter">
-                <feTurbulence id="turbulence" type="fractalNoise" baseFrequency=".03" numOctaves="20" />
-                <feDisplacementMap in="SourceGraphic" scale="10" />
-              </filter>
-            </svg>
-          </Typography>
-          <SearchAutocomplete
-            options={siderData.map(item => ({ label: item.title, value: item.linkTo }))}
-            disableClearable
-            forcePopupIcon={false}
-            isOptionEqualToValue={(option: any, value: any) => {
-              return option.value === value.value
-            }}
-            ListboxProps={{
-              // @ts-ignore
-              sx: {
-                '.MuiAutocomplete-option': {
-                  display: 'block',
-                  overflow: 'hidden',
-                  textOverflow: 'ellipsis',
-                  whiteSpace: 'nowrap'
-                }
-              },
-            }}
-            PopperComponent={(params) => <Popper {...params} placement='bottom-start' />}
-            PaperComponent={(params) => <Paper {...params} sx={{ width: '300px', maxHeight: '300px', overflow: 'hidden !important' }} />}
-            onChange={handelAutocompleteChange}
-            renderInput={(params) =>
-              <StyledTextField
-                {...params}
-                size='small'
-                id="input-with-icon-textfield"
-                placeholder="Search..."
-              />
-            }
-          />
-          <ThemeSwitch />
-        </Toolbar>
-      </AppBar> */}
       <Paper
         className={styles["content"]}
         elevation={3}
         sx={{
           width: siderFolded ? 0 : 275,
           height: "100%",
-          padding: "16px 0",
           borderRadius: 0,
           display: "inline-block",
           verticalAlign: "top",
@@ -164,7 +119,7 @@ const MDXLayout = (props: any) => {
         >
           {siderFolded ? <AiOutlineCaretRight /> : <AiOutlineCaretLeft />}
         </div>
-        <div>
+        <div className={styles["search-input"]}>
           <SearchAutocomplete
             options={siderData.map((item) => ({
               label: item.title,
@@ -210,10 +165,10 @@ const MDXLayout = (props: any) => {
             )}
           />
         </div>
-        <div>
+        <div className={styles["sider-data"]}>
           {!!siderData.length &&
             Object.keys(formatSiderDate()).map((key) => (
-              <Accordion key={key} disableGutters>
+              <Accordion key={key} disableGutters sx={{overflow: 'hidden', whiteSpace: 'nowrap'}}>
                 <AccordionSummary
                   expandIcon={
                     <ArrowForwardIosSharpIcon sx={{ fontSize: "0.9rem" }} />
@@ -260,6 +215,25 @@ const MDXLayout = (props: any) => {
                 </AccordionDetails>
               </Accordion>
             ))}
+        </div>
+        <div
+          className={styles["setting-actions"]}
+          style={{ left: siderFolded ? 0 : 275 }}
+        >
+          <Tooltip
+            arrow
+            leaveDelay={500}
+            title={
+              <div>
+                页面目录
+                <Switch checked={mdxTOCFolded} onChange={toggleMdxTOCFolded} />
+              </div>
+            }
+          >
+            <IconButton>
+              <SettingsIcon />
+            </IconButton>
+          </Tooltip>
         </div>
       </Paper>
       <Card

@@ -6,9 +6,6 @@
   .content {
     overflow: hidden;
 
-    &:hover {
-      overflow: auto;
-    }
     .content-item {
       display: inline-block;
       width: 243px;
@@ -18,6 +15,7 @@
       cursor: pointer;
       user-select: none;
     }
+    transition: all .5s;
   }
 
   .fold-icon {
@@ -32,6 +30,20 @@
     border-top-right-radius: 8px;
     border-bottom-right-radius: 8px;
     cursor: pointer;
-    transition: left 0.5s;
+    transition: left .5s;
+  }
+
+  .sider-data {
+    height: calc(100vh - 64px - 73px - 64px - 16px);
+    overflow-y: scroll;
+    overflow-x: hidden;
+  }
+
+  .setting-actions {
+    width: 275px;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
   }
 }

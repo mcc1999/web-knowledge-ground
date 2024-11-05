@@ -1,0 +1,18 @@
+.mdx-content-page {
+  display: flex;
+  position: relative;
+  max-width: 900px;
+  margin: 0 auto;
+
+  :global {
+    .mdx-content {
+      width: 80%; 
+      flex-grow: 1;
+    }
+
+    .mdx-TOC {
+      width: 20%;
+      margin-left: 16px;
+    }
+  }
+}

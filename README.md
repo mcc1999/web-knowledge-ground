@@ -20,6 +20,7 @@ ToDo
 
 注意：
 - MDX文件名不能全部为中文，contentlayer生成json文件时识别不了中文，同一文件夹下两个全中文名的文件生成的json文件名会重复导致报错
+- MDX文章内的标题尽量避免出现中文符号，`rehype-autolink-headings`插件在为标题添加锚点时，可能会替换或删除中文符号。
 
 
 ## Utils

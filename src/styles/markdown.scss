@@ -1,32 +1,32 @@
-.markdown-body {
+.markdown-body .mdx-content {
   line-height: 1.7;
   /* padding: 0 20px;
   overflow: hidden; */
 }
 
-.markdown-body .anchor {
+.markdown-body .mdx-content .anchor {
   color: inherit;
 }
-.markdown-body .anchor:hover::after,
-.markdown-body .anchor:hover::after,
-.markdown-body .anchor:hover::after,
-.markdown-body .anchor:hover::after,
-.markdown-body .anchor:hover::after,
-.markdown-body .anchor:hover::after {
+.markdown-body .mdx-content .anchor:hover::after,
+.markdown-body .mdx-content .anchor:hover::after,
+.markdown-body .mdx-content .anchor:hover::after,
+.markdown-body .mdx-content .anchor:hover::after,
+.markdown-body .mdx-content .anchor:hover::after,
+.markdown-body .mdx-content .anchor:hover::after {
   content: "#";
   color: #c0c0c0;
 }
 
-.markdown-body p,
-.markdown-body blockquote,
-.markdown-body ul,
-.markdown-body on,
-.markdown-body table,
-.markdown-body .note {
+.markdown-body .mdx-content p,
+.markdown-body .mdx-content blockquote,
+.markdown-body .mdx-content ul,
+.markdown-body .mdx-content on,
+.markdown-body .mdx-content table,
+.markdown-body .mdx-content .note {
   margin: 1em 0;
 }
 
-.markdown-body blockquote {
+.markdown-body .mdx-content blockquote {
   position: relative;
   border-left: 4px solid #42b983;
   padding: 10px 15px;
@@ -34,32 +34,32 @@
   background-color: rgba(225, 190, 231, 0.15);
 }
 
-.markdown-body .note {
+.markdown-body .mdx-content .note {
   padding: 0.1rem 1.5rem;
   border-left-width: 4px;
   border-left-style: solid;
   border-radius: 4px;
 }
 
-.markdown-body .note.tip {
+.markdown-body .mdx-content .note.tip {
   background-color: #f3f5f7;
   border-color: #42b983;
   color: #2c3e50;
 }
 
-.markdown-body .note.warning {
+.markdown-body .mdx-content .note.warning {
   background-color: #fff7d3;
   border-color: #fabc38;
   color: #6b5900;
 }
 
-.markdown-body .note.danger {
+.markdown-body .mdx-content .note.danger {
   background-color: #ffe6e6;
   border-color: #e8443c;
   color: #4d0000;
 }
 
-.markdown-body code {
+.markdown-body .mdx-content code {
   color: #f98c4d;
   background-color: #f1f4f8;
   border-radius: 2px;
@@ -70,7 +70,7 @@
   font-size: 13px;
 }
 
-.markdown-body img {
+.markdown-body .mdx-content img {
   position: relative;
   max-width: 100%;
   height: auto;
@@ -81,34 +81,34 @@
   vertical-align: middle;
 }
 
-.markdown-body hr {
+.markdown-body .mdx-content hr {
   border: 0;
   margin: 2em 0;
   border-top: 1px solid #9c27b0;
 }
 
-.markdown-body a {
+.markdown-body .mdx-content a {
   color: #9c27b0;
   font-weight: 600;
   padding: 0 2px;
   text-decoration: none;
 }
-.markdown-body a:hover {
+.markdown-body .mdx-content a:hover {
   text-decoration: underline;
 }
 
-.markdown-body del {
+.markdown-body .mdx-content del {
   text-decoration-color: rgba(250, 188, 56, 0.85);
 }
 
-.markdown-body table {
+.markdown-body .mdx-content table {
   width: 100%;
   font-size: 13px;
   line-height: 1.5;
   border-collapse: collapse;
 }
 
-.markdown-body table th {
+.markdown-body .mdx-content table th {
   padding: 10px;
   text-align: left;
   background-color: rgba(225, 190, 231, 0.15);
@@ -116,49 +116,49 @@
   word-wrap: normal;
 }
 
-.markdown-body table td {
+.markdown-body .mdx-content table td {
   padding: 10px;
   border-bottom: 1px solid #f1f4f8;
   line-height: 1.8;
 }
 
-.markdown-body ul,
-.markdown-body ol {
+.markdown-body .mdx-content ul,
+.markdown-body .mdx-content ol {
   padding-left: 1em;
 }
 
 // 有序列表的数字颜色
-.markdown-body ol li::marker {
+.markdown-body .mdx-content ol li::marker {
   color: #9c27b0;
 }
-.markdown-body ul {
+.markdown-body .mdx-content ul {
   list-style-type: circle;
 }
 
-.markdown-body h1 {
+.markdown-body .mdx-content h1 {
   text-align: center;
 }
 
-.markdown-body h3,
+.markdown-body .mdx-content h3,
 h2 {
   color: #ed6c02;
 }
 
 // h2、h3的上下间距
-.markdown-body h2 {
+.markdown-body .mdx-content h2 {
   margin-block: 48px 32px;
 }
-.markdown-body h3 {
+.markdown-body .mdx-content h3 {
   margin-block: 36px 12px;
 }
 
 // 行内代码块背景色
-.markdown-body code {
+.markdown-body .mdx-content code {
   color: inherit;
   background-color: rgba(225, 190, 231, 0.25);
 }
 
 // 无序列表缩进
-.markdown-body ul {
+.markdown-body .mdx-content ul {
   margin-inline-start: 32px;
 }

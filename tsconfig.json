@@ -1,11 +1,7 @@
 {
   "compilerOptions": {
     "target": "es5",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
+    "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
@@ -20,9 +16,7 @@
     "incremental": true,
     "baseUrl": ".",
     "paths": {
-      "contentlayer/generated": [
-        "./.contentlayer/generated"
-      ],
+      "contentlayer/generated": ["./.contentlayer/generated"],
       "@/*": ["src/*"]
     }
   },
@@ -32,9 +26,8 @@
     "**/*.tsx",
     "src/pages/goodies/index.tsx",
     ".contentlayer/generated",
-    "src/assets/svg/SunIcon.jsts/ssrc/assets/svg/SunIcon.js"
+    "src/assets/svg/SunIcon.jsts/ssrc/assets/svg/SunIcon.js",
+    "src/plugins/extractTocHeadings.mjs"
   ],
-  "exclude": [
-    "node_modules"
-  ]
+  "exclude": ["node_modules"]
 }

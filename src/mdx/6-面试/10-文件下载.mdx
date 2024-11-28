@@ -1,0 +1,76 @@
+---
+title: 文件下载
+date: 2024-10-11 16:30:00
+---
+
+# 文件下载
+
+> 一般文件下载方式
+>
+> - `a标签` + 文件 URL + `download`属性
+> - 接口请求获取文件`blob数据` + 动态生成 `a标签`下载
+> - 后端文件响应头添加`Content-Disposition`属性为`attachment; filename=xxx`
+
+### 方法一：`a标签` + 文件 URL + `download`属性
+
+```javascript
+<a href="https:xxxx/img.png" download>Download</a>
+```
+
+:::tip
+优点：文件直接保存到系统磁盘中，不经过浏览器内存。  
+:::
+:::danger
+缺点：
+
+1. 不加`download`属性，对于图片、pdf 文档等格式文件，浏览器默认会直接打开预览而不是下载。
+2. download 属性只有在同源 URL 或`blob:、data:协议`才会生效。
+
+   :::
+
+### 方法二：接口请求获取文件`blob数据` + 动态生成 `a标签`下载
+
+```javascript
+async function download(url, filename) {
+  const response = await fetch(url);
+  const blob = await response.blob();
+  const aLinkUrl = URL.createObjectURL(blob);
+
+  const aLink = document.createElement("a");
+  aLink.href = aLinkUrl;
+  aLink.download = filename;
+  aLink.click();
+  // 解除url和blob间的绑定
+  URL.revokeObjectURL(aLinkUrl);
+}
+```
+
+:::danger
+缺点：
+
+1. 下载大文件`fetch请求`响应会很慢，导致页面卡顿效果。
+2. 下载的文件需保存在浏览器内存中，大文件下载会导致浏览器占用大量内存。
+   :::
+
+### 方法三：后端文件响应头添加`Content-Disposition`属性为`attachment; filename=xxx`
+
+- `Content-Disposition`属性的第一个值为 attachment（附件下载）或 inline（浏览器内预览）。
+- `Content-Disposition`属性的第二个值为可选项，用于设置文件名。
+
+```javascript
+// 示例后端代码片段（Node.js Express）
+app.get("/download", (req, res) => {
+  const filePath = "path/to/file";
+  const filename = "file.png";
+
+  res.setHeader("Content-Disposition", `attachment; filename="${filename}"`);
+  res.sendFile(filePath, { root: __dirname });
+});
+```
+
+:::tip
+优点：文件直接保存到系统磁盘中，不经过浏览器内存。
+:::
+:::danger
+缺点：需要后端配合添加响应头。
+:::

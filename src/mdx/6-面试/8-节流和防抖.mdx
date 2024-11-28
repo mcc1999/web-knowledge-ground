@@ -1,0 +1,125 @@
+---
+title: 节流和防抖
+date: 2024-09-17 21:00:00
+---
+
+# 节流和防抖
+
+### 防抖 Debounce
+
+> 定义：函数防抖，在事件被触发 n 毫秒后再执行回调，如果在这 n 毫秒内又被触发，则重新计时。
+
+> 现实生活例子：电梯关门，n 秒内没人进电梯，电梯才关上；n 秒内有人进电梯，电梯重新等待 n 秒。
+
+```javascript
+const debounce = (fn, delay, immediate = false) => {
+  let timer, result;
+
+  if (typeof fn !== "function") {
+    throw new Error("fn must be a function");
+  }
+
+  const debounced = function () {
+    const context = this;
+    const args = arguments;
+
+    if (timer) clearTimeout(timer);
+
+    if (immediate) {
+      const callNow = !timer;
+      timer = setTimeout(() => {
+        timer = null;
+      }, delay);
+      if (callNow) result = fn.apply(context, args);
+    } else {
+      timer = setTimeout(() => {
+        result = fn.apply(context, args);
+      }, delay);
+    }
+
+    return result;
+  };
+
+  debounced.cancel = () => {
+    clearTimeout(timer);
+    timer = null;
+  };
+
+  return debounced;
+};
+```
+
+### 节流 Throttle
+
+> 定义：函数节流，n 秒内只执行一次，如果 n 秒内重复触发，只有一次生效。
+
+> 生活例子：浏览器窗口 resize 事件回调 n 秒内只执行一次。
+
+```javascript
+const throttle = (fn, delay, immediate = true) => {
+  let timer, result;
+
+  if (typeof fn !== "function") {
+    throw new Error("fn must be a function");
+  }
+
+  const throttled = function () {
+    const context = this;
+    const args = arguments;
+
+    if (immediate) {
+      const callNow = !timer;
+      timer = setTimeout(() => {
+        timer = null;
+      }, delay);
+      if (callNow) result = fn.apply(context, args);
+    } else {
+      if (timer) return;
+      timer = setTimeout(() => {
+        result = fn.apply(context, args);
+        timer = null;
+      }, delay);
+    }
+
+    return result;
+  };
+
+  throttled.cancel = () => {
+    clearTimeout(timer);
+    timer = null;
+  };
+
+  return throttled;
+};
+const throttle_timestamp = (fn, delay, immediate = true) => {
+  let time, result;
+
+  if (typeof fn !== "function") {
+    throw new Error("fn must be a function");
+  }
+
+  const throttled = function () {
+    const context = this;
+    const args = arguments;
+
+    if (!time || Date.now() - time >= delay) {
+      time = Date.now();
+      if (immediate) {
+        result = fn.apply(context, args);
+      } else {
+        setTimeout(() => {
+          result = fn.apply(context, args);
+        }, delay);
+      }
+    }
+
+    return result;
+  };
+
+  throttled.cancel = () => {
+    time = null;
+  };
+
+  return throttled;
+};
+```

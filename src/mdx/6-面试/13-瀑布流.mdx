@@ -1,0 +1,132 @@
+---
+title: 瀑布流布局
+date: 2024-11-06 21:30:00
+---
+
+import { Sandpack } from "@codesandbox/sandpack-react";
+import { aquaBlue } from "@codesandbox/sandpack-themes";
+
+# 瀑布流布局
+
+## absolute 布局+js
+
+思路：
+
+- 每个 item 都采用`positionL absolute;`
+- js 计算每个 item 的`top`、`left`值
+
+<Sandpack 
+  template="static"
+  theme={aquaBlue}
+  options={{
+    showLineNumbers: true, // default - true
+    showInlineErrors: true, // default - false
+    wrapContent: true, // default - false
+    editorHeight: 480, // default - 300
+    editorWidthPercentage: 60, // default - 50
+  }}
+  files={{
+    "/index.html": {
+      code: 
+        `<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>瀑布流布局</title>
+    <style>
+      .masonry {
+        width: 90%;
+        border: 2px solid;
+        position: relative;
+      }
+      .mask {
+        width: 90%;
+        height: 800px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: absolute;
+        top: 0;
+        left: 0;
+        background: #eee;
+      }
+      img {
+        position: absolute;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="masonry"></div>
+    <div class="mask">loading</div>
+    <script>
+      const imgWidth = 300,
+        imgNum = 50,
+        imgArr = [];
+      const container = document.querySelector('.masonry')
+      const mask = document.querySelector('.mask')
+
+      let timer
+      window.onresize = () => {
+        if (timer) clearTimeout(timer)
+        timer = setTimeout(() => {
+          layout()
+        }, 200)
+      }
+      window.onload = () => {
+        mask.style.display = 'none'
+        layout()
+      }
+      function getRandomNum(min, max) {
+        return Math.floor(Math.random() * (max - min + 1)) + min
+      }
+      for (let i = 0; i < imgNum; i++) {
+        const img = document.createElement('img')
+        img.classList.add('img'+i)
+        img.src = 'https://picsum.photos/'+ imgWidth + '/' +getRandomNum(50, 80) * 10
+        container.appendChild(img)
+      }
+
+      function layout() {
+        const { space, columns } = calcColumns()
+        const columnsHeight = new Array(columns).fill(0)
+        for (let i = 0; i < imgNum; i++) {
+          const imgEle = container.children[i]
+          // 将图片放到的高度最小的一列
+          const minColumnHeight = Math.min(...columnsHeight)
+          const minColumnHeightIndex = columnsHeight.findIndex(h => h === minColumnHeight)
+          // 获取 left，top值
+          const imgTop = minColumnHeight + space
+          const imgLeft = (space + imgWidth) * minColumnHeightIndex + space
+
+          imgEle.style.left = imgLeft + 'px'
+          imgEle.style.top = imgTop + 'px'
+
+          columnsHeight[minColumnHeightIndex] += imgEle.clientHeight + space
+        }
+        container.style.height = Math.max(...columnsHeight) + 'px'
+      }
+
+      function calcColumns() {
+        const containerWidth = document.querySelector('.masonry').clientWidth
+        const columns = Math.floor(containerWidth / imgWidth)
+        const spaceRemain = containerWidth - imgWidth * columns
+        return {
+          space: spaceRemain / (columns + 1),
+          columns,
+        }
+      }
+    </script>
+
+  </body>
+</html>
+`
+      }
+}}
+/>
+
+## grid 布局+masonry
+
+grid 布局中`grid-template-column: masonry` 或 `grid-template-row: masonry` 可实现纵向或横向的瀑布流。
+
+> 暂时只有 Firefox 开启配置才支持`masonry`特性

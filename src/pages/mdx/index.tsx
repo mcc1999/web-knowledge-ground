@@ -40,15 +40,17 @@ export default MDXIndex;
 MDXIndex.layoutType = "mdx";
 
 export const getStaticProps: GetStaticProps = async () => {
-  const siderData = allFrameworks.map((item) => ({
-    id: item._id,
-    title: item.title,
-    linkTo: item.url.slice(3),
-    overview: item.body.raw
-      .replace(/\#/g, "")
-      .replace(/^import.*$/gm, "")
-      .slice(0, 100),
-  }));
+  const siderData = allFrameworks
+    .map((item) => ({
+      id: item._id,
+      title: item.title,
+      linkTo: item.url.slice(3),
+      overview: item.body.raw
+        .replace(/\#/g, "")
+        .replace(/^import.*$/gm, "")
+        .slice(0, 100),
+    }))
+    .sort((a, b) => a.id.localeCompare(b.id));
 
   return { props: { siderData } };
 };

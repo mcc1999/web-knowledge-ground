@@ -18,6 +18,7 @@ import { getThemeTokens } from "@/utils/getThemeTokens";
 import "../styles/globals.scss";
 import "../styles/markdown.scss";
 import NavBar from "@/layout/navBar";
+import { SnackbarProvider } from "notistack";
 
 type NextPageWithLayout = NextPage & {
   getLayout?: (page: ReactElement) => ReactNode;
@@ -88,18 +89,22 @@ export default function MyApp({ Component, pageProps }: AppPropsWithLayout) {
   return (
     <ColorModeContext.Provider value={colorMode}>
       <ThemeProvider theme={theme}>
-        <CssBaseline />
-        <NavBar />
-        <div
-          className="page-layout"
-          style={{
-            height: "calc(100vh - 64px)",
-            overflowY: "scroll",
-            overflowX: "hidden",
-          }}
+        <SnackbarProvider
+          anchorOrigin={{ vertical: "top", horizontal: "center" }}
         >
-          {getLayout(<Component {...pageProps} />)}
-        </div>
+          <CssBaseline />
+          <NavBar />
+          <div
+            className="page-layout"
+            style={{
+              height: "calc(100vh - 64px)",
+              overflowY: "scroll",
+              overflowX: "hidden",
+            }}
+          >
+            {getLayout(<Component {...pageProps} />)}
+          </div>
+        </SnackbarProvider>
       </ThemeProvider>
     </ColorModeContext.Provider>
   );

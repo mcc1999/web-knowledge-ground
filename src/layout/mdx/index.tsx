@@ -112,13 +112,7 @@ const MDXLayout = (props: any) => {
           transition: "width .5s",
         }}
       >
-        <div
-          className={styles["fold-icon"]}
-          style={{ left: siderFolded ? 0 : 275 }}
-          onClick={() => toggleSiderFolded()}
-        >
-          {siderFolded ? <AiOutlineCaretRight /> : <AiOutlineCaretLeft />}
-        </div>
+        {/* 搜索框 */}
         <div className={styles["search-input"]}>
           <SearchAutocomplete
             options={siderData.map((item) => ({
@@ -165,10 +159,19 @@ const MDXLayout = (props: any) => {
             )}
           />
         </div>
+        {/* MDX 目录树 */}
         <div className={styles["sider-data"]}>
           {!!siderData.length &&
             Object.keys(formatSiderDate()).map((key) => (
-              <Accordion key={key} disableGutters sx={{overflow: 'hidden', whiteSpace: 'nowrap'}}>
+              <Accordion
+                key={key}
+                disableGutters
+                sx={{
+                  overflow: "hidden",
+                  whiteSpace: "nowrap",
+                  backgroundColor: "transparent",
+                }}
+              >
                 <AccordionSummary
                   expandIcon={
                     <ArrowForwardIosSharpIcon sx={{ fontSize: "0.9rem" }} />
@@ -216,6 +219,7 @@ const MDXLayout = (props: any) => {
               </Accordion>
             ))}
         </div>
+        {/* 底部设置按钮 */}
         <div
           className={styles["setting-actions"]}
           style={{ left: siderFolded ? 0 : 275 }}
@@ -234,6 +238,14 @@ const MDXLayout = (props: any) => {
               <SettingsIcon />
             </IconButton>
           </Tooltip>
+        </div>
+        {/* 右侧折叠 Icon */}
+        <div
+          className={styles["fold-icon"]}
+          style={{ left: siderFolded ? 0 : 275 }}
+          onClick={() => toggleSiderFolded()}
+        >
+          {siderFolded ? <AiOutlineCaretRight /> : <AiOutlineCaretLeft />}
         </div>
       </Paper>
       <Card

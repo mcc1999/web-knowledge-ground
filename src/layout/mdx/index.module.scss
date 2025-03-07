@@ -34,14 +34,14 @@
   }
 
   .sider-data {
-    height: calc(100vh - 64px - 73px - 64px - 16px);
+    height: calc(100vh - 64px - 73px - 48px - 16px);
     overflow-y: scroll;
     overflow-x: hidden;
   }
 
   .setting-actions {
     width: 275px;
-    height: 64px;
+    height: 48px;
     display: flex;
     align-items: center;
     justify-content: space-around;

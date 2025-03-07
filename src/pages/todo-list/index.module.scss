@@ -1,206 +1,346 @@
-@import "@/styles/mixins.scss";
-.todo-list-container {
-  position: relative;
-  width: 100vw;
-  height: 100%;
-  min-height: 710px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-
-  &::before {
-    content: "";
-    // background-image: url(https://picsum.photos/720/405);
-    background-size: cover;
-    opacity: 0.5; //透明度设置
-    width: 100vw;
-    height: 100%;
-    z-index: -1;
-    position: absolute;
-    top: 0;
-    left: 0;
-  }
+.todoList {
+  display: grid;
+  width: 100%;
+  height: calc(100vh - 64px);
+  place-items: center;
+  overflow: auto;
 
   :global {
-    .todo-list-data {
-      width: 100%;
-      height: 72px;
-      margin: 32px 0;
+    .todo-list-container {
       display: flex;
-      justify-content: center;
-      font-size: 18px;
-      font-weight: bolder;
+      margin: 24px;
+      border-radius: 24px;
+      overflow: hidden;
 
-      .todo-list-data__wrap {
-        width: 80%;
-        display: flex;
-        border-radius: 20px;
+      // 套一个 container是为了隐藏滚动条
+      .left-actions-container {
+        width: 30vmin;
+        min-width: 320px;
+        overflow: hidden;
+        margin-right: 8px;
 
-        .todo-list-data__item {
-          flex: 1;
-          align-self: center;
+        .left-actions {
+          width: calc(30vmin + 8px);
+          min-width: 328px;
+          height: 80vmin;
+          min-height: 640px;
+          overflow-y: scroll;
+          overflow-x: hidden;
+          & > div:not(:last-of-type) {
+            margin-bottom: 8px;
+          }
+
+          .date-picker {
+            width: 100%;
+            aspect-ratio: 1/1;
+            display: grid;
+            place-items: center;
+            border-radius: 24px 0 0 24px;
+
+            .date-picker__header-custom-preview-button {
+              display: flex;
+
+              button:first-of-type {
+                padding: 0;
+                min-width: 32px;
+              }
+            }
+          }
+
+          .data-analysis {
+            width: 100%;
+            height: 200px;
+            padding: 12px;
+            margin-bottom: 8px;
+            border-radius: 24px 0 0 24px;
+
+            .data-analysis__header {
+              padding: 12px;
+              font-size: 20px;
+              font-weight: bolder;
+              margin-bottom: 12px;
+              border-radius: 24px;
+            }
+
+            .data-analysis__content {
+              display: flex;
+              flex-direction: column;
+              height: calc(100% - 54px - 12px);
+              gap: 4px;
+
+              & > div {
+                flex: 1;
+              }
+            }
+          }
+
+          .task-group {
+            width: 100%;
+            border-radius: 24px 0 0 24px;
+            padding: 12px;
+            margin-bottom: 8px;
+
+            .task-group__header {
+              display: flex;
+              align-items: center;
+              justify-content: space-between;
+              padding: 12px;
+              font-size: 20px;
+              font-weight: bolder;
+              margin-bottom: 12px;
+              border-radius: 24px;
+
+              .task-group__header-count {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                width: 24px;
+                height: 24px;
+                border-radius: 50%;
+                margin: 3px;
+                font-size: medium;
+              }
+            }
+
+            .task-group__content {
+              display: flex;
+              flex-direction: column;
+              gap: 4px;
+            }
+            .task-group__content-item {
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+              padding: 12px;
+              border-radius: 12px;
+
+              .task-group__content-item-left {
+                display: flex;
+
+                .task-group__content-item-group-name {
+                  font-weight: bold;
+                  margin-left: 4px;
+                }
+
+                .task-group__content-item-group-count {
+                  font-size: small;
+                  font-weight: bold;
+                  margin-left: 4px;
+                }
+              }
+            }
+          }
+
+          .tag-manage {
+            width: 100%;
+            border-radius: 24px 0 0 24px;
+            padding: 12px;
+            margin-bottom: 8px;
+
+            .tag-manage__header {
+              display: flex;
+              align-items: center;
+              justify-content: space-between;
+              padding: 12px;
+              font-size: 20px;
+              font-weight: bolder;
+              margin-bottom: 12px;
+              border-radius: 24px;
+
+              .tag-manage__header-count {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                width: 24px;
+                height: 24px;
+                border-radius: 50%;
+                margin: 3px;
+                font-size: medium;
+              }
+            }
+
+            .tag-manage__content {
+              display: flex;
+              flex-wrap: wrap;
+              gap: 4px;
+
+              .tag-manage__content-item {
+                padding: 2px 8px;
+                border-radius: 16px;
+                color: #6c35de;
+                font-weight: bold;
+              }
+            }
+          }
+        }
+      }
+
+      .right-daily-list {
+        width: 100vmin;
+        min-width: 800px;
+        height: 80vmin;
+        min-height: 640px;
+        padding: 8px;
+        color: black;
+        border-radius: 0 24px 24px 0;
+        backdrop-filter: blur(10px);
+        background: linear-gradient(135deg, #e5f770, #c3dce4, #b9b3ee);
+
+        .daily-list__header {
+          width: 100%;
           display: flex;
+          margin-bottom: 8px;
+          padding: 0 8px;
+          align-items: center;
           justify-content: space-between;
-          flex-wrap: wrap;
-          padding: 8px;
 
-          .todo-list-data__title {
+          .daily-list__header-date {
+            font-size: 48px;
+            font-weight: bold;
+          }
+        }
+
+        .date-range-list {
+          width: 100%;
+          height: 96px;
+          display: flex;
+          gap: 4px;
+          cursor: pointer;
+
+          .date-range-list__item {
+            flex: 1 1 0;
             display: flex;
-            align-items: center;
-          }
-          .todo-list-data__percentage {
-            font-size: small;
-            color: gray;
-            align-self: flex-end;
-          }
-        }
-      }
-    }
-    .calender {
-      width: 100%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-    .calender-wrap {
-      width: 80%;
-      height: 80%;
-      min-height: 540px;
-      border-radius: 20px;
-
-      .calender-header {
-        height: 72px;
-        padding: 16px 5% 0 5%;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-
-        .calender-header__title {
-          font-size: 24px;
-          font-weight: bolder;
-        }
-      }
-
-      .calender-dates {
-        height: calc(100% - 72px);
-        .dates-header {
-          display: grid;
-          grid-template-columns: repeat(7, 1fr);
-          grid-template-rows: 1fr;
-
-          > div {
-            line-height: 30px;
-            text-align: center;
-          }
-        }
-
-        .dates-body {
-          height: calc(100% - 32px);
-          display: grid;
-          grid-template-columns: repeat(7, 1fr);
-          grid-template-rows: repeat(6, 1fr);
-
-          .date-item {
-            display: flex;
-            flex-direction: column;
             justify-content: center;
             align-items: center;
-            cursor: pointer;
+            backdrop-filter: blur(10px); /* 磨砂效果 */
+            background-color: rgba(255, 255, 255, 0.7); /* 半透明背景 */
+            border-radius: 16px;
 
-            & > div {
-              width: 50%;
-              text-align: center;
-              display: flex;
-              justify-content: center;
+            .date-range-list__item-date {
+              font-size: 32px;
+              font-weight: bold;
+              margin-left: 4px;
             }
+          }
 
-            .date-item__date-todo-status {
-              padding: 0 2px;
-              &:first-of-type {
-                color: #3c6f32;
+          .date-range-list__operator {
+            width: 48px;
+            display: grid;
+            place-items: center;
+            backdrop-filter: blur(10px); /* 磨砂效果 */
+            background-color: rgba(255, 255, 255, 0.7); /* 半透明背景 */
+            border-radius: 16px;
+          }
+        }
+
+        .daily-list {
+          width: 100%;
+          height: calc(100% - 8px - 72px - 8px - 96px - 8px);
+          margin-top: 8px;
+          padding: 8px;
+          background-color: #e9e4ed;
+          border-radius: 24px;
+          position: relative;
+          overflow-y: scroll;
+          &::-webkit-scrollbar {
+            display: none;
+          }
+
+          .daily-list__timeline {
+            .daily-list__timeline-item {
+              width: 100%;
+              height: 128px;
+              display: flex;
+              align-items: center;
+
+              .daily-list__timeline-item-line {
+                height: 2px;
+                width: 100%;
+                margin-left: 8px;
+                background-color: #eff1ee;
               }
-              &:last-of-type {
-                color: #bb3b2f;
+            }
+          }
+
+          .daily-list__todo-list {
+            display: flex;
+            flex-direction: row;
+            width: calc(100% - 96px - 4px - 4px);
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 52px;
+            gap: 4px;
+
+            .daily-list__todo-list-day {
+              flex: 1 1 0;
+              position: relative;
+
+              .daily-list__todo-item {
+                width: 100%;
+                position: absolute;
+                border-radius: 16px;
+                padding: 4px 8px;
+                overflow: hidden;
+                min-height: 128px;
+                max-height: 256px;
+
+                .daily-list__todo-item-title {
+                  overflow: hidden;
+                  text-overflow: ellipsis;
+                  white-space: nowrap;
+                  font-weight: bold;
+                  font-size: large;
+                  display: flex;
+                  justify-content: space-between;
+                  align-items: center;
+                }
+
+                .daily-list__todo-item-content {
+                  .daily-list__todo-item-header {
+                    display: flex;
+                    align-items: center;
+                    font-size: small;
+                    margin: 4px 0;
+                  }
+
+                  .daily-list__todo-item-timeRange {
+                    display: flex;
+                    align-items: center;
+                    font-size: small;
+                    color: #b9b3ee;
+                  }
+
+                  .daily-list__todo-item-tags {
+                    margin-left: 8px;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
+
+                    span:not(:last-of-type) {
+                      margin-right: 4px;
+                    }
+                  }
+
+                  .daily-list__todo-item-detail {
+                    display: -webkit-box;
+                    text-overflow: ellipsis;
+                    -webkit-box-orient: vertical;
+                    -webkit-line-clamp: 3;
+                    word-break: break-all;
+                    word-wrap: break-word;
+                    overflow: hidden;
+                    font-size: small;
+
+                    span {
+                      font-weight: bold;
+                    }
+                  }
+                }
               }
             }
           }
         }
-      }
-    }
-  }
-}
-
-.todo-list-detail-container {
-  width: 100vw;
-  height: 100%;
-  position: relative;
-
-  &::before {
-    content: "";
-    // background-image: url(https://picsum.photos/720/405);
-    background-size: cover;
-    opacity: 0.5;
-    width: 100vw;
-    height: 100%;
-    z-index: -1;
-    position: absolute;
-    top: 0;
-    left: 0;
-  }
-
-  :global {
-    .breadcrumbs-back {
-      display: flex;
-      align-items: center;
-      position: absolute;
-      top: 24px;
-      left: 24px;
-      cursor: pointer;
-    }
-    .todo-list-box {
-      position: absolute;
-      top: 64px;
-      left: 0;
-      width: 100%;
-      height: calc(100% - 64px);
-      display: flex;
-      justify-content: space-around;
-      align-items: center;
-      flex-wrap: wrap;
-
-      .list-box {
-        min-width: 350px;
-        width: 40%;
-        height: 90%;
-        border-radius: 24px;
-        margin-bottom: 24px;
-      }
-
-      .list-box__header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 8px 5%;
-
-        .header-title {
-          font-size: 24px;
-        }
-      }
-
-      .todo-list-content {
-        height: 90%;
-        border-radius: 24px;
-        padding: 0 20px;
-        overflow-y: scroll;
-        @include scrollbar-hover-visible;
-      }
-
-      .todo-list-content--empty {
-        height: 90%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
       }
     }
   }

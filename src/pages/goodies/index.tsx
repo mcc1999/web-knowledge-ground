@@ -12,7 +12,7 @@ const goodies = [
     link: "/todo-list",
     icon: <ListAltIcon />,
     slogan: "Simple, Useful",
-    introduce: `一个以日历为展示主体的TodoList工具，记录每天的todo & done。每个todo事项有标题、详情、Deadline、Tags等内容，并可创建子事项。所有的TodoList记录保存在localStorage中。`,
+    introduce: `一个以日历为展示主体的TodoList工具，记录每天的todo task。每个todo事项有标题、详情、TimeRange、Tags等内容。所有的TodoList记录保存在localStorage中。`,
   },
   {
     name: "Keyboard",

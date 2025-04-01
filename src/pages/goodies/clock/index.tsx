@@ -332,6 +332,100 @@ const Clock: React.FC = () => {
     }
   };
 
+  /**
+   * 以 JSON 格式导出 localStorage 中当前表格内的数据
+   */
+  const exportData = () => {
+    try {
+      const data = JSON.stringify(records, null, 2);
+      const blob = new Blob([data], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `timer_records_${dayjs().format(
+        "YYYY-MM-DD_HH-mm-ss"
+      )}.json`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+
+      enqueueSnackbar("数据导出成功", {
+        variant: "success",
+        autoHideDuration: 2000,
+      });
+    } catch (error) {
+      console.error("导出数据失败:", error);
+      enqueueSnackbar("导出数据失败", {
+        variant: "error",
+        autoHideDuration: 2000,
+      });
+    }
+  };
+
+  // 导入数据
+  const importData = () => {
+    const input = document.createElement("input");
+    input.type = "file";
+    input.accept = "application/json";
+
+    input.onchange = async (e) => {
+      try {
+        const file = (e.target as HTMLInputElement).files?.[0];
+        if (!file) return;
+
+        const text = await file.text();
+        const importedData = JSON.parse(text) as TimerRecord[];
+
+        // 验证导入的数据格式
+        if (!Array.isArray(importedData)) throw new Error("无效的数据格式");
+
+        // 验证每条记录的必要字段
+        importedData.forEach((record) => {
+          if (
+            !record.id ||
+            !record.name ||
+            !record.type ||
+            typeof record.duration !== "number" ||
+            !record.createdAt
+          ) {
+            throw new Error("记录格式不正确");
+          }
+        });
+
+        // 合并数据，以 id 为唯一标识
+        const mergedRecords = [...records];
+        importedData.forEach((newRecord) => {
+          const existingIndex = mergedRecords.findIndex(
+            (record) => record.id === newRecord.id
+          );
+          if (existingIndex === -1) {
+            mergedRecords.push(newRecord);
+          } else {
+            mergedRecords[existingIndex] = newRecord;
+          }
+        });
+
+        // 按创建时间降序排序
+        mergedRecords.sort((a, b) => b.createdAt - a.createdAt);
+
+        setRecords(mergedRecords);
+        enqueueSnackbar("数据导入成功", {
+          variant: "success",
+          autoHideDuration: 2000,
+        });
+      } catch (error) {
+        console.error("导入数据失败:", error);
+        enqueueSnackbar("导入数据失败，请检查文件格式", {
+          variant: "error",
+          autoHideDuration: 2000,
+        });
+      }
+    };
+
+    input.click();
+  };
+
   return (
     <Box
       sx={{
@@ -517,7 +611,6 @@ const Clock: React.FC = () => {
               },
             }}
           />
-
           <FormControl sx={{ flex: 1 }}>
             <InputLabel size="small">计时类型</InputLabel>
             <Select
@@ -534,7 +627,6 @@ const Clock: React.FC = () => {
               <MenuItem value={TimerType.NORMAL}>计时器</MenuItem>
             </Select>
           </FormControl>
-
           <TextField
             size="small"
             label="搜索标签/节点"
@@ -547,6 +639,25 @@ const Clock: React.FC = () => {
               },
             }}
           />
+          <Box sx={{ display: "flex", gap: 2 }}>
+            <Button
+              onClick={exportData}
+              variant="outlined"
+              size="small"
+              sx={{ borderRadius: "8px" }}
+              disabled={records.length === 0}
+            >
+              导出数据
+            </Button>
+            <Button
+              onClick={importData}
+              variant="outlined"
+              size="small"
+              sx={{ borderRadius: "8px" }}
+            >
+              导入数据
+            </Button>
+          </Box>{" "}
         </Box>
 
         {/* 表格容器 */}
